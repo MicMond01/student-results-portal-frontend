@@ -1,5 +1,5 @@
 // src/types/auth.ts
 export type LoginFormValues = {
-  email: string;
+  identifier: string;
   password: string;
 };

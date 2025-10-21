@@ -24,21 +24,7 @@ const baseQueryWithReAuth: BaseQueryFn = async (args, api, extraOptions) => {
     api.dispatch(exitUser());
     return response;
   }
-  if (response.error?.status === 401) {
-    const res = response.error.data as { screen?: boolean };
-    const state = api.getState() as RootState;
-    const loginTime = state.auth.time;
-    if (!loginTime) {
-      api.dispatch(exitUser());
-      return response;
-    }
-    const currentTime = Date.now();
-    const threeMinutesAgo = currentTime - 3 * 60 * 1000;
-    if (loginTime > threeMinutesAgo) {
-      if (!res.screen) api.dispatch(exitUser());
-    }
-    return response;
-  } else return response;
+  return response;
 };
 
 export const api = createApi({

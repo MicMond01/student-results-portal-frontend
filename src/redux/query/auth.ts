@@ -3,8 +3,14 @@ import { api } from "../baseConfig";
 import { z } from "zod";
 // import { registrationSchema } from "@/screens/Authentication/complete-registration";
 
-interface AuthResponse {
+export interface AuthResponse {
+  user: TUser;
   token: string;
+}
+
+export interface TUser {
+  name: string;
+  role: string;
 }
 
 export const authenticationSlice = api.injectEndpoints({
@@ -12,12 +18,6 @@ export const authenticationSlice = api.injectEndpoints({
     getLoggedInUser: builder.query<any, void>({
       query: () => ({
         url: "/v2/myinfo",
-      }),
-      providesTags: ["users"],
-    }),
-    getTestRoute: builder.query<any, void>({
-      query: () => ({
-        url: "/test",
       }),
       providesTags: ["users"],
     }),
@@ -32,10 +32,10 @@ export const authenticationSlice = api.injectEndpoints({
     // }),
     login: builder.mutation<
       AuthResponse,
-      { email: string; password: string; unlockScreen?: boolean }
+      { identifier: string; password: string }
     >({
       query: (payload) => ({
-        url: "/v1/auth/login",
+        url: "/auth/login",
         method: "POST",
         body: payload,
       }),
@@ -45,7 +45,6 @@ export const authenticationSlice = api.injectEndpoints({
 });
 
 export const {
-  useGetTestRouteQuery,
   useLoginMutation,
   useGetLoggedInUserQuery,
   useLazyGetLoggedInUserQuery,
