@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* Optional: refine selection & scroll */
+*::selection {
+  background: #a594f9;
+  color: #2b2653;
+}
+
+/* Smooth page appearance for SSR/CSR swaps */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Color tokens (if you want to use CSS variables) */
+:root {
+  --primary: #7371fc;
+  --primary-2: #a594f9;
+  --primary-3: #cdc1ff;
+  --bg-1: #f5efff;
+  --bg-2: #e5d9f2;
+}
