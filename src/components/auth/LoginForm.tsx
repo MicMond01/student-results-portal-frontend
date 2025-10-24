@@ -10,7 +10,6 @@ import type { LoginFormValues } from "@/types/auth";
 import { useLoginMutation } from "@/redux/query/auth";
 import { setAuth } from "@/redux/slices/auth";
 import { useAppDispatch } from "@/lib/hooks/dispatch-hooks";
-import { is } from "zod/v4/locales";
 
 export const LoginForm: React.FC = () => {
   const [login, { isLoading, isError }] = useLoginMutation();
@@ -30,7 +29,7 @@ export const LoginForm: React.FC = () => {
     const result = await login(values);
 
     if (result.data?.token) {
-      dispatch(setAuth(result.data.token));
+      dispatch(setAuth({ token: result.data.token, user: result.data.user }));
     }
   };
 

@@ -1,16 +1,34 @@
 // src/components/navigation/Sidebar.tsx
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import SidebarItem from "./SidebarItem";
 import { useSidebar } from "@/context/sidebar";
-import { useAuthRole } from "@/context/auth-role";
-import type { NavItem } from "@/types/app";
 import { Icon } from "@/components/ui/Icon";
+import { useLazyGetLoggedInUserQuery } from "@/redux/query/auth";
+import type { NavItem } from "@/types/app";
 
 const Sidebar: React.FC = () => {
-  const { role } = useAuthRole();
   const { collapsed, hoverExpand, setHoverExpand } = useSidebar();
+  const [getAuthUser] = useLazyGetLoggedInUserQuery();
+  const [userRole, setUserRole] = useState<"admin" | "lecturer" | "student">(
+    "student"
+  );
 
+  // ✅ Fetch logged-in user once
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await getAuthUser().unwrap();
+        if (res && res.user?.role) {
+          setUserRole(res.user.role);
+        }
+      } catch (err) {
+        console.error("Failed to fetch logged-in user:", err);
+      }
+    })();
+  }, [getAuthUser]);
+
+  // ✅ Define sidebar items
   const items = useMemo<NavItem[]>(() => {
     const base: NavItem[] = [
       {
@@ -18,12 +36,14 @@ const Sidebar: React.FC = () => {
         label: "Dashboard",
         to: "/",
         icon: <Icon.dashboard className="h-5 w-5" />,
+        allowedRoles: ["student", "lecturer", "admin"], // added admin too
       },
       {
         id: "students",
         label: "Students",
         to: "/students",
         icon: <Icon.students className="h-5 w-5" />,
+        allowedRoles: ["admin"],
       },
       {
         id: "courses",
@@ -34,13 +54,13 @@ const Sidebar: React.FC = () => {
             id: "c1",
             label: "My Courses",
             to: "/courses",
-            roles: ["student", "lecturer"],
+            allowedRoles: ["student", "lecturer"],
           },
           {
             id: "c2",
             label: "Manage Courses",
             to: "/courses/manage",
-            roles: ["lecturer"],
+            allowedRoles: ["lecturer"],
           },
         ],
       },
@@ -53,37 +73,41 @@ const Sidebar: React.FC = () => {
             id: "e1",
             label: "Schedule",
             to: "/exams/schedule",
-            roles: ["student", "lecturer"],
+            allowedRoles: ["student", "lecturer"],
           },
           {
             id: "e2",
             label: "Results",
             to: "/exams/results",
-            roles: ["student", "lecturer"],
+            allowedRoles: ["student", "lecturer"],
           },
           {
             id: "e3",
             label: "Gradebook",
             to: "/exams/gradebook",
-            roles: ["lecturer"],
+            allowedRoles: ["lecturer"],
           },
         ],
       },
     ];
-    // Filter by role for items and children
+
+    // ✅ Filter items and children based on role
     return base
-      .filter((i) => !i.roles || i.roles.includes(role))
-      .map((i) =>
-        i.children
+      .filter(
+        (item) => !item.allowedRoles || item.allowedRoles.includes(userRole)
+      )
+      .map((item) =>
+        item.children
           ? {
-              ...i,
-              children: i.children.filter(
-                (c) => !c.roles || c.roles.includes(role)
+              ...item,
+              children: item.children.filter(
+                (child) =>
+                  !child.allowedRoles || child.allowedRoles.includes(userRole)
               ),
             }
-          : i
+          : item
       );
-  }, [role]);
+  }, [userRole]);
 
   const isCollapsed = collapsed && !hoverExpand;
 

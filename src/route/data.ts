@@ -1,6 +1,5 @@
 import AuthenticationPage from "@/screens/Authentication/login";
 // src/router/routesData.tsx
-import type { FC, LazyExoticComponent } from "react";
 import { lazy } from "react";
 
 // Lazy imports for code-splitting
@@ -13,6 +12,7 @@ export type IRoute = {
   title: string;
   code: string;
   component: React.FC;
+  allowedRoles?: Array<"admin" | "lecturer" | "student">;
 };
 
 const authRouteData: IRoute[] = [
@@ -48,12 +48,14 @@ const routeData: IRoute[] = [
     title: "Dashboard",
     code: "dashboard",
     component: Dashboard,
+    allowedRoles: ["student", "admin", "lecturer"],
   },
   {
     link: "/students",
     title: "Students",
     code: "students",
     component: StudentsList,
+    allowedRoles: ["admin"],
   },
   {
     link: "/students/:id",

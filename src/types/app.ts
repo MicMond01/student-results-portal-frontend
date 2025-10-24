@@ -1,11 +1,11 @@
 // src/types/app.ts
-export type Role = "student" | "lecturer";
+export type Role = "student" | "lecturer" | "admin";
 
 export type NavChild = {
   id: string;
   label: string;
   to: string;
-  roles?: Role[];
+  allowedRoles?: Role[];
 };
 
 export type NavItem = {
@@ -13,6 +13,6 @@ export type NavItem = {
   icon: React.ReactNode;
   label: string;
   to?: string;
-  roles?: Role[];
+  allowedRoles?: Role[];
   children?: NavChild[];
 };

@@ -7,8 +7,8 @@ import { useAuthRole } from "@/context/auth-role";
 import { useSidebar } from "@/context/sidebar";
 
 const Topbar: React.FC = () => {
-  const { userName, role, setRole } = useAuthRole();
-  const { collapsed, setCollapsed, hoverExpand, setHoverExpand } = useSidebar();
+  const { userName, role } = useAuthRole();
+  const { collapsed, setCollapsed, hoverExpand } = useSidebar();
 
   const isCollapsed = collapsed && !hoverExpand;
 

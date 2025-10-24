@@ -1,30 +1,54 @@
 // import { IUser } from "@/screens/users/types";
 import { api } from "../baseConfig";
-import { z } from "zod";
+import { setUser } from "../slices/auth";
+// import { z } from "zod";
 // import { registrationSchema } from "@/screens/Authentication/complete-registration";
 
 export interface AuthResponse {
-  user: TUser;
+  user: AuthUser;
   token: string;
 }
 
-export interface TUser {
+export interface AuthUser {
   name: string;
   role: string;
+}
+
+export interface TUser {
+  user: IUser;
+}
+
+export interface IUser {
+  id: string;
+  name: string;
+  identifier: string;
+  role: string;
+  createdAt: string;
 }
 
 export const authenticationSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getLoggedInUser: builder.query<any, void>({
       query: () => ({
-        url: "/v2/myinfo",
+        url: "/auth/myinfo",
       }),
-      providesTags: ["users"],
+      providesTags: ["user"],
+
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data && data.user) {
+            dispatch(setUser(data.user));
+          }
+        } catch (error) {
+          console.error("Failed to fetch user:", error);
+        }
+      },
     }),
 
     // registration: builder.mutation<any, z.infer<typeof registrationSchema>>({
     //   query: (payload) => ({
-    //     url: "/v2/registration",
+    //     url: "/auth/registration",
     //     method: "POST",
     //     body: payload,
     //   }),
@@ -39,7 +63,7 @@ export const authenticationSlice = api.injectEndpoints({
         method: "POST",
         body: payload,
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ["user"],
     }),
   }),
 });
