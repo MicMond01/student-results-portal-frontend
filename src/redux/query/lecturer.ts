@@ -26,20 +26,20 @@ export const lecturerSlice = api.injectEndpoints({
     }),
     getAllResultsForLecturerCourses: builder.query<any, void>({
       query: () => ({
-        url: "lecturer/results/my-course",
+        url: "/lecturer/results/my-course",
       }),
       providesTags: ["lecturer", "result"],
     }),
     getAllResultsUplodedByLecturer: builder.query<any, void>({
       query: () => ({
-        url: "lecturer/results",
+        url: "/lecturer/results",
       }),
       providesTags: ["lecturer", "result"],
     }),
     uploadResultForStudent: builder.mutation<any, any>({
       //TODO: Type for upload student result
       query: () => ({
-        url: "lecturer/results",
+        url: "/lecturer/results",
         method: "POST",
       }),
       invalidatesTags: ["lecturer", "result"],
@@ -47,7 +47,7 @@ export const lecturerSlice = api.injectEndpoints({
     editStudentResult: builder.mutation<any, any>({
       //TODO: Type for upload student result
       query: (id) => ({
-        url: `lecturer/results/${id}`,
+        url: `/lecturer/results/${id}`,
         method: "PATCH",
       }),
       invalidatesTags: ["lecturer", "result"],
@@ -55,7 +55,7 @@ export const lecturerSlice = api.injectEndpoints({
     deleteResult: builder.mutation<any, any>({
       //TODO: Type for upload student result
       query: (id) => ({
-        url: `lecturer/results/${id}`,
+        url: `/lecturer/results/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["lecturer", "result"],

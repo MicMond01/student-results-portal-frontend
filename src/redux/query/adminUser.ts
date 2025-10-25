@@ -2,7 +2,7 @@
 // import type { AnyResolvedKeyframe } from "framer-motion";
 import { api } from "../baseConfig";
 
-export const userSlice = api.injectEndpoints({
+export const adminUserSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllLecturers: builder.query<any, void>({
       query: () => ({
@@ -24,7 +24,7 @@ export const userSlice = api.injectEndpoints({
     }),
     createNewUser: builder.mutation<any, any>({
       query: (payload) => ({
-        url: "admin/users",
+        url: "/admin/users",
         method: "POST",
         body: payload,
       }),
@@ -32,30 +32,22 @@ export const userSlice = api.injectEndpoints({
     }),
     getUser: builder.query<any, string>({
       query: (userId) => ({
-        url: `admin/${userId}`,
+        url: `/admin/${userId}`,
       }),
       providesTags: ["lecturer", "user"],
     }),
     updateUserDetails: builder.mutation<any, any>({
       //TODO: Add type
       query: (id) => ({
-        url: `admin/${id}`,
+        url: `/admin/${id}`,
         method: "POST",
       }),
       invalidatesTags: ["admin", "result"],
     }),
-    editStudentResult: builder.mutation<any, any>({
+    deleteUser: builder.mutation<any, any>({
       //TODO: Type for upload student result
       query: (id) => ({
-        url: `lecturer/results/${id}`,
-        method: "PATCH",
-      }),
-      invalidatesTags: ["lecturer", "result"],
-    }),
-    deleteResult: builder.mutation<any, any>({
-      //TODO: Type for upload student result
-      query: (id) => ({
-        url: `lecturer/results/${id}`,
+        url: `/admin/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["lecturer", "result"],
@@ -64,12 +56,11 @@ export const userSlice = api.injectEndpoints({
 });
 
 export const {
-  useGetLecturerProfileQuery,
-  useUpdateLecturerProfileMutation,
-  useGetCoursesAssignedToLecturerQuery,
-  useGetAllResultsForLecturerCoursesQuery,
-  useGetAllResultsUplodedByLecturerQuery,
-  useUploadResultForStudentMutation,
-  useEditStudentResultMutation,
-  useDeleteResultMutation,
-} = lecturerSlice;
+  useGetAllLecturersQuery,
+  useGetAllStudentsQuery,
+  useGetUserQuery,
+  useCreateNewUserMutation,
+  useUpdateUserDetailsMutation,
+  useDeleteUserMutation,
+  useGetAllUsersQuery,
+} = adminUserSlice;
