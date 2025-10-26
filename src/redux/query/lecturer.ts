@@ -1,5 +1,6 @@
 // import { any } from "@/screens/roles/types";
 // import type { AnyResolvedKeyframe } from "framer-motion";
+import type { IStudentDataRoot } from "@/types/lecturer";
 import { api } from "../baseConfig";
 
 export const lecturerSlice = api.injectEndpoints({
@@ -24,7 +25,7 @@ export const lecturerSlice = api.injectEndpoints({
       }),
       providesTags: ["lecturer", "courses"],
     }),
-    getAllResultsForLecturerCourses: builder.query<any, void>({
+    getAllResultsForLecturerCourses: builder.query<IStudentDataRoot, void>({
       query: () => ({
         url: "/lecturer/results/my-course",
       }),

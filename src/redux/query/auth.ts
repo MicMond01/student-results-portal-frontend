@@ -14,7 +14,7 @@ export interface AuthUser {
   role: string;
 }
 
-export interface TUser {
+export interface LoggedInUser {
   user: IUser;
 }
 
@@ -28,7 +28,7 @@ export interface IUser {
 
 export const authenticationSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getLoggedInUser: builder.query<any, void>({
+    getLoggedInUser: builder.query<LoggedInUser, void>({
       query: () => ({
         url: "/auth/myinfo",
       }),

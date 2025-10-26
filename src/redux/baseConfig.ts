@@ -31,6 +31,15 @@ export const api = createApi({
   baseQuery: baseQueryWithReAuth,
 
   reducerPath: "apiPath",
-  tagTypes: ["user", "lecturer", "courses", "result", "admin", "course"],
+  tagTypes: [
+    "user",
+    "lecturer",
+    "courses",
+    "result",
+    "admin",
+    "course",
+    "result",
+    "student",
+  ],
   endpoints: (_builder) => ({}),
 });

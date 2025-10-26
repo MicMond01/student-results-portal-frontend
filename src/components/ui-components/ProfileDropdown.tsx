@@ -1,68 +1,52 @@
 import { LogOut, Settings, User } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { useGetLoggedInUserQuery } from "@/redux/query/auth";
 import { useAppDispatch } from "@/lib/hooks/dispatch-hooks";
 import { exitUser } from "@/redux/slices/auth";
-import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarImage } from "../ui/avatar";
+import {
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "../ui/dropdown-menu";
 
 const ProfileDropdown = () => {
   const dispatch = useAppDispatch();
   const { data } = useGetLoggedInUserQuery();
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <div className="">
+      <DropdownMenuItem className="flex gap-4 items-center">
         <Avatar>
-          {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
-          <AvatarFallback>
-            {data?.first_name.charAt(0)}
-            {data?.last_name.charAt(0)}
-          </AvatarFallback>
+          <AvatarImage src="https://github.com/shadcn.png" />
         </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-44">
-        <DropdownMenuLabel asChild>
-          <div className="flex flex-col">
-            <span className="capitalize">
-              {data?.first_name}{" "}
-              <span className="uppercase">{data?.last_name.charAt(0)}</span>.
-            </span>
-            <span className="text-xs italic text-gray-500 dark:text-gray-400">
-              {data?.roles.map((item) => item.role.name).join(", ")}
-            </span>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            dispatch(exitUser());
-            // window.location.reload();
-          }}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{data?.user?.name}</span>
+          <span className="text-sm">{data?.user?.identifier}</span>
+        </div>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator className=" bg-gray-500" />
+      <DropdownMenuGroup>
+        <DropdownMenuItem className="cursor-pointer hover:bg-gray-200 font-medium">
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile Details</span>
         </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <DropdownMenuItem>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem
+        className="cursor-pointer hover:bg-gray-200 font-medium"
+        onClick={() => {
+          dispatch(exitUser());
+        }}
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        <span>Log out</span>
+      </DropdownMenuItem>
+    </div>
   );
 };
 export default ProfileDropdown;

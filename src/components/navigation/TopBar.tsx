@@ -1,14 +1,21 @@
 // src/components/navigation/Topbar.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
-import { useAuthRole } from "@/context/auth-role";
 import { useSidebar } from "@/context/sidebar";
+import ProfileDropdown from "../ui-components/ProfileDropdown";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 const Topbar: React.FC = () => {
-  const { userName, role } = useAuthRole();
   const { collapsed, setCollapsed, hoverExpand } = useSidebar();
+  const [isOpen, setIsOpen] = useState(false);
 
   const isCollapsed = collapsed && !hoverExpand;
 
@@ -19,7 +26,9 @@ const Topbar: React.FC = () => {
           size="icon"
           variant="ghost"
           className="h-8 w-8 text-[#2b2653] lg:mr-5"
-          onClick={() => (hoverExpand ? null : setCollapsed((v) => !v))}
+          onClick={() => {
+            if (!hoverExpand) setCollapsed(!collapsed);
+          }}
           title={isCollapsed ? "Expand" : "Collapse"}
         >
           <Icon.menu className="h-5 w-5" />
@@ -40,17 +49,34 @@ const Topbar: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <div className="h-9 w-9 overflow-hidden rounded-full ring-2 ring-[#a594f9]">
-            <img
-              alt={userName}
-              src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(
-                userName
-              )}`}
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="hidden text-sm leading-tight md:block">
-            <div className="font-medium text-[#2b2653]">{userName}</div>
-            <div className="text-xs text-[#2b2653]/70 capitalize">{role}</div>
+            <DropdownMenu
+              open={isOpen}
+              onOpenChange={(isOpen) => setIsOpen(isOpen)}
+              modal={false}
+            >
+              <DropdownMenuTrigger>
+                <div onMouseEnter={() => setIsOpen(true)}>
+                  <Avatar>
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
+                  </Avatar>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                sideOffset={10}
+                className="w-full bg-white mr-8 border-none p-4"
+                onMouseLeave={() => setIsOpen(false)}
+                onCloseAutoFocus={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DropdownMenuSeparator />
+
+                <ProfileDropdown />
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
