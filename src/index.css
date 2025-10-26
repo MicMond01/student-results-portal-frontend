@@ -13,6 +13,20 @@ body,
   height: 100%;
 }
 
+@layer base {
+  :root {
+    --background: #e5d9f2; /* white */
+    --foreground: #2b2653;
+    --card: #ffffff;
+    --card-foreground: #cdc1ff;
+    /* ...other vars */
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
 /* Color tokens (if you want to use CSS variables) */
 :root {
   --primary: #7371fc;

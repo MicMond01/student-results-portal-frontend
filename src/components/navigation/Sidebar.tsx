@@ -39,11 +39,30 @@ const Sidebar: React.FC = () => {
         allowedRoles: ["student", "lecturer", "admin"], // added admin too
       },
       {
+        id: "my-students",
+        label: "My Students",
+        icon: <Icon.courses className="h-5 w-5" />,
+        children: [
+          {
+            id: "c1",
+            label: "Students List",
+            to: "/myStudents",
+            allowedRoles: ["admin", "lecturer"],
+          },
+          {
+            id: "c2",
+            label: "Manage Courses",
+            to: "/courses/manage",
+            allowedRoles: ["lecturer"],
+          },
+        ],
+      },
+      {
         id: "students",
         label: "Students",
         to: "/students",
         icon: <Icon.students className="h-5 w-5" />,
-        allowedRoles: ["admin"],
+        allowedRoles: ["lecturer", "admin"],
       },
       {
         id: "courses",

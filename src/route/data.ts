@@ -4,6 +4,7 @@ import { lazy } from "react";
 
 // Lazy imports for code-splitting
 const Dashboard = lazy(() => import("@/screens/dashboard/Overview"));
+const MyStudents = lazy(() => import("@/screens/lecturer-students"));
 const StudentsList = lazy(() => import("@/screens/students/StudentsList"));
 const StudentDetail = lazy(() => import("@/screens/students/StudentDetail"));
 
@@ -51,11 +52,18 @@ const routeData: IRoute[] = [
     allowedRoles: ["student", "admin", "lecturer"],
   },
   {
+    link: "/myStudents",
+    title: "My Students",
+    code: "my-students",
+    component: MyStudents,
+    allowedRoles: ["admin", "lecturer"],
+  },
+  {
     link: "/students",
     title: "Students",
     code: "students",
     component: StudentsList,
-    allowedRoles: ["admin"],
+    allowedRoles: ["admin", "lecturer"],
   },
   {
     link: "/students/:id",

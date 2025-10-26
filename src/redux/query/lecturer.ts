@@ -1,6 +1,9 @@
 // import { any } from "@/screens/roles/types";
 // import type { AnyResolvedKeyframe } from "framer-motion";
-import type { IStudentDataRoot } from "@/types/lecturer";
+import type {
+  ILecturerAnalyticsRoot,
+  IStudentDataRoot,
+} from "@/types/lecturer";
 import { api } from "../baseConfig";
 
 export const lecturerSlice = api.injectEndpoints({
@@ -28,6 +31,12 @@ export const lecturerSlice = api.injectEndpoints({
     getAllResultsForLecturerCourses: builder.query<IStudentDataRoot, void>({
       query: () => ({
         url: "/lecturer/results/my-course",
+      }),
+      providesTags: ["lecturer", "result"],
+    }),
+    getLecturerCoursesAnalytics: builder.query<ILecturerAnalyticsRoot, void>({
+      query: () => ({
+        url: "/lecturer/analytics",
       }),
       providesTags: ["lecturer", "result"],
     }),
@@ -69,6 +78,7 @@ export const {
   useUpdateLecturerProfileMutation,
   useGetCoursesAssignedToLecturerQuery,
   useGetAllResultsForLecturerCoursesQuery,
+  useGetLecturerCoursesAnalyticsQuery,
   useGetAllResultsUplodedByLecturerQuery,
   useUploadResultForStudentMutation,
   useEditStudentResultMutation,
