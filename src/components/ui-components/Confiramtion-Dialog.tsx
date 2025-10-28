@@ -21,14 +21,18 @@ export function ConfirmationDialog({
   title: string;
   description: string;
   action: () => void;
-  triggerLabel?: string;
+  triggerLabel?: string | React.ReactNode;
   confirmLabel?: string;
   isDisabled?: boolean;
 }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="defult">{triggerLabel}</Button>
+        {typeof triggerLabel === "string" ? (
+          <Button className="defult">{triggerLabel}</Button>
+        ) : (
+          triggerLabel
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">

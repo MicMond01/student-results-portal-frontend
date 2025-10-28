@@ -4,6 +4,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { IoTrashBinOutline } from "react-icons/io5";
 import type { IFilteredResult } from "../types";
+import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
 
 // Grade color mapping
 const getGradeColor = (grade: string) => {
@@ -19,7 +20,9 @@ const getGradeColor = (grade: string) => {
 };
 
 export const studentResultsTableHeaders = (
-  navigate: (row: string) => void
+  navigate: (row: string) => void,
+  handleDelete: (id: string) => void,
+  isDeleting: boolean
 ): IHeader<IFilteredResult>[] => [
   {
     title: "Student Name",
@@ -95,7 +98,7 @@ export const studentResultsTableHeaders = (
   },
   {
     title: "Action",
-    key: "action",
+    key: "updatedAt",
     thClass: "text-center",
 
     cell: (row) => (
@@ -110,7 +113,13 @@ export const studentResultsTableHeaders = (
           <FaEdit />
         </div>
         <div className="rounded-full p-2 text-red-600 bg-red-100  text-muted hover:bg-muted cursor-pointer">
-          <IoTrashBinOutline />
+          <ConfirmationDialog
+            title="Confirm Delete"
+            description="Are you sure you want to delete this student result? "
+            action={handleDelete.bind(null, row._id)}
+            triggerLabel={<IoTrashBinOutline />}
+            confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}
+          />
         </div>
       </div>
     ),

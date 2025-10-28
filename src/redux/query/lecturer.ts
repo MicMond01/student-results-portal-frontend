@@ -49,9 +49,10 @@ export const lecturerSlice = api.injectEndpoints({
     }),
     uploadResultForStudent: builder.mutation<any, any>({
       //TODO: Type for upload student result
-      query: () => ({
+      query: (payload) => ({
         url: "/lecturer/results",
         method: "POST",
+        body: payload,
       }),
       invalidatesTags: ["lecturer", "result"],
     }),

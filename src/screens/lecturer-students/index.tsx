@@ -3,14 +3,19 @@ import Banner from "@/components/ui-components/Banner";
 import { useState, useMemo } from "react";
 import { PiStudentBold } from "react-icons/pi";
 import StudentsFilters from "./table-config/students-filters";
-import { useGetAllResultsForLecturerCoursesQuery } from "@/redux/query/lecturer";
+import {
+  useDeleteResultMutation,
+  useGetAllResultsForLecturerCoursesQuery,
+} from "@/redux/query/lecturer";
 import { DOWNLOADABLE } from "@/components/table/types";
 import type { IFilterState } from "./types";
 import { studentResultsTableHeaders } from "./table-config/students-table-headers";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const LecturerStudents: React.FC = () => {
   const { data, isLoading } = useGetAllResultsForLecturerCoursesQuery();
+  const [deleteResult, { isLoading: isDeleting }] = useDeleteResultMutation();
 
   const navigate = useNavigate();
 
@@ -98,15 +103,18 @@ const LecturerStudents: React.FC = () => {
     return rows;
   }, [data, filters]);
 
-  const handleRowClick = (row: any) => {
-    // console.log("Clicked row:", row);
-    // Navigate to student detail page or open modal
-    // navigate(`/lecturer/students/${row.studentId}`);
-  };
-
   const handleDownloadXlsx = (rows: any[]) => {
     console.log("Download data:", rows);
     // Implement XLSX download logic
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteResult(id).unwrap();
+      toast.success("Result deleted successfully");
+    } catch (error) {
+      toast.error("Error deleting result");
+    }
   };
 
   return (
@@ -128,10 +136,9 @@ const LecturerStudents: React.FC = () => {
 
       {/* Table */}
       <Table
-        header={studentResultsTableHeaders(navigate)}
+        header={studentResultsTableHeaders(navigate, handleDelete, isDeleting)}
         isLoading={isLoading}
         rows={filteredRows}
-        onRowClick={handleRowClick}
         downloadables={[DOWNLOADABLE.XLSX, DOWNLOADABLE.PDF]}
         onDownloadXlsx={handleDownloadXlsx}
         id="_id"

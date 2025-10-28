@@ -11,6 +11,16 @@ import type { Dispatch, SetStateAction } from "react";
 import { MdOutlineLockReset } from "react-icons/md";
 import type { IFilterState } from "../types";
 import { SearchInput } from "@/components/ui-components/SearchInput";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import {
+  useGetCoursesAssignedToLecturerQuery,
+  useUploadResultForStudentMutation,
+} from "@/redux/query/lecturer";
+import { toast } from "sonner";
+import {
+  CreateResultDialog,
+  type ResultFormData,
+} from "@/components/ui-components/CreateResultDialog";
 
 interface IStudentsFilters {
   filters: IFilterState;
@@ -21,6 +31,26 @@ interface IStudentsFilters {
 
 const StudentsFilters = (props: IStudentsFilters) => {
   const { filters, setFilters, sessions, courses } = props;
+  const { data: coursesData } = useGetCoursesAssignedToLecturerQuery();
+
+  // Mutation for creating result
+  const [uploadResult, { isLoading }] = useUploadResultForStudentMutation();
+
+  const handleCreateResult = async (data: ResultFormData) => {
+    const toastId = toast.loading("Creating result...");
+
+    try {
+      await uploadResult(data).unwrap();
+      console.log(data);
+      toast.success("Result created successfully!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.msg || "Failed to create result", {
+        id: toastId,
+      });
+      console.log(error.data.msg);
+      throw error; // Re-throw to prevent dialog from closing
+    }
+  };
 
   return (
     <div className="shadow-sm bg-background px-5 py-5 rounded-lg mb-5">
@@ -28,7 +58,6 @@ const StudentsFilters = (props: IStudentsFilters) => {
         <span>Filter Student Results</span>
       </div>
       <form className="grid grid-cols-1 md:grid-cols-5 gap-5 relative items-center">
-        {/* Search by Student Name/Matric */}
         <SearchInput
           type="text"
           placeholder="Search student name or matric..."
@@ -98,6 +127,20 @@ const StudentsFilters = (props: IStudentsFilters) => {
         >
           <MdOutlineLockReset className="size-4 mr-2" /> Reset
         </Button>
+
+        <div className="">
+          <Button className="text-primary-3 bg-primary-4 flex items-center gap-2 mx-auto">
+            <IoMdAddCircleOutline /> Create New Result
+          </Button>
+
+          <CreateResultDialog
+            courses={coursesData?.courses || []}
+            onSubmit={handleCreateResult}
+            isLoading={isLoading}
+            triggerLabel="Add Result"
+            defaultSession={filters.session}
+          />
+        </div>
 
         {/* Active Filters Display */}
         {(filters.session || filters.courseCode || filters.studentName) && (
