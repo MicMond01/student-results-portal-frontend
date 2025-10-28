@@ -41,6 +41,7 @@ const Table = <T extends Record<string, any>>(props: ITable<T>) => {
       setChecked((prev) => prev.filter((x) => x !== uuid));
     } else setChecked((prev) => [...prev, uuid]);
   };
+  //spotify ads dey clear pass song for free plan
 
   return (
     <div>
@@ -92,7 +93,7 @@ const Table = <T extends Record<string, any>>(props: ITable<T>) => {
           <tbody>
             {rows.slice(pag.start, pag.end).map((row, rowIndex) => (
               <tr
-                className={cn("hover:bg-primary/10 cursor-pointer border-b")}
+                className={cn("hover:bg-primary-3 cursor-pointer border-b")}
                 key={rowIndex}
                 onClick={() => onRowClick && onRowClick(row)}
               >

@@ -23,7 +23,7 @@ const StudentsFilters = (props: IStudentsFilters) => {
   const { filters, setFilters, sessions, courses } = props;
 
   return (
-    <div className="shadow-sm bg-[#dcd2e7] px-5 py-5 rounded-lg mb-5">
+    <div className="shadow-sm bg-background px-5 py-5 rounded-lg mb-5">
       <div className="text-sm my-2 font-semibold">
         <span>Filter Student Results</span>
       </div>
@@ -48,9 +48,9 @@ const StudentsFilters = (props: IStudentsFilters) => {
           <SelectTrigger className="w-full">
             <SelectValue placeholder="All Sessions" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background border-border cursor-pointer">
             <SelectGroup>
-              {/* <SelectItem value="">All Sessions</SelectItem> */}
+              {/* <SelectItem value="as">All Sessions</SelectItem> */}
               {sessions.map((session) => (
                 <SelectItem key={session} value={session}>
                   {session}
@@ -70,11 +70,15 @@ const StudentsFilters = (props: IStudentsFilters) => {
           <SelectTrigger className="w-full">
             <SelectValue placeholder="All Courses" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background border-border">
             <SelectGroup>
               {/* <SelectItem value="">All Courses</SelectItem> */}
               {courses.map((course) => (
-                <SelectItem key={course.code} value={course.code}>
+                <SelectItem
+                  className="cursor-pointer"
+                  key={course.code}
+                  value={course.code}
+                >
                   {course.code} - {course.title}
                 </SelectItem>
               ))}
@@ -85,7 +89,7 @@ const StudentsFilters = (props: IStudentsFilters) => {
         {/* Reset Button */}
         <Button
           onClick={() =>
-            setFilters({ studentName: "", session: "", courseCode: "" })
+            setFilters({ studentName: "", session: "", courseCode: "DSD022" })
           }
           className="max-w-[120px]"
           size="sm"

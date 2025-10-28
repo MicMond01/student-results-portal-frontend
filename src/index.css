@@ -13,27 +13,23 @@ body,
   height: 100%;
 }
 
-@layer base {
-  :root {
-    --background: #e5d9f2; /* white */
-    --foreground: #2b2653;
-    --card: #ffffff;
-    --card-foreground: #cdc1ff;
-    /* ...other vars */
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+@theme {
+  --color-background: #e5d9f2;
+  --color-foreground: #2b2653;
+  --color-card: #ffffff;
+  --color-card-foreground: #36013f;
+  --color-primary: #7371fc;
+  --color-primary-2: #a594f9;
+  --color-primary-3: #cdc1ff;
+  --color-primary-4: #36013f;
+  --color-bg-1: #f5efff;
+  --color-bg-2: #e5d9f2;
+  --color-border: #cdc1ff;
 }
 
-/* Color tokens (if you want to use CSS variables) */
-:root {
-  --primary: #7371fc;
-  --primary-2: #a594f9;
-  --primary-3: #cdc1ff;
-  --bg-1: #f5efff;
-  --bg-2: #e5d9f2;
+/* Now you can use bg-background */
+body {
+  background-color: var(--color-background);
 }
 
 .loader {

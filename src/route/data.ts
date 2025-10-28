@@ -6,7 +6,9 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("@/screens/dashboard/Overview"));
 const MyStudents = lazy(() => import("@/screens/lecturer-students"));
 const StudentsList = lazy(() => import("@/screens/students/StudentsList"));
-const StudentDetail = lazy(() => import("@/screens/students/StudentDetail"));
+const StudentDetail = lazy(
+  () => import("@/screens/lecturer-students/StudentDetail")
+);
 
 export type IRoute = {
   link: string;
@@ -59,17 +61,18 @@ const routeData: IRoute[] = [
     allowedRoles: ["admin", "lecturer"],
   },
   {
+    link: "/myStudents/:id",
+    title: "Student Detail",
+    code: "student-detail",
+    component: StudentDetail,
+    allowedRoles: ["admin", "lecturer"],
+  },
+  {
     link: "/students",
     title: "Students",
     code: "students",
     component: StudentsList,
     allowedRoles: ["admin", "lecturer"],
-  },
-  {
-    link: "/students/:id",
-    title: "Student Detail",
-    code: "student-detail",
-    component: StudentDetail,
   },
 ];
 export { routeData, authRouteData };

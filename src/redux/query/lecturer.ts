@@ -5,6 +5,7 @@ import type {
   IStudentDataRoot,
 } from "@/types/lecturer";
 import { api } from "../baseConfig";
+import type { IStudentResultWithProfile } from "@/screens/lecturer-students/types";
 
 export const lecturerSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,7 +31,7 @@ export const lecturerSlice = api.injectEndpoints({
     }),
     getAllResultsForLecturerCourses: builder.query<IStudentDataRoot, void>({
       query: () => ({
-        url: "/lecturer/results/my-course",
+        url: "/lecturer/course-results",
       }),
       providesTags: ["lecturer", "result"],
     }),
@@ -54,11 +55,19 @@ export const lecturerSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["lecturer", "result"],
     }),
-    editStudentResult: builder.mutation<any, any>({
+    getResultWithStudentInfo: builder.query<IStudentResultWithProfile, any>({
       //TODO: Type for upload student result
       query: (id) => ({
         url: `/lecturer/results/${id}`,
+      }),
+      providesTags: ["lecturer", "result"],
+    }),
+    editStudentResult: builder.mutation<any, any>({
+      //TODO: Type for upload student result
+      query: ({ id, data }) => ({
+        url: `/lecturer/results/${id}`,
         method: "PATCH",
+        body: data,
       }),
       invalidatesTags: ["lecturer", "result"],
     }),
@@ -82,5 +91,6 @@ export const {
   useGetAllResultsUplodedByLecturerQuery,
   useUploadResultForStudentMutation,
   useEditStudentResultMutation,
+  useGetResultWithStudentInfoQuery,
   useDeleteResultMutation,
 } = lecturerSlice;

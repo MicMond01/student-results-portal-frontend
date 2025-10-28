@@ -7,14 +7,17 @@ import { useGetAllResultsForLecturerCoursesQuery } from "@/redux/query/lecturer"
 import { DOWNLOADABLE } from "@/components/table/types";
 import type { IFilterState } from "./types";
 import { studentResultsTableHeaders } from "./table-config/students-table-headers";
+import { useNavigate } from "react-router-dom";
 
 const LecturerStudents: React.FC = () => {
   const { data, isLoading } = useGetAllResultsForLecturerCoursesQuery();
 
+  const navigate = useNavigate();
+
   const [filters, setFilters] = useState<IFilterState>({
     studentName: "",
-    session: "",
-    courseCode: "",
+    session: "2024/2025",
+    courseCode: "DSD022",
   });
 
   // Extract unique sessions and courses for filter options
@@ -96,7 +99,7 @@ const LecturerStudents: React.FC = () => {
   }, [data, filters]);
 
   const handleRowClick = (row: any) => {
-    console.log("Clicked row:", row);
+    // console.log("Clicked row:", row);
     // Navigate to student detail page or open modal
     // navigate(`/lecturer/students/${row.studentId}`);
   };
@@ -125,7 +128,7 @@ const LecturerStudents: React.FC = () => {
 
       {/* Table */}
       <Table
-        header={studentResultsTableHeaders()}
+        header={studentResultsTableHeaders(navigate)}
         isLoading={isLoading}
         rows={filteredRows}
         onRowClick={handleRowClick}

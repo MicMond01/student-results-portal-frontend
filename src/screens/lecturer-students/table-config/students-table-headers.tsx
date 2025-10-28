@@ -1,5 +1,9 @@
 import type { IHeader } from "@/components/table/types";
 import { Badge } from "@/components/ui/badge";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { IoTrashBinOutline } from "react-icons/io5";
+import type { IFilteredResult } from "../types";
 
 // Grade color mapping
 const getGradeColor = (grade: string) => {
@@ -14,7 +18,9 @@ const getGradeColor = (grade: string) => {
   return colors[grade] || "bg-gray-100 text-gray-800";
 };
 
-export const studentResultsTableHeaders = (): IHeader<any>[] => [
+export const studentResultsTableHeaders = (
+  navigate: (row: string) => void
+): IHeader<IFilteredResult>[] => [
   {
     title: "Student Name",
     key: "studentName",
@@ -88,9 +94,25 @@ export const studentResultsTableHeaders = (): IHeader<any>[] => [
     ),
   },
   {
-    title: "Credit Unit",
-    key: "creditUnit",
+    title: "Action",
+    key: "action",
     thClass: "text-center",
-    cell: (row) => <div className="text-center">{row.creditUnit}</div>,
+
+    cell: (row) => (
+      <div className="flex justify-center gap-4">
+        <div
+          onClick={() => navigate(row._id)}
+          className="rounded-full text-primary p-2 bg-primary-3 text-muted hover:bg-muted  cursor-pointer"
+        >
+          <MdOutlineRemoveRedEye />
+        </div>
+        <div className="rounded-full p-2 text-green-600 bg-green-100  text-muted hover:bg-muted cursor-pointer">
+          <FaEdit />
+        </div>
+        <div className="rounded-full p-2 text-red-600 bg-red-100  text-muted hover:bg-muted cursor-pointer">
+          <IoTrashBinOutline />
+        </div>
+      </div>
+    ),
   },
 ];
