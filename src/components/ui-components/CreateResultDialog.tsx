@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Save, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { IoMdAddCircleOutline } from "react-icons/io";
 
 interface CreateResultDialogProps {
   courses?: Array<{ _id: string; code: string; title: string }>;
@@ -138,9 +139,11 @@ export function CreateResultDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={triggerVariant} className={triggerClassName}>
-          <Plus className="mr-2 h-4 w-4" />
-          {triggerLabel}
+        <Button
+          className="text-primary-3 bg-primary-4 flex items-center gap-2 mx-auto"
+          variant={triggerVariant}
+        >
+          <IoMdAddCircleOutline /> {triggerLabel}
         </Button>
       </DialogTrigger>
 
@@ -208,7 +211,7 @@ export function CreateResultDialog({
                     >
                       <SelectValue placeholder="Select a course" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-bg-2">
                       {courses.length === 0 ? (
                         <SelectItem value="no-courses" disabled>
                           No courses available

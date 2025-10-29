@@ -52,6 +52,14 @@ const StudentsFilters = (props: IStudentsFilters) => {
     }
   };
 
+  const HandleAddResult = () => {
+    return (
+      <Button className="text-primary-3 bg-primary-4 flex items-center gap-2 mx-auto">
+        <IoMdAddCircleOutline /> Create New Result
+      </Button>
+    );
+  };
+
   return (
     <div className="shadow-sm bg-background px-5 py-5 rounded-lg mb-5">
       <div className="text-sm my-2 font-semibold">
@@ -129,10 +137,6 @@ const StudentsFilters = (props: IStudentsFilters) => {
         </Button>
 
         <div className="">
-          <Button className="text-primary-3 bg-primary-4 flex items-center gap-2 mx-auto">
-            <IoMdAddCircleOutline /> Create New Result
-          </Button>
-
           <CreateResultDialog
             courses={coursesData?.courses || []}
             onSubmit={handleCreateResult}
