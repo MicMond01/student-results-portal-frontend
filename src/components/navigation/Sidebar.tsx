@@ -20,7 +20,9 @@ const Sidebar: React.FC = () => {
       try {
         const res = await getAuthUser().unwrap();
         if (res && res.user?.role) {
-          setUserRole(res.user.role);
+          if (["admin", "lecturer", "student"].includes(res.user.role)) {
+            setUserRole(res.user.role as "admin" | "lecturer" | "student");
+          }
         }
       } catch (err) {
         console.error("Failed to fetch logged-in user:", err);
@@ -44,15 +46,34 @@ const Sidebar: React.FC = () => {
         icon: <Icon.courses className="h-5 w-5" />,
         children: [
           {
-            id: "c1",
+            id: "my1",
             label: "Students List",
             to: "/myStudents",
             allowedRoles: ["admin", "lecturer"],
           },
           {
-            id: "c2",
+            id: "my2",
             label: "Manage Courses",
             to: "/courses/manage",
+            allowedRoles: ["lecturer"],
+          },
+        ],
+      },
+      {
+        id: "lecturer-profile",
+        label: "Lecturer Profile",
+        icon: <Icon.courses className="h-5 w-5" />,
+        children: [
+          {
+            id: "l1",
+            label: "Profile",
+            to: "/profile",
+            allowedRoles: ["lecturer"],
+          },
+          {
+            id: "l2",
+            label: "Update Profile",
+            to: "/profile/update",
             allowedRoles: ["lecturer"],
           },
         ],
@@ -140,9 +161,9 @@ const Sidebar: React.FC = () => {
     >
       <div className="flex items-center justify-between px-3 py-3">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-[#7371fc]" />
+          <div className="h-8 w-8 rounded-lg bg-primary" />
           {!isCollapsed && (
-            <span className="text-sm font-semibold text-[#2b2653]">
+            <span className="text-sm font-semibold text-foreground">
               School Admin
             </span>
           )}

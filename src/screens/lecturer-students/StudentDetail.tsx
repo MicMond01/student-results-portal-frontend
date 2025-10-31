@@ -61,9 +61,6 @@ const StudentDetail = () => {
   const handleSave = async () => {
     const toastId = toast.loading("Updating result...");
 
-    // if (!selectedResult) return;
-    console.log("Result ID:", resultId);
-
     try {
       await editStudentResult({
         id: resultId,
@@ -98,14 +95,6 @@ const StudentDetail = () => {
   if (isLoading) {
     return <LoadingSkeleton />;
   }
-
-  // if (!selectedResult) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <p className="text-muted-foreground">Result not found</p>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="">

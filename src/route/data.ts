@@ -6,6 +6,10 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("@/screens/dashboard/Overview"));
 const MyStudents = lazy(() => import("@/screens/lecturer-students"));
 const StudentsList = lazy(() => import("@/screens/students/StudentsList"));
+const LecturerProfile = lazy(() => import("@/screens/lecturer-profile/index"));
+const UpdateProfile = lazy(
+  () => import("@/screens/lecturer-profile/UpdateProfile")
+);
 const StudentDetail = lazy(
   () => import("@/screens/lecturer-students/StudentDetail")
 );
@@ -66,6 +70,20 @@ const routeData: IRoute[] = [
     code: "student-detail",
     component: StudentDetail,
     allowedRoles: ["admin", "lecturer"],
+  },
+  {
+    link: "/profile",
+    title: "User Profile",
+    code: "user-profile",
+    component: LecturerProfile,
+    allowedRoles: ["lecturer"],
+  },
+  {
+    link: "/profile/update",
+    title: "Update Profile",
+    code: "edit-profile",
+    component: UpdateProfile,
+    allowedRoles: ["lecturer"],
   },
   {
     link: "/students",

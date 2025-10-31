@@ -87,3 +87,9 @@ export interface IBySession {
   students: number;
   gradeDistribution: IGradeDistribution;
 }
+
+export interface PasswordFormData {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

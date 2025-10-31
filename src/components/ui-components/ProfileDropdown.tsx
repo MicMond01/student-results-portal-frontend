@@ -9,8 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
+import UserImage from "../../assets/user.jpeg";
+import { useNavigate } from "react-router-dom";
 
 const ProfileDropdown = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data } = useGetLoggedInUserQuery();
 
@@ -18,7 +21,7 @@ const ProfileDropdown = () => {
     <div className="">
       <DropdownMenuItem className="flex gap-4 items-center">
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={UserImage} />
         </Avatar>
         <div className="flex flex-col">
           <span className="text-sm font-medium">{data?.user?.name}</span>
@@ -27,7 +30,10 @@ const ProfileDropdown = () => {
       </DropdownMenuItem>
       <DropdownMenuSeparator className=" bg-gray-500" />
       <DropdownMenuGroup>
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-200 font-medium">
+        <DropdownMenuItem
+          onClick={() => navigate("/profile")}
+          className="cursor-pointer hover:bg-gray-200 font-medium"
+        >
           <User className="mr-2 h-4 w-4" />
           <span>Profile Details</span>
         </DropdownMenuItem>

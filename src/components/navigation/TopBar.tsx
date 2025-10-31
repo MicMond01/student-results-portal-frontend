@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import UserImage from "../../assets/user.jpeg";
 
 const Topbar: React.FC = () => {
   const { collapsed, setCollapsed, hoverExpand } = useSidebar();
@@ -57,10 +58,7 @@ const Topbar: React.FC = () => {
               <DropdownMenuTrigger>
                 <div onMouseEnter={() => setIsOpen(true)}>
                   <Avatar>
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
+                    <AvatarImage src={UserImage} alt="@shadcn" />
                   </Avatar>
                 </div>
               </DropdownMenuTrigger>

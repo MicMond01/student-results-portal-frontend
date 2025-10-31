@@ -3,13 +3,15 @@
 import type {
   ILecturerAnalyticsRoot,
   IStudentDataRoot,
+  PasswordFormData,
 } from "@/types/lecturer";
 import { api } from "../baseConfig";
 import type { IStudentResultWithProfile } from "@/screens/lecturer-students/types";
+import type { ILecturerProfile } from "@/screens/lecturer-profile/type";
 
 export const lecturerSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getLecturerProfile: builder.query<any, void>({
+    getLecturerProfile: builder.query<ILecturerProfile, void>({
       query: () => ({
         url: "/lecturer/profile",
       }),
@@ -72,6 +74,22 @@ export const lecturerSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["lecturer", "result"],
     }),
+    updateProfilePhoto: builder.mutation<any, { profilePhoto: string }>({
+      query: (data) => ({
+        url: "/lecturer/profile/photo",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["lecturer"],
+    }),//    
+
+    changePassword: builder.mutation<any, PasswordFormData>({
+      query: (data) => ({
+        url: "/lecturer/profile/change-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
     deleteResult: builder.mutation<any, any>({
       //TODO: Type for upload student result
       query: (id) => ({
@@ -90,6 +108,8 @@ export const {
   useGetAllResultsForLecturerCoursesQuery,
   useGetLecturerCoursesAnalyticsQuery,
   useGetAllResultsUplodedByLecturerQuery,
+  useUpdateProfilePhotoMutation,
+  useChangePasswordMutation,
   useUploadResultForStudentMutation,
   useEditStudentResultMutation,
   useGetResultWithStudentInfoQuery,
