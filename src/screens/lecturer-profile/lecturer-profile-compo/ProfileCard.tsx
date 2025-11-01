@@ -8,29 +8,11 @@ import {
   useUpdateProfilePhotoMutation,
 } from "@/redux/query/lecturer";
 import { Camera } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
 
 const ProfileCard = () => {
   const { data: lecturerData } = useGetLecturerProfileQuery();
-  const [updatePhoto, { isLoading: isUpdatingPhoto }] =
-    useUpdateProfilePhotoMutation();
-
-  //   const [currentProfilePhoto, setCurrentProfilePhoto] = useState(
-  //     lecturer.profilePhoto
-  //   );
-
-  //   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const file = event.target.files?.[0];
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onloadend = () => {
-  //         setCurrentProfilePhoto(reader.result as string);
-  //         onProfilePhotoChange(file); // Pass the File object up to the parent
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   };
+  const [updatePhoto] = useUpdateProfilePhotoMutation();
 
   const handleUpdatePhoto = async (photoUrl: string) => {
     const toastId = toast.loading("Updating photo...");

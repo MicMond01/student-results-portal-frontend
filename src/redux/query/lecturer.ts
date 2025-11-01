@@ -2,6 +2,7 @@
 // import type { AnyResolvedKeyframe } from "framer-motion";
 import type {
   ILecturerAnalyticsRoot,
+  ILecturerCourses,
   IStudentDataRoot,
   PasswordFormData,
 } from "@/types/lecturer";
@@ -11,13 +12,13 @@ import type { ILecturerProfile } from "@/screens/lecturer-profile/type";
 
 export const lecturerSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getLecturerProfile: builder.query<ILecturerProfile, void>({
+    getLecturerProfile: builder.query<ILecturerProfile, void>({//Done 
       query: () => ({
         url: "/lecturer/profile",
       }),
       providesTags: ["lecturer"],
     }),
-    updateLecturerProfile: builder.mutation<any, any>({
+    updateLecturerProfile: builder.mutation<any, any>({ //Done 
       query: (payload) => ({
         url: "/lecturer/profile",
         method: "PATCH",
@@ -25,19 +26,19 @@ export const lecturerSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["lecturer"],
     }),
-    getCoursesAssignedToLecturer: builder.query<any, void>({
+    getCoursesAssignedToLecturer: builder.query<ILecturerCourses, void>({
       query: () => ({
         url: "/lecturer/courses",
       }),
       providesTags: ["lecturer", "courses"],
     }),
-    getAllResultsForLecturerCourses: builder.query<IStudentDataRoot, void>({
+    getAllResultsForLecturerCourses: builder.query<IStudentDataRoot, void>({//Done 
       query: () => ({
         url: "/lecturer/course-results",
       }),
       providesTags: ["lecturer", "result"],
     }),
-    getLecturerCoursesAnalytics: builder.query<ILecturerAnalyticsRoot, void>({
+    getLecturerCoursesAnalytics: builder.query<ILecturerAnalyticsRoot, void>({//Done 
       query: () => ({
         url: "/lecturer/analytics",
       }),
@@ -49,7 +50,7 @@ export const lecturerSlice = api.injectEndpoints({
       }),
       providesTags: ["lecturer", "result"],
     }),
-    uploadResultForStudent: builder.mutation<any, any>({
+    uploadResultForStudent: builder.mutation<any, any>({//Done 
       //TODO: Type for upload student result
       query: (payload) => ({
         url: "/lecturer/results",
@@ -58,14 +59,14 @@ export const lecturerSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["lecturer", "result"],
     }),
-    getResultWithStudentInfo: builder.query<IStudentResultWithProfile, any>({
+    getResultWithStudentInfo: builder.query<IStudentResultWithProfile, any>({//Done 
       //TODO: Type for upload student result
       query: (id) => ({
         url: `/lecturer/results/${id}`,
       }),
       providesTags: ["lecturer", "result"],
     }),
-    editStudentResult: builder.mutation<any, any>({
+    editStudentResult: builder.mutation<any, any>({//Done 
       //TODO: Type for upload student result
       query: ({ id, data }) => ({
         url: `/lecturer/results/${id}`,
@@ -81,16 +82,16 @@ export const lecturerSlice = api.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["lecturer"],
-    }),//    
+    }), //
 
-    changePassword: builder.mutation<any, PasswordFormData>({
+    changePassword: builder.mutation<any, PasswordFormData>({//Done 
       query: (data) => ({
         url: "/lecturer/profile/change-password",
-        method: "POST",
+        method: "PATCH",
         body: data,
       }),
     }),
-    deleteResult: builder.mutation<any, any>({
+    deleteResult: builder.mutation<any, any>({//Done 
       //TODO: Type for upload student result
       query: (id) => ({
         url: `/lecturer/results/${id}`,

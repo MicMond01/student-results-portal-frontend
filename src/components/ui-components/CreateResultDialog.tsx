@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,9 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Save, X } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { toast } from "sonner";
 
 interface CreateResultDialogProps {
   courses?: Array<{ _id: string; code: string; title: string }>;
@@ -30,11 +31,12 @@ interface CreateResultDialogProps {
   triggerClassName?: string;
   isLoading?: boolean;
   defaultSession: string;
+  defaultCourse: string;
 }
 
 export interface ResultFormData {
-  student: string; // Student identifier/matric number
-  course: string; // Course ID
+  student: string;
+  course: string;
   ca: number;
   exam: number;
   semester: string;
@@ -64,28 +66,36 @@ export function CreateResultDialog({
   onSubmit,
   triggerLabel = "Create Result",
   triggerVariant = "default",
-  triggerClassName = "",
   isLoading: externalLoading = false,
   defaultSession,
+  defaultCourse,
 }: CreateResultDialogProps) {
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState<ResultFormData>({
-    ...initialFormState,
-    session: defaultSession,
-  });
   const [errors, setErrors] = useState<
     Partial<Record<keyof ResultFormData, string>>
   >({});
+
+  const initialForm = useMemo(() => {
+    return {
+      ...initialFormState,
+      course: defaultCourse || "",
+      session: defaultSession || "",
+    };
+  }, [defaultCourse, defaultSession]);
+
+  const [formData, setFormData] = useState<ResultFormData>(initialForm);
+
+  const handleOpenChange = (state: boolean) => {
+    setOpen(state);
+    if (state) setFormData(initialForm);
+  };
 
   const handleInputChange = (
     field: keyof ResultFormData,
     value: string | number
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const validateForm = (): boolean => {
@@ -121,9 +131,10 @@ export function CreateResultDialog({
       await onSubmit(formData);
       setOpen(false);
       setFormData(initialFormState);
+
       setErrors({});
-    } catch (error) {
-      console.error("Error creating result:", error);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Submit Form");
     }
   };
 
@@ -137,7 +148,7 @@ export function CreateResultDialog({
   const isLoading = externalLoading;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           className="text-primary-3 bg-primary-4 flex items-center gap-2 mx-auto"

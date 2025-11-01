@@ -104,7 +104,7 @@ const LecturerStudents: React.FC = () => {
   }, [data, filters]);
 
   const handleDownloadXlsx = (rows: any[]) => {
-    console.log("Download data:", rows);
+    // console.log("Download data:", rows);
     // Implement XLSX download logic
   };
 

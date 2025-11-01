@@ -5,8 +5,10 @@ import { Separator } from "@/components/ui/separator";
 import { Edit } from "lucide-react";
 import userImageBackgrond from "../../../assets/user-grid-bg8.png";
 import type { ILecturerData } from "../type";
+import { useNavigate } from "react-router-dom";
 
 const ProfileHeader: React.FC<{ lecturer: ILecturerData }> = ({ lecturer }) => {
+  const navigate = useNavigate();
   return (
     <Card className="overflow-hidden border-0">
       {/* Cover Photo */}
@@ -34,7 +36,11 @@ const ProfileHeader: React.FC<{ lecturer: ILecturerData }> = ({ lecturer }) => {
 
         {/* Action Buttons */}
         <div className="mt-4 flex justify-center space-x-2 sm:mt-0">
-          <Button className="text-primary-3 bg-primary-4" size="sm">
+          <Button
+            className="text-primary-3 bg-primary-4"
+            size="sm"
+            onClick={() => navigate("/profile/update")}
+          >
             <Edit className="mr-2 h-4 w-4 " />
             Edit Profile
           </Button>

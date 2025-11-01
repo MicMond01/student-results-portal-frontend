@@ -10,6 +10,9 @@ const LecturerProfile = lazy(() => import("@/screens/lecturer-profile/index"));
 const UpdateProfile = lazy(
   () => import("@/screens/lecturer-profile/UpdateProfile")
 );
+const LecturerCourses = lazy(
+  () => import("@/screens/lecturer-course/lecturer-courses/index")
+);
 const StudentDetail = lazy(
   () => import("@/screens/lecturer-students/StudentDetail")
 );
@@ -83,6 +86,13 @@ const routeData: IRoute[] = [
     title: "Update Profile",
     code: "edit-profile",
     component: UpdateProfile,
+    allowedRoles: ["lecturer"],
+  },
+  {
+    link: "/courses",
+    title: "lecturer-courses",
+    code: "lecturer-courses",
+    component: LecturerCourses,
     allowedRoles: ["lecturer"],
   },
   {

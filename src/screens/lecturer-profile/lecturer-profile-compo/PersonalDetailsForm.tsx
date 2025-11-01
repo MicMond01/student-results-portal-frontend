@@ -22,6 +22,7 @@ import {
   useUpdateLecturerProfileMutation,
 } from "@/redux/query/lecturer";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileFormData {
   fullName: string;
@@ -34,6 +35,7 @@ const PersonalDetailsForm = () => {
   const [updateProfile, { isLoading: isUpdatingProfile }] =
     useUpdateLecturerProfileMutation();
   const { data: profileData } = useGetLecturerProfileQuery();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -79,7 +81,6 @@ const PersonalDetailsForm = () => {
     }
   };
 
-  console.log(formData.gender);
   return (
     <Card>
       <CardHeader>
@@ -125,7 +126,7 @@ const PersonalDetailsForm = () => {
               <SelectTrigger>
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-bg-2 border-0">
                 <SelectItem value="male">Male</SelectItem>
                 <SelectItem value="female">Female</SelectItem>
               </SelectContent>
@@ -134,7 +135,7 @@ const PersonalDetailsForm = () => {
         </div>
 
         <div className="flex justify-end space-x-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => navigate(-1)}>
             <Ban className="mr-2 h-4 w-4" />
             Cancel
           </Button>

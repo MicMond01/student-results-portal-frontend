@@ -7,11 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { MdOutlineLockReset } from "react-icons/md";
 import type { IFilterState } from "../types";
 import { SearchInput } from "@/components/ui-components/SearchInput";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import {
   useGetCoursesAssignedToLecturerQuery,
   useUploadResultForStudentMutation,
@@ -33,8 +32,11 @@ const StudentsFilters = (props: IStudentsFilters) => {
   const { filters, setFilters, sessions, courses } = props;
   const { data: coursesData } = useGetCoursesAssignedToLecturerQuery();
 
-  // Mutation for creating result
   const [uploadResult, { isLoading }] = useUploadResultForStudentMutation();
+
+  const currentCourse =
+    coursesData?.courses?.find((course) => course.code === filters.courseCode)
+      ?._id || "";
 
   const handleCreateResult = async (data: ResultFormData) => {
     const toastId = toast.loading("Creating result...");
@@ -48,16 +50,8 @@ const StudentsFilters = (props: IStudentsFilters) => {
         id: toastId,
       });
       console.log(error.data.msg);
-      throw error; // Re-throw to prevent dialog from closing
+      throw error;
     }
-  };
-
-  const HandleAddResult = () => {
-    return (
-      <Button className="text-primary-3 bg-primary-4 flex items-center gap-2 mx-auto">
-        <IoMdAddCircleOutline /> Create New Result
-      </Button>
-    );
   };
 
   return (
@@ -143,6 +137,7 @@ const StudentsFilters = (props: IStudentsFilters) => {
             isLoading={isLoading}
             triggerLabel="Add Result"
             defaultSession={filters.session}
+            defaultCourse={currentCourse}
           />
         </div>
 
