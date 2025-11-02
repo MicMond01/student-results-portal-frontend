@@ -24,3 +24,12 @@ export const formatDate = (dateString: string) => {
     day: "numeric",
   });
 };
+
+export const formatDuration = (minutes: number) => {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  let s = "";
+  if (h > 0) s += `${h} Hour${h > 1 ? "s" : ""} `;
+  if (m > 0) s += `${m} Minute${m > 1 ? "s" : ""}`;
+  return s.trim() || "N/A";
+};

@@ -1,8 +1,9 @@
+import type { IExamsResponse } from "@/types/exams";
 import { api } from "../baseConfig";
 
 export const lecturerExamSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getExams: builder.query<any, void>({
+    getExams: builder.query<IExamsResponse, void>({
       query: () => ({
         url: "/lecturer/exams",
       }),
