@@ -94,27 +94,26 @@ export interface PasswordFormData {
   confirmPassword: string;
 }
 
-
 //Lecturer Courses
 
 export interface ILecturerCourses {
-  success: boolean
-  totalCourses: number
-  lecturerId: string
-  courses: ILecturerCourse[]
+  success: boolean;
+  totalCourses: number;
+  lecturerId: string;
+  courses: ILecturerCourse[];
 }
 
 export interface ILecturerCourse {
-  department: string
-  isActive: boolean
-  _id: string
-  code: string
-  title: string
-  creditUnit: number
-  semester: string
-  level: number
-  session: string
-  lecturer: string
-  createdAt: string
-  updatedAt: string
+  department: string;
+  isActive: boolean;
+  _id: string;
+  code: string;
+  title: string;
+  creditUnit: number;
+  semester: string;
+  level: number;
+  session: string;
+  lecturer: string;
+  createdAt: string;
+  updatedAt: string;
 }

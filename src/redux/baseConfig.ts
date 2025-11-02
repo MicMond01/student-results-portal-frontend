@@ -40,6 +40,7 @@ export const api = createApi({
     "course",
     "result",
     "student",
+    "exam"
   ],
   endpoints: (_builder) => ({}),
 });

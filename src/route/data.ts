@@ -10,9 +10,8 @@ const LecturerProfile = lazy(() => import("@/screens/lecturer-profile/index"));
 const UpdateProfile = lazy(
   () => import("@/screens/lecturer-profile/UpdateProfile")
 );
-const LecturerCourses = lazy(
-  () => import("@/screens/lecturer-course/lecturer-courses/index")
-);
+const LecturerCourses = lazy(() => import("@/screens/lecturer-course/index"));
+const LecturerExams = lazy(() => import("@/screens/lecturer-exams/index"));
 const StudentDetail = lazy(
   () => import("@/screens/lecturer-students/StudentDetail")
 );
@@ -101,6 +100,13 @@ const routeData: IRoute[] = [
     code: "students",
     component: StudentsList,
     allowedRoles: ["admin", "lecturer"],
+  },
+  {
+    link: "/exams",
+    title: "Exams",
+    code: "exams",
+    component: LecturerExams,
+    allowedRoles: ["lecturer"],
   },
 ];
 export { routeData, authRouteData };
