@@ -8,18 +8,42 @@ import {
 } from "@/components/ui/card";
 import QuestionOption from "./QuestionOption";
 import { Badge } from "@/components/ui/badge";
-import { Check, Edit, HelpCircle, ListOrdered, Trash } from "lucide-react";
+import { Check, Edit, HelpCircle, ListOrdered } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { IQuestion } from "@/types/exams";
+import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
+import { toast } from "sonner";
+import { useDeleteQuestionFromExamMutation } from "@/redux/query/lecturer-exam";
 
 const QuestionCard = ({
   question,
   index,
+  examId,
+  onEditClick,
 }: {
   question: IQuestion;
   index: number;
+  examId: string;
+  onEditClick: () => void;
 }) => {
-  console.log(question);
+  const [deleteQuestionTrigger, { isLoading }] =
+    useDeleteQuestionFromExamMutation();
+  const handleDeleteQuestion = async () => {
+    const toastId = toast.loading("Deleting Exam...");
+
+    try {
+      await deleteQuestionTrigger({
+        examId: examId,
+        questionId: question._id,
+      }).unwrap();
+
+      toast.success("Question successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Delete Question", {
+        id: toastId,
+      });
+    }
+  };
   return (
     <Card className="overflow-hidden">
       <CardHeader>
@@ -70,18 +94,19 @@ const QuestionCard = ({
         )}
       </CardContent>
       <CardFooter className="flex justify-end space-x-2 bg-gray-50 p-3">
-        <Button variant="ghost" size="sm" className="hover:bg-primary-4/10">
+        <Button variant="ghost" size="sm" onClick={onEditClick}>
           <Edit className="mr-1.5 h-4 w-4" />
           Edit
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-red-500 hover:bg-red-50"
-        >
-          <Trash className="mr-1.5 h-4 w-4" />
-          Delete
-        </Button>
+
+        <ConfirmationDialog
+          title="Confirm Delete"
+          type="delete"
+          description="Are you sure you want to Delete this Question?"
+          action={handleDeleteQuestion}
+          triggerLabel="Delete Question"
+          confirmLabel={isLoading ? "Deleting..." : "Yes, Delete"}
+        />
       </CardFooter>
     </Card>
   );

@@ -1,3 +1,4 @@
+import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,13 +8,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDuration } from "@/lib/functions";
+import { useDeleteExamMutation } from "@/redux/query/lecturer-exam";
 import type { IExam, IExamCourse } from "@/types/exams";
-import { Clock, Database, FileText, Trash } from "lucide-react";
-import { useState } from "react";
+import { Clock, Database, FileText, Plus } from "lucide-react";
+import { toast } from "sonner";
 
-const ExamHeader = ({ course, exam }: { course: IExamCourse; exam: IExam }) => {
-  const [deleteExam, setDeleteExam] = useState("");
-  console.log(deleteExam);
+interface ExamHeaderProps {
+  course: IExamCourse;
+  exam: IExam;
+  onAddQuestionClick: () => void;
+}
+
+const ExamHeader = ({ course, exam, onAddQuestionClick }: ExamHeaderProps) => {
+  const [deleteExamTrigger, { isLoading }] = useDeleteExamMutation();
+
+  const handleDeleteExam = async () => {
+    const toastId = toast.loading("Deleting Exam...");
+
+    try {
+      await deleteExamTrigger(exam._id).unwrap();
+
+      toast.success("Exam successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Delete Exam", {
+        id: toastId,
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -24,15 +46,22 @@ const ExamHeader = ({ course, exam }: { course: IExamCourse; exam: IExam }) => {
               {course.code} &middot; {exam.examType} Exam
             </CardDescription>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-red-100 hover:bg-red-600 bg-red-500"
-            onClick={() => setDeleteExam(exam._id)}
-          >
-            <Trash className="mr-1.5 h-4 w-4" />
-            Delete Exam
-          </Button>
+
+          <div className="flex gap-4">
+            <ConfirmationDialog
+              title="Confirm Delete"
+              type="delete"
+              description="Are you sure you want to Delete this Exam?"
+              action={handleDeleteExam}
+              triggerLabel="Delete Exam"
+              confirmLabel={isLoading ? "Deleting..." : "Yes, Delete"}
+            />
+
+            <Button onClick={onAddQuestionClick}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Question
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

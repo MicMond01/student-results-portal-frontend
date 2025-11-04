@@ -22,7 +22,7 @@ const QuestionOption = ({
     >
       <div
         className={cn(
-          "flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+          "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
           isAnswer ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"
         )}
       >

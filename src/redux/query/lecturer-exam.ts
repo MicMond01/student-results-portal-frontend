@@ -4,6 +4,7 @@ import { api } from "../baseConfig";
 export const lecturerExamSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getExams: builder.query<IExamsResponse, void>({
+      //done
       query: () => ({
         url: "/lecturer/exams",
       }),
@@ -31,7 +32,8 @@ export const lecturerExamSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["lecturer", "exam"],
     }),
-    deleteExam: builder.mutation<any, void>({
+    deleteExam: builder.mutation<any, string>({
+      //done
       query: (id) => ({
         url: `/lecturer/exams/${id}`,
         method: "DELETE",
@@ -39,9 +41,10 @@ export const lecturerExamSlice = api.injectEndpoints({
       invalidatesTags: ["lecturer", "exam"],
     }),
     addQuestionTOExam: builder.mutation<any, any>({
-      query: (id) => ({
-        url: `/lecturer/exams/${id}/questions`,
+      query: ({ examId, data }) => ({
+        url: `/lecturer/exams/${examId}/questions`,
         method: "POST",
+        body: data,
       }),
       invalidatesTags: ["lecturer", "exam"],
     }),
@@ -62,6 +65,7 @@ export const lecturerExamSlice = api.injectEndpoints({
       { examId: string; questionId: string }
     >({
       query: ({ examId, questionId }) => ({
+        //done
         url: `/lecturer/exams/${examId}/questions/${questionId}`,
         method: "DELETE",
       }),

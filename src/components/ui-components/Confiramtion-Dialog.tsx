@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Trash } from "lucide-react";
 
 export function ConfirmationDialog({
   title,
@@ -16,20 +17,35 @@ export function ConfirmationDialog({
   action,
   triggerLabel = "Open",
   confirmLabel = "Confirm",
-  isDisabled = false,
+  type = "save",
 }: {
   title: string;
   description: string;
   action: () => void;
   triggerLabel?: string | React.ReactNode;
   confirmLabel?: string;
-  isDisabled?: boolean;
+  type: "save" | "delete";
 }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
         {typeof triggerLabel === "string" ? (
-          <Button className="defult">{triggerLabel}</Button>
+          <Button
+            className={`${
+              type === "delete"
+                ? "text-red-100 hover:bg-red-600 bg-red-500"
+                : "default"
+            } flex`}
+          >
+            {type === "delete" ? (
+              <>
+                <Trash className="mr-1.5 h-4 w-4" />
+                {triggerLabel}
+              </>
+            ) : (
+              triggerLabel
+            )}
+          </Button>
         ) : (
           triggerLabel
         )}
@@ -50,9 +66,12 @@ export function ConfirmationDialog({
           <Button
             type="button"
             variant="destructive"
-            className="bg-primary-4 text-primary-3 cursor-pointer"
+            className={`${
+              type === "delete"
+                ? "text-red-100 hover:bg-red-600 bg-red-500"
+                : "bg-primary-4 text-primary-3 "
+            } `}
             onClick={action}
-            disabled={isDisabled}
           >
             {confirmLabel}
           </Button>

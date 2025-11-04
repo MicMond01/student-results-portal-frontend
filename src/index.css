@@ -12,6 +12,20 @@ body,
 #root {
   height: 100%;
 }
+:root {
+  --color-background: #e5d9f2;
+  --color-foreground: #2b2653;
+  --color-card: #ffffff;
+  --color-card-foreground: #36013f;
+  --color-primary: #7371fc;
+  --color-primary-2: #a594f9;
+  --color-primary-3: #cdc1ff;
+  --color-primary-4: #36013f;
+  --color-bg-1: #f5efff;
+  --color-bg-2: #e5d9f2;
+  --color-border: #cdc1ff;
+  cursor: pointer;
+}
 
 @theme {
   --color-background: #e5d9f2;

@@ -1,13 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLazyGetLoggedInUserQuery } from "@/redux/query/auth";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatch-hooks";
-import { setUser } from "@/redux/slices/auth";
+import { setUser, exitUser } from "@/redux/slices/auth";
 
 const useAuth = () => {
   const { token } = useAppSelector((state) => state.auth);
-  const isAuthenticated = !!token;
-  return isAuthenticated;
+  return !!token;
 };
 
 interface ProtectedRouteProps {
@@ -21,23 +20,34 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { token, user } = useAppSelector((state) => state.auth);
   const [getAuthUser] = useLazyGetLoggedInUserQuery();
   const [authCheckComplete, setAuthCheckComplete] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
   const dispatch = useAppDispatch();
 
-  const confirmUser = useCallback(async () => {
-    const res = await getAuthUser().unwrap();
-    if (res && "user" in res) {
-      dispatch(setUser(res.user));
-
-      setAuthCheckComplete(true);
-    }
-  }, [token]);
-
   useEffect(() => {
-    if (isTokenSet) setTimeout(() => confirmUser(), 1000);
-  }, [isTokenSet]);
+    const verifyUser = async () => {
+      if (!isTokenSet) return;
 
-  if (!isTokenSet) {
-    return <Navigate to="/login" state={{ from: location }} />;
+      try {
+        const res = await getAuthUser().unwrap();
+        if (res?.user) {
+          dispatch(setUser(res.user));
+        }
+      } catch (err: any) {
+        if (err?.status === 401) {
+          setIsUnauthorized(true);
+          dispatch(exitUser?.());
+        }
+      } finally {
+        setAuthCheckComplete(true);
+      }
+    };
+
+    verifyUser();
+  }, [isTokenSet, token]);
+
+  // --- Redirect logic ---
+  if (!isTokenSet || isUnauthorized) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (!authCheckComplete) {
@@ -48,26 +58,18 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     );
   }
 
+  // --- Role-based restriction ---
   if (allowedRoles && allowedRoles.length > 0) {
-    // No user data after auth check
-    if (!user || !user.role) {
-      return <Navigate to="/unauthorized" replace />;
-    }
-
-    const isValidRole = (r: string): r is "admin" | "lecturer" | "student" =>
-      ["admin", "lecturer", "student"].includes(r);
-
-    if (!isValidRole(user.role)) {
-      return <Navigate to="/unauthorized" replace />;
-    }
-
-    // Check if user's role is allowed
-    if (!allowedRoles.includes(user.role)) {
+    if (
+      !user ||
+      !user.role ||
+      !allowedRoles.includes(user.role as "admin" | "lecturer" | "student")
+    ) {
       return <Navigate to="/unauthorized" replace />;
     }
   }
 
-  if (authCheckComplete) return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
