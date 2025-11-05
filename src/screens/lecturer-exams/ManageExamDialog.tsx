@@ -26,38 +26,44 @@ import ManageQuestionDialog from "./ManageQuestionDialog";
 import { Card } from "@/components/ui/card";
 import { Plus, Save, Trash } from "lucide-react";
 import type { ILecturerCourse } from "@/types/lecturer";
+import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 
 interface ManageExamProps {
   courses: IExamCourse[];
-  onSave: (examData: any) => void;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  handleCreateExam: (examData: any) => void;
   selectedCourse: ILecturerCourse | undefined;
+  isCreatingExam?: boolean;
 }
 
 const ManageExamDialog = ({
   courses,
-  onSave,
-  open,
-  onOpenChange,
+  handleCreateExam,
+  isCreatingExam,
   selectedCourse,
 }: ManageExamProps) => {
   const [course, setCourse] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [examType, setExamType] = useState<string>("mixed");
   const [duration, setDuration] = useState<number>(120);
-  const [totalMarks, setTotalMarks] = useState<number>(0);
+  const [totalMarks, setTotalMarks] = useState<number>(1);
   const [passingMarks, setPassingMarks] = useState<number>(0);
   const [instructions, setInstructions] = useState<string>("");
   const [session, setSession] = useState<string>("");
   const [semester, setSemester] = useState<string>("");
   const [questions, setQuestions] = useState<any[]>([]);
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  // Zustand store
+  const { closeCreateExam, isCreateExamOpen, openAddQuestion } =
+    useLecturerExamsStore();
 
   useEffect(() => {
     const marks = questions.reduce((acc, q) => acc + (q.marks || 0), 0);
     setTotalMarks(marks);
+    console.log(marks);
   }, [questions]);
 
+  //TODO: Make the inner AddQuestion Dialog Work
   const handleAddQuestion = (newQuestionData: any) => {
     setQuestions([
       ...questions,
@@ -70,7 +76,16 @@ const ManageExamDialog = ({
   };
 
   // Main save handler for the *entire exam*
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!course || !title || !session || !semester || questions.length === 0) {
+      setErrorMsg(
+        "Please fill all required fields and add at least one question."
+      );
+      return;
+    }
+
+    const cleanedQuestions = questions.map(({ _id, ...rest }) => rest);
+
     const examData = {
       course,
       title,
@@ -81,21 +96,36 @@ const ManageExamDialog = ({
       instructions,
       session,
       semester,
-      questions,
+      questions: cleanedQuestions,
     };
-    onSave(examData);
-    setQuestions([]);
-    onOpenChange(false);
+
+    try {
+      await handleCreateExam(examData);
+      setQuestions([]);
+      setErrorMsg("");
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        "data" in error &&
+        error.data &&
+        typeof (error as any).data.msg === "string"
+      ) {
+        setErrorMsg((error as any).data.msg);
+      } else {
+        setErrorMsg("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isCreateExamOpen} onOpenChange={closeCreateExam}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Create New Exam</DialogTitle>
           <DialogDescription>
             Fill in the exam details and add questions.
           </DialogDescription>
+          <div className="text-red-500 font-semibold">{errorMsg}</div>
         </DialogHeader>
         <div className="grid max-h-[70vh] gap-6 overflow-y-auto p-4">
           {/* Exam Details Form */}
@@ -205,18 +235,18 @@ const ManageExamDialog = ({
               {/* This inner dialog adds a new question *to this form's state* */}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline">
+                  <Button
+                    variant="outline"
+                    onClick={() => openAddQuestion("temp-exam")}
+                  >
                     <Plus className="mr-2 h-4 w-4" />
                     Add Question
                   </Button>
                 </DialogTrigger>
-                <ManageQuestionDialog
-                  examId="temp-exam"
+                {/* <ManageQuestionDialog
                   question={null}
                   onSave={handleAddQuestion} // Adds to local state
-                  open={false} // This is controlled by DialogTrigger
-                  onClose={() => {}}
-                />
+                /> */}
               </Dialog>
             </div>
             <div className="space-y-2">
@@ -253,10 +283,12 @@ const ManageExamDialog = ({
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button onClick={handleSubmit}>
-            <Save className="mr-2 h-4 w-4" />
-            Create Exam
+            <Save className="mr-2 h-4 w-4" />{" "}
+            {isCreatingExam ? "Creating..." : "Create Exam"}
           </Button>
         </DialogFooter>
+
+        <ManageQuestionDialog question={null} onSave={handleAddQuestion} />
       </DialogContent>
     </Dialog>
   );

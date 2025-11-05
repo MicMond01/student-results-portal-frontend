@@ -18,25 +18,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 import type { IQuestion } from "@/types/exams";
 import { Plus, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ManageQuestionDialogProps {
-  examId: string;
   question: IQuestion | null; // null for Create, Question object for Edit
   onSave: (data: any) => void;
-  onClose: () => void;
-  open: boolean;
   isUpdatingQuestion?: boolean;
 }
 
 const ManageQuestionDialog = ({
-  examId,
   question,
   onSave,
-  onClose,
-  open,
   isUpdatingQuestion,
 }: ManageQuestionDialogProps) => {
   const isEditMode = question !== null;
@@ -51,9 +46,12 @@ const ManageQuestionDialog = ({
     question?.correctAnswer || ""
   );
 
+  const { isManageQuestionOpen, closeQuestionDialog, addingToExamId } =
+    useLecturerExamsStore();
+
   useEffect(() => {
     // Reset form when props change (e.g., opening for a new question)
-    if (open) {
+    if (isManageQuestionOpen) {
       setQuestionType(question?.questionType || "theory");
       setQuestionText(question?.question || "");
       setMarks(question?.marks || 0);
@@ -65,7 +63,7 @@ const ManageQuestionDialog = ({
       );
       setCorrectAnswer(question?.correctAnswer || "");
     }
-  }, [question, open]);
+  }, [question, isManageQuestionOpen]);
 
   const handleAddOption = () => {
     setOptions([...options, ""]);
@@ -104,7 +102,7 @@ const ManageQuestionDialog = ({
     if (isEditMode && question) {
       // For `updateExamQuestion`
       onSave({
-        examId: examId,
+        examId: addingToExamId,
         questionId: question._id,
         data: questionData,
       });
@@ -112,11 +110,13 @@ const ManageQuestionDialog = ({
       // For `addQuestionTOExam`
       onSave(questionData);
     }
-    // onClose();
+    closeQuestionDialog();
   };
 
+  console.log(isManageQuestionOpen);
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={isManageQuestionOpen} onOpenChange={closeQuestionDialog}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>

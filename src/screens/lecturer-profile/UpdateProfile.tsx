@@ -12,8 +12,8 @@ import {
 
 const UpdateProfile: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen p-4 lg:p-8">
+      <div className="mx-auto max-w-380">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Sidebar */}
           <aside className="lg:col-span-1">

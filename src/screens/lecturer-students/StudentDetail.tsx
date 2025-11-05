@@ -315,9 +315,9 @@ const StudentDetail = () => {
                       title="Confirm Save"
                       description="Are you sure you want to update this student result? "
                       action={handleSave}
+                      type="save"
                       triggerLabel="Save"
                       confirmLabel={isLoading ? "Saving..." : "Yes, Save"}
-                      isDisabled={isUnchanged}
                     />
                   </div>
                 </TabsContent>

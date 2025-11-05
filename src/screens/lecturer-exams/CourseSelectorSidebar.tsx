@@ -7,16 +7,11 @@ import {
 } from "@/components/ui/card";
 import type { IExamCourse } from "@/types/exams";
 import CourseSelectorItem from "./CourseSelectorItem";
+import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 
-const CourseSelectorSidebar = ({
-  courses,
-  selectedCourseId,
-  onSelectCourse,
-}: {
-  courses: IExamCourse[];
-  selectedCourseId: string | null;
-  onSelectCourse: (id: string) => void;
-}) => {
+const CourseSelectorSidebar = ({ courses }: { courses: IExamCourse[] }) => {
+  // Zustand store
+  const { selectedCourseId, setSelectedCourseId } = useLecturerExamsStore();
   return (
     <Card>
       <CardHeader>
@@ -32,7 +27,7 @@ const CourseSelectorSidebar = ({
               key={course._id}
               course={course}
               isSelected={selectedCourseId === course._id}
-              onSelect={() => onSelectCourse(course._id)}
+              onSelect={() => setSelectedCourseId(course._id)} //Change here
             />
           ))}
         </div>

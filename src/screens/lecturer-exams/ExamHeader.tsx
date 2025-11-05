@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { formatDuration } from "@/lib/functions";
 import { useDeleteExamMutation } from "@/redux/query/lecturer-exam";
+import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 import type { IExam, IExamCourse } from "@/types/exams";
 import { Clock, Database, FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -16,11 +17,13 @@ import { toast } from "sonner";
 interface ExamHeaderProps {
   course: IExamCourse;
   exam: IExam;
-  onAddQuestionClick: () => void;
 }
 
-const ExamHeader = ({ course, exam, onAddQuestionClick }: ExamHeaderProps) => {
+const ExamHeader = ({ course, exam }: ExamHeaderProps) => {
   const [deleteExamTrigger, { isLoading }] = useDeleteExamMutation();
+
+  // Zustand store
+  const { openAddQuestion } = useLecturerExamsStore();
 
   const handleDeleteExam = async () => {
     const toastId = toast.loading("Deleting Exam...");
@@ -57,7 +60,7 @@ const ExamHeader = ({ course, exam, onAddQuestionClick }: ExamHeaderProps) => {
               confirmLabel={isLoading ? "Deleting..." : "Yes, Delete"}
             />
 
-            <Button onClick={onAddQuestionClick}>
+            <Button onClick={() => openAddQuestion(exam._id)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Question
             </Button>

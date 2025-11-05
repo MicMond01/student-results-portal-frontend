@@ -24,7 +24,6 @@ body,
   --color-bg-1: #f5efff;
   --color-bg-2: #e5d9f2;
   --color-border: #cdc1ff;
-  cursor: pointer;
 }
 
 @theme {

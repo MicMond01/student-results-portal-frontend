@@ -14,20 +14,23 @@ import type { IQuestion } from "@/types/exams";
 import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
 import { toast } from "sonner";
 import { useDeleteQuestionFromExamMutation } from "@/redux/query/lecturer-exam";
+import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 
 const QuestionCard = ({
   question,
   index,
   examId,
-  onEditClick,
 }: {
   question: IQuestion;
   index: number;
   examId: string;
-  onEditClick: () => void;
 }) => {
   const [deleteQuestionTrigger, { isLoading }] =
     useDeleteQuestionFromExamMutation();
+
+  // Zustand store
+  const { openEditQuestion } = useLecturerExamsStore();
+
   const handleDeleteQuestion = async () => {
     const toastId = toast.loading("Deleting Exam...");
 
@@ -76,7 +79,7 @@ const QuestionCard = ({
                 key={idx}
                 optionText={optionText}
                 correctAnswer={question.correctAnswer}
-                optionLetter={String.fromCharCode(97 + idx).toUpperCase()} // A, B, C...
+                optionLetter={String.fromCharCode(97 + idx).toUpperCase()}
               />
             ))}
           </div>
@@ -94,7 +97,11 @@ const QuestionCard = ({
         )}
       </CardContent>
       <CardFooter className="flex justify-end space-x-2 bg-gray-50 p-3">
-        <Button variant="ghost" size="sm" onClick={onEditClick}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => openEditQuestion(examId, question)}
+        >
           <Edit className="mr-1.5 h-4 w-4" />
           Edit
         </Button>

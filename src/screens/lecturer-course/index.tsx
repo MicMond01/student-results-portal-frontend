@@ -17,6 +17,9 @@ import { useGetCoursesAssignedToLecturerQuery } from "@/redux/query/lecturer";
 import { Book, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import CourseCard from "./CourseCard";
+import Banner from "@/components/ui-components/Banner";
+import { ImBooks } from "react-icons/im";
+
 
 const LecturerCourses = () => {
   // In a real app, this data would come from an API call
@@ -57,6 +60,12 @@ const LecturerCourses = () => {
   return (
     <div className="min-h-screen  p-4 lg:p-8">
       <div className="mx-auto max-w-380 space-y-6">
+        <Banner
+          title="Lecturer Course"
+          desc="Review and manage all courses assigned to you. Oversee course information, associated exams, and related academic activities efficiently"
+          actionButton={<ImBooks className="text-primary" size={40} />}
+          containterClass="mb-8"
+        />
         {/* Header and Filter Card */}
         <Card>
           <CardHeader>

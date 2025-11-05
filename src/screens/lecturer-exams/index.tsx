@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import CourseSelectorSidebar from "./CourseSelectorSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ExamDetailsView from "./ExamDetailsView";
@@ -20,24 +20,41 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ManageExamDialog from "./ManageExamDialog";
+import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
+import { Skeleton } from "@/components/ui/skeleton";
+import Banner from "@/components/ui-components/Banner";
+import { LuNotebookPen } from "react-icons/lu";
 
 const LecturerExams = () => {
-  const { data: lecturerCourses } = useGetCoursesAssignedToLecturerQuery();
-  const { data: examData } = useGetExamsQuery();
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
-  const [isCreateExamOpen, setIsCreateExamOpen] = useState(false);
+  // Zustand store
+  const {
+    selectedCourseId,
+    setSelectedCourseId,
+    openCreateExam,
+    closeCreateExam,
+  } = useLecturerExamsStore();
+
+  // API queries
+  const { data: lecturerCourses, isLoading: isLoadingLecturerCourses } =
+    useGetCoursesAssignedToLecturerQuery();
+  const { data: examData, isLoading: isLoadingExam } = useGetExamsQuery();
+
+  // API mutations
   const [addQuestionTrigger] = useAddQuestionTOExamMutation();
   const [updateQuestionTrigger, { isLoading: isUpdatingQuestion }] =
     useUpdateExamQuestionMutation();
-  const [createExamTrigger] = useCreateExamMutation();
+  const [createExamTrigger, { isLoading: isCreatingExam }] =
+    useCreateExamMutation();
 
+  // Auto-select first course on initial load
   useEffect(() => {
     if (lecturerCourses?.courses?.length && !selectedCourseId) {
       setSelectedCourseId(lecturerCourses.courses[0]._id);
     }
-  }, [lecturerCourses, selectedCourseId]);
+  }, [lecturerCourses, selectedCourseId, setSelectedCourseId]);
 
-  const selectedCourse = useMemo(() => {
+  // Memoized derived state
+  const selectedCourseData = useMemo(() => {
     return lecturerCourses?.courses.find((c) => c._id === selectedCourseId);
   }, [lecturerCourses, selectedCourseId]);
 
@@ -48,14 +65,16 @@ const LecturerExams = () => {
     );
   }, [examData, selectedCourseId]);
 
-  //Create Exam Handler
+  // Create Exam Handler
   const handleCreateExam = async (examData: any) => {
     const toastId = toast.loading("Creating Exam...");
 
     try {
       await createExamTrigger(examData).unwrap();
       toast.success("Exam successfully created!", { id: toastId });
+      closeCreateExam();
     } catch (error) {
+      console.log(error);
       toast.error((error as any)?.data?.message || "Failed to create exam", {
         id: toastId,
       });
@@ -103,19 +122,19 @@ const LecturerExams = () => {
     }
   };
 
+  if (isLoadingExam || isLoadingLecturerCourses) {
+    return <LoadingSkeleton />;
+  }
+
   return (
     <div className="min-h-screen p-4 lg:p-8">
       <div className="mx-auto max-w-380">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Exam Question Bank
-          </h2>
-          <Button onClick={() => setIsCreateExamOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Exam
-          </Button>
-        </div>
-
+        <Banner
+          title="Course Exams"
+          desc="Manage all examinations associated with your courses efficiently. Create new exams, organize questions, update existing assessments, and monitor course evaluation details"
+          actionButton={<LuNotebookPen className="text-primary" size={40} />}
+          containterClass="mb-8"
+        />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
           {/* --- Sidebar (Desktop) --- */}
           <aside className="hidden lg:col-span-1 lg:block">
@@ -123,10 +142,12 @@ const LecturerExams = () => {
               {lecturerCourses && (
                 <CourseSelectorSidebar
                   courses={lecturerCourses?.courses || []}
-                  selectedCourseId={selectedCourseId}
-                  onSelectCourse={(id) => setSelectedCourseId(id)}
                 />
               )}
+              <Button className="mt-5 w-full" onClick={openCreateExam}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Exam
+              </Button>
             </div>
           </aside>
 
@@ -158,12 +179,12 @@ const LecturerExams = () => {
 
           {/* --- Main Content Area --- */}
           <main className="lg:col-span-3 h-[calc(100vh-4rem)] overflow-y-auto pr-2">
-            {selectedExams && (
+            {selectedExams && selectedCourseData && (
               <ExamDetailsView
-                course={selectedCourse}
+                course={selectedCourseData}
                 exams={selectedExams || []}
-                onAddQuestion={handleAddQuestion}
-                onUpdateQuestion={handleUpdateQuestion}
+                handleAddQuestion={handleAddQuestion}
+                handleUpdateQuestion={handleUpdateQuestion}
                 isUpdatingQuestion={isUpdatingQuestion}
               />
             )}
@@ -173,13 +194,24 @@ const LecturerExams = () => {
 
       <ManageExamDialog
         courses={lecturerCourses?.courses || []}
-        open={isCreateExamOpen}
-        onOpenChange={setIsCreateExamOpen}
-        onSave={handleCreateExam}
-        selectedCourse={selectedCourse || undefined}
+        handleCreateExam={handleCreateExam}
+        selectedCourse={selectedCourseData || undefined}
+        isCreatingExam={isCreatingExam}
       />
     </div>
   );
 };
+
+const LoadingSkeleton = () => (
+  <div className="min-h-screen bg-background p-6">
+    <div className="max-w-7xl mx-auto">
+      <Skeleton className="h-10 w-32 mb-6" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Skeleton className="h-[600px]" />
+        <Skeleton className="lg:col-span-2 h-[600px]" />
+      </div>
+    </div>
+  </div>
+);
 
 export default LecturerExams;
