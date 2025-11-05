@@ -77,6 +77,32 @@ export const lecturerExamSlice = api.injectEndpoints({
       }),
       providesTags: ["lecturer", "exam"],
     }),
+    // getDownloadTemplate: builder.query<any, any>({
+    //   query: (format) => ({
+    //     url: `lecturer/exams/templates/${format}`,
+    //   }),
+    //   providesTags: ["lecturer", "exam"],
+    // }),
+    getDownloadTemplate: builder.query<Blob, string>({
+      query: (format) => ({
+        url: `lecturer/exams/templates/${format}`,
+        responseHandler: async (response: any) => {
+          // Force RTK Query to treat the response as a blob instead of JSON
+          const blob = await response.blob();
+          return blob;
+        },
+        responseType: "blob", // optional but clear
+      }),
+      providesTags: ["lecturer", "exam"],
+    }),
+    bulkUploadQuestions: builder.mutation<any, any>({
+      query: ({ examId, data }) => ({
+        url: `/lecturer/exams/${examId}/questions/bulk`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["lecturer", "exam"],
+    }),
   }),
 });
 
@@ -90,4 +116,7 @@ export const {
   useUpdateExamQuestionMutation,
   useDeleteQuestionFromExamMutation,
   useGetExamsByCourseQuery,
+  useGetDownloadTemplateQuery,
+  useLazyGetDownloadTemplateQuery,
+  useBulkUploadQuestionsMutation,
 } = lecturerExamSlice;

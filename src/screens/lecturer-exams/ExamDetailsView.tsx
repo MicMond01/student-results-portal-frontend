@@ -7,6 +7,8 @@ import ExamHeader from "./ExamHeader";
 import { toast } from "sonner";
 import ManageQuestionDialog from "./ManageQuestionDialog";
 import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
+import { useState } from "react";
+import BulkUploadDialog from "@/components/functional-component/BulkUploadDialog";
 
 interface ExamDetailsViewProps {
   course: IExamCourse | undefined;
@@ -14,6 +16,7 @@ interface ExamDetailsViewProps {
   handleAddQuestion: (examId: string, data: any) => void;
   handleUpdateQuestion: (examId: string, questionId: string, data: any) => void;
   isUpdatingQuestion: boolean;
+  onBulkUpload: (examId: string, file: File) => void; // Changed prop
 }
 
 const ExamDetailsView = ({
@@ -22,10 +25,16 @@ const ExamDetailsView = ({
   handleAddQuestion,
   handleUpdateQuestion,
   isUpdatingQuestion,
+  onBulkUpload,
 }: ExamDetailsViewProps) => {
+  const [bulkUploadingToExamId, setBulkUploadingToExamId] = useState<
+    string | null
+  >(null);
   // Zustand store
   const { editingQuestion, addingToExamId, closeQuestionDialog } =
     useLecturerExamsStore();
+  const handleBulkUploadClick = (examId: string) =>
+    setBulkUploadingToExamId(examId);
 
   const handleSaveQuestion = async (data: any) => {
     const toastId = toast.loading("Saving Question...");
@@ -53,6 +62,11 @@ const ExamDetailsView = ({
     } finally {
       closeQuestionDialog();
     }
+  };
+
+  const handleBulkUploadSubmit = (examId: string, file: File) => {
+    onBulkUpload(examId, file);
+    // Parent will close dialog on success
   };
 
   if (!course) {
@@ -91,7 +105,11 @@ const ExamDetailsView = ({
     <div className="space-y-8">
       {exams.map((exam) => (
         <section key={exam._id} className="space-y-6">
-          <ExamHeader course={course} exam={exam} />
+          <ExamHeader
+            course={course}
+            exam={exam}
+            onBulkUploadClick={() => handleBulkUploadClick(exam._id)}
+          />
           {exam.questions.map((q, index) => (
             <QuestionCard
               key={q._id}
@@ -108,6 +126,12 @@ const ExamDetailsView = ({
         question={editingQuestion}
         onSave={handleSaveQuestion}
         isUpdatingQuestion={isUpdatingQuestion}
+      />
+      <BulkUploadDialog
+        open={bulkUploadingToExamId !== null}
+        examId={bulkUploadingToExamId || ""}
+        onUpload={handleBulkUploadSubmit}
+        isUploading={isUpdatingQuestion}
       />
     </div>
   );

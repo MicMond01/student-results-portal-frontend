@@ -11,15 +11,16 @@ import { formatDuration } from "@/lib/functions";
 import { useDeleteExamMutation } from "@/redux/query/lecturer-exam";
 import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 import type { IExam, IExamCourse } from "@/types/exams";
-import { Clock, Database, FileText, Plus } from "lucide-react";
+import { Clock, Database, FileText, Plus, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 interface ExamHeaderProps {
   course: IExamCourse;
   exam: IExam;
+  onBulkUploadClick: () => void;
 }
 
-const ExamHeader = ({ course, exam }: ExamHeaderProps) => {
+const ExamHeader = ({ course, exam, onBulkUploadClick }: ExamHeaderProps) => {
   const [deleteExamTrigger, { isLoading }] = useDeleteExamMutation();
 
   // Zustand store
@@ -63,6 +64,10 @@ const ExamHeader = ({ course, exam }: ExamHeaderProps) => {
             <Button onClick={() => openAddQuestion(exam._id)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Question
+            </Button>
+            <Button variant="outline" onClick={onBulkUploadClick}>
+              <Upload className="mr-2 h-4 w-4" />
+              Bulk Upload
             </Button>
           </div>
         </div>

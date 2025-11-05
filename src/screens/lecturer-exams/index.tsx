@@ -13,6 +13,7 @@ import { useGetCoursesAssignedToLecturerQuery } from "@/redux/query/lecturer";
 import { Plus } from "lucide-react";
 import {
   useAddQuestionTOExamMutation,
+  useBulkUploadQuestionsMutation,
   useCreateExamMutation,
   useGetExamsQuery,
   useUpdateExamQuestionMutation,
@@ -45,6 +46,7 @@ const LecturerExams = () => {
     useUpdateExamQuestionMutation();
   const [createExamTrigger, { isLoading: isCreatingExam }] =
     useCreateExamMutation();
+  const [uploadBulkExamQuestions] = useBulkUploadQuestionsMutation();
 
   // Auto-select first course on initial load
   useEffect(() => {
@@ -122,6 +124,24 @@ const LecturerExams = () => {
     }
   };
 
+  const handleBulkUploadSubmit = async (examId: string, file: File) => {
+    const toastId = toast.loading("Uploading Questions...");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file); // must match your multer field name
+      formData.append("examId", examId); // optional if backend expects it in body or params
+
+      await uploadBulkExamQuestions({ examId, data: formData }).unwrap();
+      toast.success("Bulk upload successful!", { id: toastId });
+    } catch (error) {
+      toast.error((error as any)?.data?.message || "Failed to upload file", {
+        id: toastId,
+      });
+      console.log(error);
+    }
+  };
+
   if (isLoadingExam || isLoadingLecturerCourses) {
     return <LoadingSkeleton />;
   }
@@ -186,6 +206,7 @@ const LecturerExams = () => {
                 handleAddQuestion={handleAddQuestion}
                 handleUpdateQuestion={handleUpdateQuestion}
                 isUpdatingQuestion={isUpdatingQuestion}
+                onBulkUpload={handleBulkUploadSubmit}
               />
             )}
           </main>
