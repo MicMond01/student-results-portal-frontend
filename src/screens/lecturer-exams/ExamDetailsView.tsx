@@ -27,14 +27,16 @@ const ExamDetailsView = ({
   isUpdatingQuestion,
   onBulkUpload,
 }: ExamDetailsViewProps) => {
-  const [bulkUploadingToExamId, setBulkUploadingToExamId] = useState<
-    string | null
-  >(null);
   // Zustand store
-  const { editingQuestion, addingToExamId, closeQuestionDialog } =
-    useLecturerExamsStore();
-  const handleBulkUploadClick = (examId: string) =>
-    setBulkUploadingToExamId(examId);
+  const {
+    editingQuestion,
+    addingToExamId,
+    closeQuestionDialog,
+    setBulkUploadingToExamId,
+  } = useLecturerExamsStore();
+
+  // const handleBulkUploadClick = (examId: string) =>
+  //   setBulkUploadingToExamId(examId);
 
   const handleSaveQuestion = async (data: any) => {
     const toastId = toast.loading("Saving Question...");
@@ -108,7 +110,7 @@ const ExamDetailsView = ({
           <ExamHeader
             course={course}
             exam={exam}
-            onBulkUploadClick={() => handleBulkUploadClick(exam._id)}
+            // onBulkUploadClick={() => handleBulkUploadClick(exam._id)}
           />
           {exam.questions.map((q, index) => (
             <QuestionCard
@@ -128,8 +130,6 @@ const ExamDetailsView = ({
         isUpdatingQuestion={isUpdatingQuestion}
       />
       <BulkUploadDialog
-        open={bulkUploadingToExamId !== null}
-        examId={bulkUploadingToExamId || ""}
         onUpload={handleBulkUploadSubmit}
         isUploading={isUpdatingQuestion}
       />

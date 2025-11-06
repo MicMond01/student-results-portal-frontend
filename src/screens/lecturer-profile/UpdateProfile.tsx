@@ -9,11 +9,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Banner from "@/components/ui-components/Banner";
+import { LiaUserEditSolid } from "react-icons/lia";
 
 const UpdateProfile: React.FC = () => {
   return (
     <div className="min-h-screen p-4 lg:p-8">
       <div className="mx-auto max-w-380">
+        <Banner
+          title="Edit Profile"
+          desc="Update your academic profile information, including personal details, departmental affiliation, and professional credentials, to ensure your records remain accurate and up to date."
+          actionButton={<LiaUserEditSolid className="text-primary" size={40} />}
+          containterClass="mb-8"
+        />
+
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Sidebar */}
           <aside className="lg:col-span-1">

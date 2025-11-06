@@ -9,6 +9,8 @@ interface LecturerExamsState {
   // Dialog states
   isCreateExamOpen: boolean;
   isManageQuestionOpen: boolean;
+  isBulkUploadOpen: boolean;
+  bulkUploadingToExamId: string | null;
 
   // Question management
   editingQuestion: IQuestion | null;
@@ -17,6 +19,7 @@ interface LecturerExamsState {
   // Actions
   setSelectedCourseId: (id: string | null) => void;
   setIsCreateExamOpen: (open: boolean) => void;
+  setBulkUploadingToExamId: (examId: string | null) => void;
   setIsManageQuestionOpen: (open: boolean) => void;
   setEditingQuestion: (question: IQuestion | null) => void;
   setAddingToExamId: (examId: string | null) => void;
@@ -26,7 +29,9 @@ interface LecturerExamsState {
   closeCreateExam: () => void;
   openAddQuestion: (examId: string) => void;
   openEditQuestion: (examId: string, question: IQuestion) => void;
+  openBulkUploadDialog: (examId: string) => void;
   closeQuestionDialog: () => void;
+  closeBulkUploadDialog: () => void;
   resetState: () => void;
 }
 
@@ -35,12 +40,15 @@ export const useLecturerExamsStore = create<LecturerExamsState>((set) => ({
   selectedCourseId: null,
   isCreateExamOpen: false,
   isManageQuestionOpen: false,
+  isBulkUploadOpen: false,
+  bulkUploadingToExamId: null,
   editingQuestion: null,
   addingToExamId: null,
 
   // Basic setters
   setSelectedCourseId: (id) => set({ selectedCourseId: id }),
   setIsCreateExamOpen: (open) => set({ isCreateExamOpen: open }),
+  setBulkUploadingToExamId: (examId) => set({ bulkUploadingToExamId: examId }),
   setIsManageQuestionOpen: (open) => set({ isManageQuestionOpen: open }),
   setEditingQuestion: (question) => set({ editingQuestion: question }),
   setAddingToExamId: (examId) => set({ addingToExamId: examId }),
@@ -68,6 +76,18 @@ export const useLecturerExamsStore = create<LecturerExamsState>((set) => ({
       isManageQuestionOpen: false,
       editingQuestion: null,
       addingToExamId: null,
+    }),
+
+  closeBulkUploadDialog: () =>
+    set({
+      isBulkUploadOpen: false,
+      bulkUploadingToExamId: null,
+    }),
+
+  openBulkUploadDialog: (examId: string) =>
+    set({
+      bulkUploadingToExamId: examId,
+      isBulkUploadOpen: true,
     }),
 
   resetState: () =>

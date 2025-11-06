@@ -113,8 +113,6 @@ const ManageQuestionDialog = ({
     closeQuestionDialog();
   };
 
-  console.log(isManageQuestionOpen);
-
   return (
     <Dialog open={isManageQuestionOpen} onOpenChange={closeQuestionDialog}>
       <DialogContent className="sm:max-w-xl">

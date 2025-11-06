@@ -17,14 +17,13 @@ import { toast } from "sonner";
 interface ExamHeaderProps {
   course: IExamCourse;
   exam: IExam;
-  onBulkUploadClick: () => void;
 }
 
-const ExamHeader = ({ course, exam, onBulkUploadClick }: ExamHeaderProps) => {
+const ExamHeader = ({ course, exam }: ExamHeaderProps) => {
   const [deleteExamTrigger, { isLoading }] = useDeleteExamMutation();
 
   // Zustand store
-  const { openAddQuestion } = useLecturerExamsStore();
+  const { openAddQuestion, openBulkUploadDialog } = useLecturerExamsStore();
 
   const handleDeleteExam = async () => {
     const toastId = toast.loading("Deleting Exam...");
@@ -65,7 +64,10 @@ const ExamHeader = ({ course, exam, onBulkUploadClick }: ExamHeaderProps) => {
               <Plus className="mr-2 h-4 w-4" />
               Add Question
             </Button>
-            <Button variant="outline" onClick={onBulkUploadClick}>
+            <Button
+              variant="outline"
+              onClick={() => openBulkUploadDialog(exam._id)}
+            >
               <Upload className="mr-2 h-4 w-4" />
               Bulk Upload
             </Button>

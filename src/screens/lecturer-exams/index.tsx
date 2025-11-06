@@ -33,6 +33,7 @@ const LecturerExams = () => {
     setSelectedCourseId,
     openCreateExam,
     closeCreateExam,
+    closeBulkUploadDialog,
   } = useLecturerExamsStore();
 
   // API queries
@@ -134,6 +135,7 @@ const LecturerExams = () => {
 
       await uploadBulkExamQuestions({ examId, data: formData }).unwrap();
       toast.success("Bulk upload successful!", { id: toastId });
+      closeBulkUploadDialog();
     } catch (error) {
       toast.error((error as any)?.data?.message || "Failed to upload file", {
         id: toastId,

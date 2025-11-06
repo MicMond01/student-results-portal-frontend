@@ -5,6 +5,8 @@ import CourseList from "./lecturer-profile-compo/CourseList";
 import { Skeleton } from "@/components/ui/skeleton";
 import LecturerSidebar from "./lecturer-profile-compo/LecturerSidebar";
 import ProfileHeader from "./lecturer-profile-compo/ProfileHeader";
+import Banner from "@/components/ui-components/Banner";
+import { CgProfile } from "react-icons/cg";
 
 const LecturerProfile = () => {
   const { data: lecturerData, isLoading } = useGetLecturerProfileQuery();
@@ -17,6 +19,13 @@ const LecturerProfile = () => {
   return (
     <div className="min-h-screen p-4 lg:p-8">
       <div className="mx-auto max-w-380">
+        <Banner
+          title="My Profile"
+          desc="Access and manage your academic profile, including personal details, departmental affiliation, and courses assigned."
+          actionButton={<CgProfile className="text-primary" size={40} />}
+          containterClass="mb-8"
+        />
+
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Main Content Area (Spans 2 columns on desktop) */}

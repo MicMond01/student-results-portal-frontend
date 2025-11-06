@@ -13,28 +13,23 @@ import { Download, Loader2, Upload } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
-import {
-  useGetDownloadTemplateQuery,
-  useLazyGetDownloadTemplateQuery,
-} from "@/redux/query/lecturer-exam";
+import { useLazyGetDownloadTemplateQuery } from "@/redux/query/lecturer-exam";
 
 interface BulkUploadDialogProps {
-  examId: string;
-  open: boolean;
   onUpload: (examId: string, file: File) => void;
   isUploading: boolean;
 }
 
-const BulkUploadDialog = ({
-  examId,
-  open,
-  onUpload,
-  isUploading,
-}: BulkUploadDialogProps) => {
+const BulkUploadDialog = ({ onUpload, isUploading }: BulkUploadDialogProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { closeQuestionDialog } = useLecturerExamsStore();
+  const {
+    closeBulkUploadDialog,
+    bulkUploadingToExamId,
+    isBulkUploadOpen,
+    openBulkUploadDialog,
+  } = useLecturerExamsStore();
   const [getTemplate] = useLazyGetDownloadTemplateQuery();
 
   const downloadExamFormat = async (format: string) => {
@@ -81,18 +76,21 @@ const BulkUploadDialog = ({
       setError("Please select a file to upload.");
       return;
     }
-    onUpload(examId, file);
-    // The parent (LecturerExamPage) will handle closing the dialog on success
+    if (bulkUploadingToExamId) {
+      onUpload(bulkUploadingToExamId, file);
+    } else {
+      setError("Exam ID is missing. Please try again.");
+    } // The parent (LecturerExamPage) will handle closing the dialog on success
   };
 
   const handleClose = () => {
     setFile(null);
     setError(null);
-    closeQuestionDialog();
+    closeBulkUploadDialog();
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={isBulkUploadOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Bulk Upload Questions</DialogTitle>
