@@ -6,25 +6,39 @@ const emailRegex =
 
 // const matricRegex = /^\d{11}$/;
 
-export const loginSchema = z.object({
-  identifier: z.string(),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be under 128 characters"),
+const loginSchema = z.object({
+  identifier: z.string().min(1, "Identifier is required"),
+  password: z.string().min(1, "Password is required"),
 });
 
-export const registrationSchema = z.object({
-  identifier: z.string(),
-  fullName: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be under 128 characters"),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be under 128 characters"),
+const verificationSchema = z.object({
+  dateOfBirth: z.string().min(1, "Date of Birth is required"),
+  phone: z.string().min(1, "Phone Number is required"),
+  jambNo: z.string().min(1, "JAMB/Matric No. is required"),
 });
+
+const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current Password is required"),
+    newPassword: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New passwords do not match",
+    path: ["confirmPassword"], // Error will be shown on this field
+  });
+
+// export const registrationSchema = z.object({
+//   identifier: z.string(),
+//   fullName: z
+//     .string()
+//     .min(6, "Password must be at least 6 characters")
+//     .max(128, "Password must be under 128 characters"),
+//   password: z
+//     .string()
+//     .min(6, "Password must be at least 6 characters")
+//     .max(128, "Password must be under 128 characters"),
+// });
 
 export const passwordSchema = z
   .object({
@@ -50,3 +64,8 @@ export const profileSchema = z.object({
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;
+export type VerificationSchema = z.infer<typeof verificationSchema>;
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
+export const LoginSchema = loginSchema;
+export const VerificationSchema = verificationSchema;
+export const ChangePasswordSchema = changePasswordSchema;

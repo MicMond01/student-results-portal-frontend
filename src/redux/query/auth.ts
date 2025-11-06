@@ -26,6 +26,11 @@ export interface IUser {
   createdAt: string;
 }
 
+export interface LoginFormData {
+  identifier: string;
+  password: string;
+}
+
 export const authenticationSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getLoggedInUser: builder.query<LoggedInUser, void>({
@@ -54,12 +59,31 @@ export const authenticationSlice = api.injectEndpoints({
     //   }),
     //   invalidatesTags: ["user"],
     // }),
-    login: builder.mutation<
-      AuthResponse,
-      { identifier: string; password: string }
-    >({
+    login: builder.mutation<AuthResponse, LoginFormData>({
       query: (payload) => ({
         url: "/auth/login",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["user"],
+    }),
+    verifyIdentity: builder.mutation<
+      any,
+      { dateOfBirth: string; phone: string; jambNo: string }
+    >({
+      query: (payload) => ({
+        url: "/auth/verify-identity",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["user"],
+    }),
+    changePassword: builder.mutation<
+      any,
+      { currentPassword: string; newPassword: string; confirmPassword: string }
+    >({
+      query: (payload) => ({
+        url: "/auth/change-password",
         method: "POST",
         body: payload,
       }),

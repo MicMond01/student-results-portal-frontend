@@ -2,7 +2,6 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/shared/FormInput";
 import { Separator } from "@/components/ui/separator";
@@ -10,6 +9,7 @@ import type { LoginFormValues } from "@/types/auth";
 import { useLoginMutation } from "@/redux/query/auth";
 import { setAuth } from "@/redux/slices/auth";
 import { useAppDispatch } from "@/lib/hooks/dispatch-hooks";
+import { LoginSchema } from "../../lib/validation";
 
 export const LoginForm: React.FC = () => {
   const [login, { isLoading, isError }] = useLoginMutation();
@@ -20,7 +20,7 @@ export const LoginForm: React.FC = () => {
     control,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(LoginSchema),
     defaultValues: { identifier: "", password: "" },
     mode: "onChange",
   });
