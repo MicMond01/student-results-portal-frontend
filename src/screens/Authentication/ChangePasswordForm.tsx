@@ -1,37 +1,61 @@
 import PasswordInput from "@/components/ui-components/PasswordInput";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import AuthLayout from "@/layout/AuthLayout";
+import { useForm } from "react-hook-form";
 import { ChangePasswordSchema } from "@/lib/validation";
+import {
+  useChangePasswordMutation,
+  type ChangePasswordFormProps,
+} from "@/redux/query/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthLayout from "@/layout/AuthLayout";
+import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatch-hooks";
+import { setAuth } from "@/redux/slices/auth";
 
 const ChangePasswordForm = () => {
-  const { changePassword, isLoading, error: apiError, user } = useAuthStore();
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+  const navigate = useNavigate();
+  const [changePassword, { isLoading, isError }] = useChangePasswordMutation();
+  const dispatch = useAppDispatch();
+  const { user, token } = useAppSelector((state) => state.auth);
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<ChangePasswordFormProps>({
+    resolver: zodResolver(ChangePasswordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+    mode: "onChange",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+  const submitHandler = async (values: ChangePasswordFormProps) => {
+    const toastId = toast.loading("Changing password...");
+    try {
+      const response = await changePassword(values).unwrap();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors({});
-    const validation = ChangePasswordSchema.safeParse(formData);
-    if (!validation.success) {
-      const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach(
-        (err) => (fieldErrors[err.path[0]] = err.message)
-      );
-      setErrors(fieldErrors);
-      return;
+      if (response.success) {
+        toast.success("Password changed successfully!", { id: toastId });
+        dispatch(setAuth({ token, user, nextStep: "dashboard" }));
+        navigate("/dashboard");
+      } else {
+        toast.error(response.message || "Password change failed", {
+          id: toastId,
+        });
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Password change failed. Please try again.";
+      toast.error(errorMessage, { id: toastId });
     }
-    changePassword(validation.data);
   };
 
   return (
@@ -39,36 +63,33 @@ const ChangePasswordForm = () => {
       title="Create New Password"
       description={`Welcome, ${user?.name}. For security, you must change your default password.`}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {apiError && (
+      <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
+        {isError && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Password Change Failed</AlertTitle>
-            <AlertDescription>{apiError}</AlertDescription>
+            <AlertDescription>{isError}</AlertDescription>
           </Alert>
         )}
         <PasswordInput
           id="currentPassword"
           label="Current Password"
-          value={formData.currentPassword}
-          onChange={handleChange}
-          error={errors.currentPassword}
+          control={control}
+          error={errors.currentPassword?.message}
           autoComplete="current-password"
         />
         <PasswordInput
           id="newPassword"
           label="New Password"
-          value={formData.newPassword}
-          onChange={handleChange}
-          error={errors.newPassword}
+          control={control}
+          error={errors.newPassword?.message}
           autoComplete="new-password"
         />
         <PasswordInput
           id="confirmPassword"
           label="Confirm New Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          error={errors.confirmPassword}
+          control={control}
+          error={errors.confirmPassword?.message}
           autoComplete="new-password"
         />
         <Button type="submit" className="w-full" disabled={isLoading}>

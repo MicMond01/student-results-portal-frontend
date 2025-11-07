@@ -5,27 +5,40 @@ import { setUser } from "../slices/auth";
 // import { registrationSchema } from "@/screens/Authentication/complete-registration";
 
 export interface AuthResponse {
-  user: AuthUser;
+  success: boolean;
   token: string;
+  user: AuthUser;
+  nextStep: string;
+  requiresVerification: boolean;
+  requiresPasswordChange: boolean;
 }
 
 export interface AuthUser {
-  name: string;
-  role: string;
-}
-
-export interface LoggedInUser {
-  user: IUser;
-}
-
-export interface IUser {
   id: string;
   name: string;
   identifier: string;
   role: string;
-  createdAt: string;
+  accountStatus: string;
 }
 
+export interface AuthVerificationForm {
+  dateOfBirth: string;
+  phone: string;
+  jambNo: string;
+}
+
+export interface AuthVerificationFormResponse {
+  success: boolean;
+  message: string;
+  nextStep: string;
+  requiresPasswordChange: boolean;
+}
+
+export interface ChangePasswordFormProps {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 export interface LoginFormData {
   identifier: string;
   password: string;
@@ -33,7 +46,7 @@ export interface LoginFormData {
 
 export const authenticationSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getLoggedInUser: builder.query<LoggedInUser, void>({
+    getLoggedInUser: builder.query<AuthResponse, void>({
       query: () => ({
         url: "/auth/myinfo",
       }),
@@ -68,8 +81,8 @@ export const authenticationSlice = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
     verifyIdentity: builder.mutation<
-      any,
-      { dateOfBirth: string; phone: string; jambNo: string }
+      AuthVerificationFormResponse,
+      AuthVerificationForm
     >({
       query: (payload) => ({
         url: "/auth/verify-identity",
@@ -78,10 +91,7 @@ export const authenticationSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
-    changePassword: builder.mutation<
-      any,
-      { currentPassword: string; newPassword: string; confirmPassword: string }
-    >({
+    changePassword: builder.mutation<any, ChangePasswordFormProps>({
       query: (payload) => ({
         url: "/auth/change-password",
         method: "POST",
@@ -94,6 +104,8 @@ export const authenticationSlice = api.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useVerifyIdentityMutation,
+  useChangePasswordMutation,
   useGetLoggedInUserQuery,
   useLazyGetLoggedInUserQuery,
 } = authenticationSlice;

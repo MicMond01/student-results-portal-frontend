@@ -1,91 +1,98 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import AuthLayout from "@/layout/AuthLayout";
-import { cn } from "@/lib/utils";
 import { VerificationSchema } from "@/lib/validation";
+import {
+  useVerifyIdentityMutation,
+  type AuthVerificationForm,
+} from "@/redux/query/auth";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormInput } from "@/components/shared/FormInput";
+import { useNavigate } from "react-router-dom";
 
 const VerificationForm = () => {
-  const { verifyIdentity, isLoading, error: apiError, user } = useAuthStore();
-  const [formData, setFormData] = useState({
-    dateOfBirth: "",
-    phone: "",
-    jambNo: "",
+  const [loggedinUser, { isLoading, isError }] = useVerifyIdentityMutation();
+  const navigate = useNavigate();
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<AuthVerificationForm>({
+    resolver: zodResolver(VerificationSchema),
+    defaultValues: { dateOfBirth: "", phone: "", jambNo: "" },
+    mode: "onChange",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+  const submitHandler = async (values: AuthVerificationForm) => {
+    const payload = {
+      ...values,
+      dateOfBirth: new Date(values.dateOfBirth).toISOString().split("T")[0],
+    };
+    const toastId = toast.loading("Verifying identity...");
+    try {
+      await loggedinUser(payload).unwrap();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors({});
-    const validation = VerificationSchema.safeParse(formData);
-    if (!validation.success) {
-      const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach(
-        (err) => (fieldErrors[err.path[0]] = err.message)
-      );
-      setErrors(fieldErrors);
-      return;
+      navigate("/change-password");
+      toast.success("Identity verified successfully!", { id: toastId });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Verification failed. Please try again.";
+      toast.error(errorMessage, { id: toastId });
     }
-    verifyIdentity(validation.data);
   };
 
   return (
     <AuthLayout
       title="Verify Your Identity"
-      description={`Welcome, ${user?.name}! Please provide the following details to activate your account.`}
+      description={`Welcome, ${loggedinUser?.name}! Please provide the following details to activate your account.`}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {apiError && (
+      <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
+        {isError && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Verification Failed</AlertTitle>
-            <AlertDescription>{apiError}</AlertDescription>
+            <AlertDescription>{isError}</AlertDescription>
           </Alert>
         )}
         <div className="space-y-2">
-          <Label htmlFor="dateOfBirth">Date of Birth</Label>
-          <Input
-            id="dateOfBirth"
+          <FormInput
+            name="dateOfBirth"
+            label="Date of Birth"
             type="date"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            className={cn(errors.dateOfBirth && "border-destructive")}
+            control={control}
           />
           {errors.dateOfBirth && (
-            <p className="text-sm text-destructive">{errors.dateOfBirth}</p>
+            <p className="text-sm text-destructive">
+              {errors.dateOfBirth.message}
+            </p>
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
-          <Input
-            id="phone"
+          <FormInput
+            name="phone"
+            label="Phone Number"
             placeholder="Phone number on file"
-            value={formData.phone}
-            onChange={handleChange}
-            className={cn(errors.phone && "border-destructive")}
+            control={control}
           />
           {errors.phone && (
-            <p className="text-sm text-destructive">{errors.phone}</p>
+            <p className="text-sm text-destructive">{errors.phone.message}</p>
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="jambNo">JAMB/Matriculation No.</Label>
-          <Input
-            id="jambNo"
+          <FormInput
+            name="jambNo"
+            label="JAMB/Matriculation No."
             placeholder="Your JAMB or Matric No."
-            value={formData.jambNo}
-            onChange={handleChange}
-            className={cn(errors.jambNo && "border-destructive")}
+            control={control}
           />
           {errors.jambNo && (
-            <p className="text-sm text-destructive">{errors.jambNo}</p>
+            <p className="text-sm text-destructive">{errors.jambNo.message}</p>
           )}
         </div>
         <Button type="submit" className="w-full" disabled={isLoading}>

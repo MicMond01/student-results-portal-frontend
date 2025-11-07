@@ -1,10 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { routeData, authRouteData } from "./data";
+import { routeData, authRouteData, vrificationRoute } from "./data";
 import AppLayout from "@/layout/AppLayout";
 import { Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute";
 import OpenRouteChecker from "./OpenRouteChecker";
 import UnauthorizedPage from "@/screens/Authentication/UnauthorizedPage";
+import StepGuard from "./StepGuard";
+import ChangePasswordForm from "@/screens/Authentication/ChangePasswordForm";
 
 const Fallback = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -18,6 +20,25 @@ const Fallback = () => (
 const AppRoutes = () => {
   return (
     <Routes>
+      {vrificationRoute
+        .filter((route) => route.allowedStep !== undefined)
+        .map((route) => {
+          return (
+            <Route
+              key={route.link}
+              path={route.link}
+              element={
+                <StepGuard
+                  allowedStep={
+                    route.allowedStep as "verification" | "change-password"
+                  }
+                >
+                  <route.component />
+                </StepGuard>
+              }
+            />
+          );
+        })}
       {authRouteData.map((route) => (
         <Route
           key={route.link}

@@ -3,18 +3,30 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "@/lib/hooks/dispatch-hooks";
 
 const useAuth = () => {
-  const { token } = useAppSelector((state)=> state.auth)
-
-  const isAuthenticated = !!token
-
-  return isAuthenticated
+  const { token, nextStep, user } = useAppSelector((state) => state.auth);
+  const isAuthenticated = !!token;
+  return { isAuthenticated, nextStep, user };
 };
 
 const OpenRouteChecker = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
-  const  isAuthenticated = useAuth();
+  const { isAuthenticated, nextStep, user } = useAuth();
 
-  return !isAuthenticated ? children : ( <Navigate to="/" state={{ from: location }} />)
+  if (!isAuthenticated) return children;
+
+  if (user?.role === "admin") {
+    return <Navigate to="/" replace />;
+  }
+
+  if (nextStep === "verification") {
+    return <Navigate to="/verify-identity" replace />;
+  }
+
+  if (nextStep === "change-password") {
+    return <Navigate to="/change-password" replace />;
+  }
+
+  return <Navigate to="/" state={{ from: location }} replace />;
 };
 
 export default OpenRouteChecker;

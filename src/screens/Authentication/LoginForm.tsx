@@ -1,63 +1,58 @@
+import { FormInput } from "@/components/shared/FormInput";
 import PasswordInput from "@/components/ui-components/PasswordInput";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthLayout from "@/layout/AuthLayout";
-import { cn } from "@/lib/utils";
+import { useAppDispatch } from "@/lib/hooks/dispatch-hooks";
 import { LoginSchema } from "@/lib/validation";
-import type { LoginFormData } from "@/redux/query/auth";
+import { useLoginMutation } from "@/redux/query/auth";
+import { setAuth } from "@/redux/slices/auth";
+import type { LoginFormValues } from "@/types/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  
-  const [formData, setFormData] = useState<LoginFormData>({
-    identifier: "",
-    password: "",
+  const dispatch = useAppDispatch();
+  const [login, { isLoading, isError }] = useLoginMutation();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: { identifier: "", password: "" },
+    mode: "onChange",
   });
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
+  const submitHandler = async (values: LoginFormValues) => {
+    const toastId = toast.loading("Logging in...");
     try {
-      const response = await fetch("/api/v1/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const result = await login(values).unwrap();
 
-      const data = await response.json();
-
-      if (data.success) {
-        // Store token
-        localStorage.setItem("token", data.token);
-        
-        // Store user data
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        toast.success("Login successful!");
-
-        // ✅ Navigate based on nextStep
-        if (data.nextStep === "verification") {
-          navigate("/verify-identity");
-        } else if (data.nextStep === "change-password") {
-          navigate("/change-password");
-        } else {
-          navigate("/dashboard");
-        }
-      } else {
-        toast.error(data.message || "Login failed");
+      if (result.token) {
+        dispatch(
+          setAuth({
+            token: result.token,
+            user: result.user,
+            nextStep: result.nextStep,
+          })
+        );
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      const errorMessage = (error as any)?.data?.msg;
+      toast.error(errorMessage);
+      setErrorMsg(errorMessage);
+      console.log(error);
     } finally {
-      setLoading(false);
+      toast.dismiss(toastId);
     }
   };
   return (
@@ -65,35 +60,32 @@ const LoginForm = () => {
       title="Welcome Back"
       description="Enter your credentials to access your account."
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {apiError && (
+      <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
+        {errorMsg && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Login Failed</AlertTitle>
-            <AlertDescription>{apiError}</AlertDescription>
+            <AlertDescription>{errorMsg}</AlertDescription>
           </Alert>
         )}
         <div className="space-y-2">
           <Label htmlFor="identifier">
             Identifier (Email, Matric No, etc.)
           </Label>
-          <Input
-            id="identifier"
+
+          <FormInput
+            name="identifier"
+            label="Email"
             placeholder="e.g., 23000000001"
-            value={formData.identifier}
-            onChange={handleChange}
-            className={cn(errors.identifier && "border-destructive")}
+            control={control}
+            error={errors.identifier?.message}
           />
-          {errors.identifier && (
-            <p className="text-sm text-destructive">{errors.identifier}</p>
-          )}
         </div>
         <PasswordInput
           id="password"
           label="Password"
-          value={formData.password}
-          onChange={handleChange}
-          error={errors.password}
+          control={control}
+          error={errors.password?.message}
           autoComplete="current-password"
         />
         <Button type="submit" className="w-full" disabled={isLoading}>

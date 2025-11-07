@@ -22,6 +22,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const [authCheckComplete, setAuthCheckComplete] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const dispatch = useAppDispatch();
+  // console.log(user);
 
   useEffect(() => {
     const verifyUser = async () => {

@@ -5,14 +5,19 @@ import type { AuthUser } from "../query/auth";
 export interface InitialState {
   user: AuthUser | null;
   token: string;
+  nextStep: string | null;
 }
 
 const initialState: InitialState = {
   token: "",
   user: {
+    id: "",
+    identifier: "",
+    accountStatus: "",
     name: "",
     role: "",
   },
+  nextStep: null,
 };
 
 const authUserSlice = createSlice({
@@ -21,10 +26,15 @@ const authUserSlice = createSlice({
   reducers: {
     setAuth: (
       state,
-      action: PayloadAction<{ token: string; user?: AuthUser | null }>
+      action: PayloadAction<{
+        token: string;
+        user?: AuthUser | null;
+        nextStep?: string;
+      }>
     ) => {
       state.token = action.payload.token;
       state.user = action.payload.user ?? null;
+      state.nextStep = action.payload.nextStep ?? null;
     },
     setUser: (state, action: PayloadAction<AuthUser>) => {
       state.user = action.payload;
@@ -32,6 +42,7 @@ const authUserSlice = createSlice({
     exitUser: (state) => {
       state.token = "";
       state.user = null;
+      state.nextStep = null;
     },
   },
 });

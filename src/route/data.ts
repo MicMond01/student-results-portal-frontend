@@ -1,4 +1,6 @@
 import AuthenticationPage from "@/screens/Authentication/login";
+import VerifyIdentity from "@/screens/Authentication/VerificationForm";
+import ChangePassword from "@/screens/Authentication/ChangePasswordForm";
 // src/router/routesData.tsx
 import { lazy } from "react";
 
@@ -20,6 +22,7 @@ export type IRoute = {
   link: string;
   title: string;
   code: string;
+  allowedStep?: "verification" | "change-password";
   component: React.FC;
   allowedRoles?: Array<"admin" | "lecturer" | "student">;
 };
@@ -31,6 +34,7 @@ const authRouteData: IRoute[] = [
     code: "log",
     component: AuthenticationPage,
   },
+
   // {
   //   link: "/registration/:uuid",
   //   title: "Registration",
@@ -49,6 +53,23 @@ const authRouteData: IRoute[] = [
   //   code: "rsa",
   //   component: RestoreAccount,
   // },
+];
+
+const vrificationRoute: IRoute[] = [
+  {
+    link: "/verify-identity",
+    title: "Verify-Identity",
+    code: "vri",
+    allowedStep: "verification",
+    component: VerifyIdentity,
+  },
+  {
+    link: "/change-password",
+    title: "Change-Password",
+    code: "chp",
+    allowedStep: "change-password",
+    component: ChangePassword,
+  },
 ];
 
 const routeData: IRoute[] = [
@@ -109,4 +130,4 @@ const routeData: IRoute[] = [
     allowedRoles: ["lecturer"],
   },
 ];
-export { routeData, authRouteData };
+export { routeData, authRouteData, vrificationRoute };
