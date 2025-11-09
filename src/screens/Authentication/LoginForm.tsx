@@ -13,13 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [login, { isLoading, isError }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const {
@@ -65,7 +63,9 @@ const LoginForm = () => {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Login Failed</AlertTitle>
-            <AlertDescription>{errorMsg}</AlertDescription>
+            <AlertDescription className="text-red-500">
+              {errorMsg}
+            </AlertDescription>
           </Alert>
         )}
         <div className="space-y-2">

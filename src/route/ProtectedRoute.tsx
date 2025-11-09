@@ -17,12 +17,11 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const location = useLocation();
   const isTokenSet = useAuth();
-  const { token, user } = useAppSelector((state) => state.auth);
+  const { token, user, nextStep } = useAppSelector((state) => state.auth);
   const [getAuthUser] = useLazyGetLoggedInUserQuery();
   const [authCheckComplete, setAuthCheckComplete] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const dispatch = useAppDispatch();
-  // console.log(user);
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -46,11 +45,12 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     verifyUser();
   }, [isTokenSet, token]);
 
-  // --- Redirect logic ---
+  // --- Redirect if not logged in ---
   if (!isTokenSet || isUnauthorized) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // --- Wait for authentication check to finish 
   if (!authCheckComplete) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
@@ -59,7 +59,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     );
   }
 
-  // --- Role-based restriction ---
+  // --- Role restriction check ---
   if (allowedRoles && allowedRoles.length > 0) {
     if (
       !user ||
@@ -67,6 +67,24 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
       !allowedRoles.includes(user.role as "admin" | "lecturer" | "student")
     ) {
       return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  // ✅ --- Step protection (aligned with backend logic) ---
+  if (user?.role !== "admin") {
+    if (nextStep === "verification") {
+      return <Navigate to="/verify-identity" replace />;
+    }
+    if (nextStep === "change-password") {
+      return <Navigate to="/change-password" replace />;
+    }
+    if (nextStep === null) {
+      // user not logged in properly
+      return <Navigate to="/login" replace />;
+    }
+    if (nextStep !== "dashboard") {
+      // safety fallback
+      return <Navigate to="/login" replace />;
     }
   }
 

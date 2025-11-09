@@ -45,7 +45,7 @@ const AuthenticationPage = () => {
 
     case "dashboard":
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-800">
           <Card className="w-full max-w-md">
             <CardHeader>
               <CardTitle>Login Successful!</CardTitle>

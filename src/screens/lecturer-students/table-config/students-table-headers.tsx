@@ -118,6 +118,7 @@ export const studentResultsTableHeaders = (
             description="Are you sure you want to delete this student result? "
             action={handleDelete.bind(null, row._id)}
             triggerLabel={<IoTrashBinOutline />}
+            type="delete"
             confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}
           />
         </div>

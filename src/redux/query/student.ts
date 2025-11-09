@@ -1,5 +1,4 @@
-// import { any } from "@/screens/roles/types";
-// import type { AnyResolvedKeyframe } from "framer-motion";
+import type { IStudentProfile } from "@/types/student";
 import { api } from "../baseConfig";
 
 export const studentSlice = api.injectEndpoints({
@@ -16,7 +15,7 @@ export const studentSlice = api.injectEndpoints({
       }),
       providesTags: ["student", "course"],
     }),
-    getOwnProfile: builder.query<any, void>({
+    getOwnProfile: builder.query<IStudentProfile, void>({
       query: () => ({
         url: "/student/profile",
       }),

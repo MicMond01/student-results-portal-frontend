@@ -1,7 +1,7 @@
 import { LogOut, Settings, User } from "lucide-react";
 
 import { useGetLoggedInUserQuery } from "@/redux/query/auth";
-import { useAppDispatch } from "@/lib/hooks/dispatch-hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatch-hooks";
 import { exitUser } from "@/redux/slices/auth";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import {
@@ -16,6 +16,18 @@ const ProfileDropdown = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data } = useGetLoggedInUserQuery();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const navigateProfile = () => {
+    console.log(user?.role);
+    if (user?.role === "lecturer") {
+      navigate("/profile");
+    }
+
+    if (user?.role === "student") {
+      navigate("/myprofile");
+    }
+  };
 
   return (
     <div className="">
@@ -31,7 +43,7 @@ const ProfileDropdown = () => {
       <DropdownMenuSeparator className=" bg-gray-500" />
       <DropdownMenuGroup>
         <DropdownMenuItem
-          onClick={() => navigate("/profile")}
+          onClick={() => navigateProfile()}
           className="cursor-pointer hover:bg-gray-200 font-medium"
         >
           <User className="mr-2 h-4 w-4" />

@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "@/components/navigation/Sidebar";
-import Topbar from "@/components/navigation/Topbar";
+import Topbar from "@/components/navigation/TopBar";
 import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumbs from "@/components/navigation/Breadcrumbs";
 
@@ -16,7 +16,7 @@ const AppLayout: React.FC = () => {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#f5efff]">
+    <div className="flex h-screen w-full overflow-hidden bg-bg-1">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />

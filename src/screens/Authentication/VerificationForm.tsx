@@ -12,10 +12,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "@/components/shared/FormInput";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatch-hooks";
+import { setAuth } from "@/redux/slices/auth";
+import { useState } from "react";
 
 const VerificationForm = () => {
-  const [loggedinUser, { isLoading, isError }] = useVerifyIdentityMutation();
+  const [loggedinUser, { isLoading }] = useVerifyIdentityMutation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { token } = useAppSelector((state) => state.auth);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const {
     handleSubmit,
@@ -33,16 +39,18 @@ const VerificationForm = () => {
       dateOfBirth: new Date(values.dateOfBirth).toISOString().split("T")[0],
     };
     const toastId = toast.loading("Verifying identity...");
-    try {
-      await loggedinUser(payload).unwrap();
 
-      navigate("/change-password");
-      toast.success("Identity verified successfully!", { id: toastId });
+    try {
+      const response = await loggedinUser(payload).unwrap();
+
+      if (response.success) {
+        dispatch(setAuth({ token, nextStep: "change-password" }));
+        navigate("/change-password");
+        toast.success("Identity verified successfully!", { id: toastId });
+      }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Verification failed. Please try again.";
+      const errorMessage = (error as any)?.data?.msg;
+      setErrorMsg(errorMessage);
       toast.error(errorMessage, { id: toastId });
     }
   };
@@ -53,11 +61,13 @@ const VerificationForm = () => {
       description={`Welcome, ${loggedinUser?.name}! Please provide the following details to activate your account.`}
     >
       <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-        {isError && (
+        {errorMsg && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Verification Failed</AlertTitle>
-            <AlertDescription>{isError}</AlertDescription>
+            <AlertDescription className="text-red-500">
+              {errorMsg}
+            </AlertDescription>
           </Alert>
         )}
         <div className="space-y-2">

@@ -17,6 +17,9 @@ const LecturerExams = lazy(() => import("@/screens/lecturer-exams/index"));
 const StudentDetail = lazy(
   () => import("@/screens/lecturer-students/StudentDetail")
 );
+const StudentProfile = lazy(
+  () => import("@/screens/students-screens/profile/index")
+);
 
 export type IRoute = {
   link: string;
@@ -128,6 +131,13 @@ const routeData: IRoute[] = [
     code: "exams",
     component: LecturerExams,
     allowedRoles: ["lecturer"],
+  },
+  {
+    link: "/myprofile",
+    title: "Profile",
+    code: "st-profile",
+    component: StudentProfile,
+    allowedRoles: ["student"],
   },
 ];
 export { routeData, authRouteData, vrificationRoute };

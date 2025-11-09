@@ -14,12 +14,16 @@ import AuthLayout from "@/layout/AuthLayout";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatch-hooks";
 import { setAuth } from "@/redux/slices/auth";
+import { useState } from "react";
 
 const ChangePasswordForm = () => {
   const navigate = useNavigate();
-  const [changePassword, { isLoading, isError }] = useChangePasswordMutation();
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
   const dispatch = useAppDispatch();
   const { user, token } = useAppSelector((state) => state.auth);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  console.log("User in ChangePasswordForm:", user);
 
   const {
     handleSubmit,
@@ -50,10 +54,8 @@ const ChangePasswordForm = () => {
         });
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Password change failed. Please try again.";
+      const errorMessage = (error as any)?.data?.msg;
+      setErrorMsg(errorMessage);
       toast.error(errorMessage, { id: toastId });
     }
   };
@@ -64,11 +66,13 @@ const ChangePasswordForm = () => {
       description={`Welcome, ${user?.name}. For security, you must change your default password.`}
     >
       <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-        {isError && (
+        {errorMsg && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Password Change Failed</AlertTitle>
-            <AlertDescription>{isError}</AlertDescription>
+            <AlertDescription className="text-red-500">
+              {errorMsg}
+            </AlertDescription>
           </Alert>
         )}
         <PasswordInput
