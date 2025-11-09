@@ -99,6 +99,13 @@ const Sidebar: React.FC = () => {
         to: "/myprofile",
         allowedRoles: ["student"],
       },
+      {
+        id: "student-results",
+        label: "Results",
+        icon: <Icon.exams className="h-5 w-5" />,
+        to: "/myresults",
+        allowedRoles: ["student"],
+      },
     ];
 
     // ✅ Filter items and children based on role

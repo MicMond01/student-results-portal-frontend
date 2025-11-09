@@ -5,7 +5,7 @@ const StatCard: React.FC<{
   icon: LucideIcon;
   title: string;
   value: string | number;
-  description: string;
+  description?: string;
 }> = ({ icon: Icon, title, value, description }) => {
   return (
     <Card>

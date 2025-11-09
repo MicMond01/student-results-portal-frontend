@@ -33,3 +33,17 @@ export const formatDuration = (minutes: number) => {
   if (m > 0) s += `${m} Minute${m > 1 ? "s" : ""}`;
   return s.trim() || "N/A";
 };
+
+export const loadScript = (src: string) => {
+  return new Promise((resolve, reject) => {
+    // Check if the script is already in the DOM
+    if (document.querySelector(`script[src="${src}"]`)) {
+      return resolve(true);
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => resolve(true);
+    script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+    document.body.appendChild(script);
+  });
+};

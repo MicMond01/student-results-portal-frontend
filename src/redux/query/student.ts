@@ -1,9 +1,10 @@
 import type { IStudentProfile } from "@/types/student";
 import { api } from "../baseConfig";
+import type { IStudentResunts } from "@/screens/students-screens/results/type";
 
 export const studentSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getMyResults: builder.query<any, void>({
+    getMyResults: builder.query<IStudentResunts, void>({
       query: () => ({
         url: "/student/results",
       }),

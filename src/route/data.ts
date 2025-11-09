@@ -20,6 +20,9 @@ const StudentDetail = lazy(
 const StudentProfile = lazy(
   () => import("@/screens/students-screens/profile/index")
 );
+const StudentResults = lazy(
+  () => import("@/screens/students-screens/results/index")
+);
 
 export type IRoute = {
   link: string;
@@ -137,6 +140,13 @@ const routeData: IRoute[] = [
     title: "Profile",
     code: "st-profile",
     component: StudentProfile,
+    allowedRoles: ["student"],
+  },
+  {
+    link: "/myresults",
+    title: "Student Results",
+    code: "st-results",
+    component: StudentResults,
     allowedRoles: ["student"],
   },
 ];

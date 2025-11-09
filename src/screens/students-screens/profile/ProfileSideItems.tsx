@@ -11,7 +11,6 @@ interface IStudentProfileProps {
   profile?: StudentProfile;
 }
 const ProfileSideItems = ({ profile }: IStudentProfileProps) => {
-  console.log(profile);
   return (
     <Card className="lg:sticky lg:top-8">
       <CardContent className="pt-6">
