@@ -23,6 +23,15 @@ const StudentProfile = lazy(
 const StudentResults = lazy(
   () => import("@/screens/students-screens/results/index")
 );
+const StudentCourses = lazy(
+  () => import("@/screens/students-screens/courses/index")
+);
+
+const StudentDashboard = lazy(
+  () => import("@/screens/students-screens/dashboard")
+);
+const LecturerDashboard = lazy(() => import("@/screens/dashboard"));
+const AdminDashboard = lazy(() => import("@/screens/admin/dashboard"));
 
 export type IRoute = {
   link: string;
@@ -80,12 +89,33 @@ const vrificationRoute: IRoute[] = [
 
 const routeData: IRoute[] = [
   {
-    link: "/",
+    link: "/admin/dashboard",
     title: "Dashboard",
-    code: "dashboard",
-    component: Dashboard,
-    allowedRoles: ["student", "admin", "lecturer"],
+    code: "ad-dashboard",
+    component: AdminDashboard,
+    allowedRoles: ["admin"],
   },
+  {
+    link: "/lecturer/dashboard",
+    title: "Dashboard",
+    code: "lr-dashboard",
+    component: LecturerDashboard,
+    allowedRoles: ["lecturer"],
+  },
+  {
+    link: "/student/dashboard",
+    title: "Dashboard",
+    code: "st-dashboard",
+    component: StudentDashboard,
+    allowedRoles: ["student"],
+  },
+  // {
+  //   link: "/",
+  //   title: "Dashboard",
+  //   code: "dashboard",
+  //   component: Dashboard,
+  //   allowedRoles: ["student", "admin", "lecturer"],
+  // },
   {
     link: "/myStudents",
     title: "My Students",
@@ -108,7 +138,7 @@ const routeData: IRoute[] = [
     allowedRoles: ["lecturer"],
   },
   {
-    link: "/profile/update",
+    link: "/profile-update",
     title: "Update Profile",
     code: "edit-profile",
     component: UpdateProfile,
@@ -147,6 +177,13 @@ const routeData: IRoute[] = [
     title: "Student Results",
     code: "st-results",
     component: StudentResults,
+    allowedRoles: ["student"],
+  },
+  {
+    link: "/mycourses",
+    title: "Student Courses",
+    code: "st-courses",
+    component: StudentCourses,
     allowedRoles: ["student"],
   },
 ];

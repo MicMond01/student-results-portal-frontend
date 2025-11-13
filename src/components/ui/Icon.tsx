@@ -1,5 +1,6 @@
 // src/components/ui/Icon.tsx
 import React from "react";
+import { CgProfile } from "react-icons/cg";
 
 export const Icon: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   dashboard: (p) => (
@@ -99,4 +100,5 @@ export const Icon: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
       />
     </svg>
   ),
+  profile: () => <CgProfile className="h-5 w-5" />,
 };

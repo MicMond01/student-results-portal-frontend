@@ -1,6 +1,7 @@
 import type { IStudentProfile } from "@/types/student";
 import { api } from "../baseConfig";
 import type { IStudentResunts } from "@/screens/students-screens/results/type";
+import type { ICourses } from "@/screens/students-screens/courses/type";
 
 export const studentSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,7 +11,7 @@ export const studentSlice = api.injectEndpoints({
       }),
       providesTags: ["student"],
     }),
-    getMyCourses: builder.query<any, void>({
+    getMyCourses: builder.query<ICourses, void>({
       query: () => ({
         url: "/student/courses",
       }),

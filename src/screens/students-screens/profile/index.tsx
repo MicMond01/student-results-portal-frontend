@@ -6,7 +6,6 @@ import { PiUserBold } from "react-icons/pi";
 
 const StudentProfile = () => {
   const { data: profile } = useGetOwnProfileQuery();
-  console.log(profile);
   return (
     <div className="mx-auto max-w-380">
       <Banner

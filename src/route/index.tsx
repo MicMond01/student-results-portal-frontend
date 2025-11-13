@@ -6,7 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import OpenRouteChecker from "./OpenRouteChecker";
 import UnauthorizedPage from "@/screens/Authentication/UnauthorizedPage";
 import StepGuard from "./StepGuard";
-import ChangePasswordForm from "@/screens/Authentication/ChangePasswordForm";
+import DashboardRouter from "./DashboardRouter";
 
 const Fallback = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -50,6 +50,25 @@ const AppRoutes = () => {
           }
         />
       ))}
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <DashboardRouter />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Allow /dashboard as alias */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardRouter />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/"

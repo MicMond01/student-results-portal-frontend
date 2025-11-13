@@ -44,11 +44,11 @@ const LoginForm = () => {
           })
         );
       }
-    } catch (error) {
-      const errorMessage = (error as any)?.data?.msg;
-      toast.error(errorMessage);
-      setErrorMsg(errorMessage);
-      console.log(error);
+    } catch (error: any) {
+      console.error("Login error:", error);
+      const message = error?.data?.msg || error?.data?.message;
+      toast.error(message);
+      setErrorMsg(message);
     } finally {
       toast.dismiss(toastId);
     }

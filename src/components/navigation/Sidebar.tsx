@@ -34,16 +34,31 @@ const Sidebar: React.FC = () => {
   const items = useMemo<NavItem[]>(() => {
     const base: NavItem[] = [
       {
-        id: "dashboard",
+        id: "st-dashboard",
         label: "Dashboard",
-        to: "/",
+        to: "/student/dashboard",
         icon: <Icon.dashboard className="h-5 w-5" />,
-        allowedRoles: ["student", "lecturer", "admin"], // added admin too
+        allowedRoles: ["student"],
+      },
+      {
+        id: "lr-dashboard",
+        label: "Dashboard",
+        to: "/lecturer/dashboard",
+        icon: <Icon.dashboard className="h-5 w-5" />,
+        allowedRoles: ["lecturer"],
+      },
+      {
+        id: "ad-dashboard",
+        label: "Dashboard",
+        to: "/admin/dashboard",
+        icon: <Icon.dashboard className="h-5 w-5" />,
+        allowedRoles: ["admin"],
       },
       {
         id: "my-students",
         label: "My Students",
         icon: <Icon.courses className="h-5 w-5" />,
+        allowedRoles: ["lecturer"],
         children: [
           {
             id: "my1",
@@ -63,6 +78,7 @@ const Sidebar: React.FC = () => {
         id: "lecturer-profile",
         label: "Lecturer Profile",
         icon: <Icon.courses className="h-5 w-5" />,
+        allowedRoles: ["lecturer"],
         children: [
           {
             id: "l1",
@@ -73,7 +89,7 @@ const Sidebar: React.FC = () => {
           {
             id: "l2",
             label: "Update Profile",
-            to: "/profile/update",
+            to: "/profile-update",
             allowedRoles: ["lecturer"],
           },
         ],
@@ -95,15 +111,22 @@ const Sidebar: React.FC = () => {
       {
         id: "student-profile",
         label: "Profile",
-        icon: <Icon.exams className="h-5 w-5" />,
+        icon: <Icon.profile />,
         to: "/myprofile",
         allowedRoles: ["student"],
       },
       {
         id: "student-results",
         label: "Results",
-        icon: <Icon.exams className="h-5 w-5" />,
+        icon: <Icon.students className="h-5 w-5" />,
         to: "/myresults",
+        allowedRoles: ["student"],
+      },
+      {
+        id: "student-courses",
+        label: "Courses",
+        icon: <Icon.exams className="h-5 w-5" />,
+        to: "/mycourses",
         allowedRoles: ["student"],
       },
     ];
