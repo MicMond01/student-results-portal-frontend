@@ -53,10 +53,10 @@ const ChangePasswordForm = () => {
           id: toastId,
         });
       }
-    } catch (error) {
-      const errorMessage = (error as any)?.data?.msg;
-      setErrorMsg(errorMessage);
-      toast.error(errorMessage, { id: toastId });
+    } catch (error: any) {
+      const message = error?.data?.msg || error?.data?.message;
+      setErrorMsg(message);
+      toast.error(message, { id: toastId });
     }
   };
 

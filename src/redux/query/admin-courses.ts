@@ -1,32 +1,30 @@
-// import { any } from "@/screens/roles/types";
-// import type { AnyResolvedKeyframe } from "framer-motion";
 import { api } from "../baseConfig";
 
 export const adminCourseSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    addNewCourse: builder.mutation<any, any>({
+    createCourse: builder.mutation<any, any>({
       query: (payload) => ({
-        url: "/admin",
+        url: "/admin/courses",
         method: "POST",
         body: payload,
       }),
       invalidatesTags: ["course", "admin"],
     }),
-    listAllCourses: builder.query<any, void>({
+    getAllCourses: builder.query<any, void>({
       query: () => ({
-        url: "/admin",
+        url: "/admin/courses",
       }),
       providesTags: ["admin", "course"],
     }),
-    getCourse: builder.query<any, void>({
-      query: (id) => ({
-        url: `/admin/${id}`,
+    getCoursesByDepartment: builder.query<any, void>({
+      query: (deptId) => ({
+        url: `/admin/courses/department/${deptId}`,
       }),
       providesTags: ["admin", "course"],
     }),
     updateACourse: builder.mutation<any, any>({
       query: ({ id, data }) => ({
-        url: `/admin/${id}`,
+        url: `/admin/courses/${id}`,
         method: "POST",
         body: data,
       }),
@@ -34,9 +32,8 @@ export const adminCourseSlice = api.injectEndpoints({
     }),
 
     deleteCourse: builder.mutation<any, any>({
-      //TODO: Type for upload student result
       query: (id) => ({
-        url: `/admin/${id}`,
+        url: `/admin/courses/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["admin", "course"],
@@ -45,9 +42,9 @@ export const adminCourseSlice = api.injectEndpoints({
 });
 
 export const {
-  useAddNewCourseMutation,
-  useListAllCoursesQuery,
-  useGetCourseQuery,
+  useCreateCourseMutation,
+  useGetAllCoursesQuery,
+  useGetCoursesByDepartmentQuery,
   useUpdateACourseMutation,
   useDeleteCourseMutation,
 } = adminCourseSlice;

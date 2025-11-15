@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatch-hooks";
 import { setAuth } from "@/redux/slices/auth";
 import { useState } from "react";
+import { normalizeNigerianPhone } from "@/utils/normalizeNigerianPhone";
 
 const VerificationForm = () => {
   const [loggedinUser, { isLoading }] = useVerifyIdentityMutation();
@@ -34,8 +35,18 @@ const VerificationForm = () => {
   });
 
   const submitHandler = async (values: AuthVerificationForm) => {
+    const normalizedPhone = normalizeNigerianPhone(values.phone);
+    if (!normalizedPhone) {
+      setErrorMsg(
+        "Please enter a valid Nigerian phone number (e.g., 07027323037 or +2347027323037)"
+      );
+      toast.error("Invalid phone number format", { duration: 3000 });
+      return;
+    }
+
     const payload = {
       ...values,
+      phone: normalizedPhone,
       dateOfBirth: new Date(values.dateOfBirth).toISOString().split("T")[0],
     };
     const toastId = toast.loading("Verifying identity...");
@@ -48,10 +59,10 @@ const VerificationForm = () => {
         navigate("/change-password");
         toast.success("Identity verified successfully!", { id: toastId });
       }
-    } catch (error) {
-      const errorMessage = (error as any)?.data?.msg;
-      setErrorMsg(errorMessage);
-      toast.error(errorMessage, { id: toastId });
+    } catch (error: any) {
+      const message = error?.data?.msg || error?.data?.message;
+      setErrorMsg(message);
+      toast.error(message, { id: toastId });
     }
   };
 
@@ -87,7 +98,7 @@ const VerificationForm = () => {
           <FormInput
             name="phone"
             label="Phone Number"
-            placeholder="Phone number on file"
+            placeholder="e.g., 07027323037 or +234 702 732 3037"
             control={control}
           />
           {errors.phone && (
@@ -97,7 +108,7 @@ const VerificationForm = () => {
         <div className="space-y-2">
           <FormInput
             name="jambNo"
-            label="JAMB/Matriculation No."
+            label="JAMB No."
             placeholder="Your JAMB or Matric No."
             control={control}
           />
