@@ -1,16 +1,52 @@
-// import { any } from "@/screens/roles/types";
-// import type { AnyResolvedKeyframe } from "framer-motion";
 import { api } from "../baseConfig";
 
-export const adminCourseSlice = api.injectEndpoints({
+export const adminResultSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getAllResult: builder.query<any, void>({
-      query: () => ({
-        url: "/admin",
+    createResult: builder.mutation<any, any>({
+      query: (payload) => ({
+        url: "/admin/results",
+        method: "POST",
+        body: payload,
       }),
-      providesTags: ["admin", "result"],
+      invalidatesTags: ["results", "admin"],
+    }),
+    getAllResults: builder.query<any, void>({
+      query: () => ({
+        url: "/admin/results",
+      }),
+      providesTags: ["admin", "results"],
+    }),
+    bulkCreateResults: builder.mutation<any, any>({
+      query: (payload) => ({
+        url: `/admin/results/bulk`,
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["admin", "results"],
+    }),
+    updateResult: builder.mutation<any, any>({
+      query: ({ id, data }) => ({
+        url: `/admin/results/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["admin", "results"],
+    }),
+
+    deleteResult: builder.mutation<any, any>({
+      query: (id) => ({
+        url: `/admin/results/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["admin", "results"],
     }),
   }),
 });
 
-export const { useGetAllResultQuery } = adminCourseSlice;
+export const {
+  useCreateResultMutation,
+  useGetAllResultsQuery,
+  useBulkCreateResultsMutation,
+  useUpdateResultMutation,
+  useDeleteResultMutation,
+} = adminResultSlice;

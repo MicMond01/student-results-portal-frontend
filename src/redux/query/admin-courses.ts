@@ -25,7 +25,7 @@ export const adminCourseSlice = api.injectEndpoints({
     updateACourse: builder.mutation<any, any>({
       query: ({ id, data }) => ({
         url: `/admin/courses/${id}`,
-        method: "POST",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["admin", "course"],
