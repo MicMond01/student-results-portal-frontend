@@ -1,14 +1,16 @@
 import type { LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { cn } from "@/lib/utils";
 
 const StatCard: React.FC<{
   icon: LucideIcon;
   title: string;
   value: string | number;
   description?: string;
-}> = ({ icon: Icon, title, value, description }) => {
+  className?: string;
+}> = ({ icon: Icon, title, value, description, className }) => {
   return (
-    <Card>
+    <Card className={cn("rounded-2xl shadow-sm", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <Icon className="h-4 w-4 text-muted-foreground" />
