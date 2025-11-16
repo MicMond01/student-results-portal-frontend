@@ -5,17 +5,24 @@ import ChangePassword from "@/screens/Authentication/ChangePasswordForm";
 import { lazy } from "react";
 
 // Lazy imports for code-splitting
-const Dashboard = lazy(() => import("@/screens/dashboard/Overview"));
-const MyStudents = lazy(() => import("@/screens/lecturer-students"));
-const StudentsList = lazy(() => import("@/screens/students/StudentsList"));
-const LecturerProfile = lazy(() => import("@/screens/lecturer-profile/index"));
-const UpdateProfile = lazy(
-  () => import("@/screens/lecturer-profile/UpdateProfile")
+// const Dashboard = lazy(() => import("@/screens/dashboard/Overview"));
+const MyStudents = lazy(
+  () => import("@/screens/lecturer-screens/lecturer-students")
 );
-const LecturerCourses = lazy(() => import("@/screens/lecturer-course/index"));
-const LecturerExams = lazy(() => import("@/screens/lecturer-exams/index"));
+const LecturerProfile = lazy(
+  () => import("@/screens/lecturer-screens/lecturer-profile/index")
+);
+const UpdateProfile = lazy(
+  () => import("@/screens/lecturer-screens/lecturer-profile/UpdateProfile")
+);
+const LecturerCourses = lazy(
+  () => import("@/screens/lecturer-screens/lecturer-course/index")
+);
+const LecturerExams = lazy(
+  () => import("@/screens/lecturer-screens/lecturer-exams/index")
+);
 const StudentDetail = lazy(
-  () => import("@/screens/lecturer-students/StudentDetail")
+  () => import("@/screens/lecturer-screens/lecturer-students/StudentDetail")
 );
 const StudentProfile = lazy(
   () => import("@/screens/students-screens/profile/index")
@@ -30,7 +37,9 @@ const StudentCourses = lazy(
 const StudentDashboard = lazy(
   () => import("@/screens/students-screens/dashboard")
 );
-const LecturerDashboard = lazy(() => import("@/screens/dashboard"));
+const LecturerDashboard = lazy(
+  () => import("@/screens/lecturer-screens/dashboard")
+);
 const AdminDashboard = lazy(() => import("@/screens/admin/dashboard"));
 
 export type IRoute = {
@@ -150,13 +159,6 @@ const routeData: IRoute[] = [
     code: "lecturer-courses",
     component: LecturerCourses,
     allowedRoles: ["lecturer"],
-  },
-  {
-    link: "/students",
-    title: "Students",
-    code: "students",
-    component: StudentsList,
-    allowedRoles: ["admin", "lecturer"],
   },
   {
     link: "/exams",
