@@ -1,4 +1,6 @@
+import type { IAdminDepartment } from "@/screens/admin/type";
 import { api } from "../baseConfig";
+import type { IAdminSingleDepatment } from "@/screens/admin/departments/type";
 
 export const adminDepartmentSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,13 +12,13 @@ export const adminDepartmentSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["department", "admin"],
     }),
-    getAllDepartments: builder.query<any, void>({
+    getAllDepartments: builder.query<IAdminDepartment, void>({
       query: () => ({
         url: "/admin/departments",
       }),
       providesTags: ["admin", "department"],
     }),
-    getDepartment: builder.query<any, any>({
+    getDepartment: builder.query<IAdminSingleDepatment, string>({
       query: (id) => ({
         url: `/admin/departments/${id}`,
       }),

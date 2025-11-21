@@ -1,3 +1,4 @@
+import type { AdminCourses } from "@/screens/admin/courses/type";
 import { api } from "../baseConfig";
 
 export const adminCourseSlice = api.injectEndpoints({
@@ -10,7 +11,8 @@ export const adminCourseSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["course", "admin"],
     }),
-    getAllCourses: builder.query<any, void>({
+    getAllCourses: builder.query<AdminCourses, void>({
+      // used
       query: () => ({
         url: "/admin/courses",
       }),
@@ -31,7 +33,8 @@ export const adminCourseSlice = api.injectEndpoints({
       invalidatesTags: ["admin", "course"],
     }),
 
-    deleteCourse: builder.mutation<any, any>({
+    deleteCourse: builder.mutation<any, string>({
+      //used
       query: (id) => ({
         url: `/admin/courses/${id}`,
         method: "DELETE",

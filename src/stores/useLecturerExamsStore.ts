@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import type { IExamCourse, IQuestion } from "@/types/exams";
-import type { ILecturerCourse } from "@/types/lecturer";
+import type { IQuestion } from "@/types/exams";
 
 interface LecturerExamsState {
   // Selection state

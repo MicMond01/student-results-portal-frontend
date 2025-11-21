@@ -41,6 +41,11 @@ const LecturerDashboard = lazy(
   () => import("@/screens/lecturer-screens/dashboard")
 );
 const AdminDashboard = lazy(() => import("@/screens/admin/dashboard"));
+const AdminCourses = lazy(() => import("@/screens/admin/courses"));
+const AdminDepartment = lazy(() => import("@/screens/admin/departments"));
+const DepartmentDetailsPage = lazy(
+  () => import("@/screens/admin/departments/DepartmentDetailsPage")
+);
 
 export type IRoute = {
   link: string;
@@ -187,6 +192,34 @@ const routeData: IRoute[] = [
     code: "st-courses",
     component: StudentCourses,
     allowedRoles: ["student"],
+  },
+  {
+    link: "/admin/courses",
+    title: "Courses",
+    code: "ad-courses",
+    component: AdminCourses,
+    allowedRoles: ["admin"],
+  },
+  // {
+  //   link: "/admin/course-details",
+  //   title: "Course Details",
+  //   code: "ad-course-dt",
+  //   component: AdminCourses,
+  //   allowedRoles: ["admin"],
+  // },
+  {
+    link: "/admin/departments",
+    title: "Departments",
+    code: "ad-departments",
+    component: AdminDepartment,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/departments/:id",
+    title: "Departments",
+    code: "ad-departments",
+    component: DepartmentDetailsPage,
+    allowedRoles: ["admin"],
   },
 ];
 export { routeData, authRouteData, vrificationRoute };

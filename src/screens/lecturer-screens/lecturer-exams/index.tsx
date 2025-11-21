@@ -68,6 +68,9 @@ const LecturerExams = () => {
     );
   }, [examData, selectedCourseId]);
 
+  console.log(selectedExams);
+  console.log(examData);
+
   // Create Exam Handler
   const handleCreateExam = async (examData: any) => {
     const toastId = toast.loading("Creating Exam...");

@@ -24,11 +24,11 @@ export function ConfirmationDialog({
   action: () => void;
   triggerLabel?: string | React.ReactNode;
   confirmLabel?: string;
-  type: "save" | "delete";
+  type: "save" | "delete" | "deleteIcon";
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className="cursor-pointer">
         {typeof triggerLabel === "string" ? (
           <Button
             className={`${

@@ -94,6 +94,7 @@ const Sidebar: React.FC = () => {
           },
         ],
       },
+
       {
         id: "lecturer-courses",
         label: "My Courses",
@@ -128,6 +129,46 @@ const Sidebar: React.FC = () => {
         icon: <Icon.exams className="h-5 w-5" />,
         to: "/mycourses",
         allowedRoles: ["student"],
+      },
+      {
+        id: "ad-courses",
+        label: "All Courses",
+        icon: <Icon.courses className="h-5 w-5" />,
+        allowedRoles: ["admin"],
+        children: [
+          {
+            id: "ad-courses",
+            label: "Courses",
+            to: "/admin/courses",
+            allowedRoles: ["admin"],
+          },
+          {
+            id: "ad-courses-dt",
+            label: "Course Details",
+            to: "/admin/course-details",
+            allowedRoles: ["admin"],
+          },
+        ],
+      },
+      {
+        id: "ad-departments",
+        label: "All Departments",
+        icon: <Icon.courses className="h-5 w-5" />,
+        allowedRoles: ["admin"],
+        children: [
+          {
+            id: "ad-department",
+            label: "Departments",
+            to: "/admin/departments",
+            allowedRoles: ["admin"],
+          },
+          {
+            id: "ad-department-dt",
+            label: "Department Details",
+            to: "/admin/department-details",
+            allowedRoles: ["admin"],
+          },
+        ],
       },
     ];
 

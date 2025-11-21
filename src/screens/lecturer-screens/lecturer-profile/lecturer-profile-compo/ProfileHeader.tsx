@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit } from "lucide-react";
-import userImageBackgrond from "../../../assets/user-grid-bg8.png";
+import userImageBackgrond from "../../../../assets/user-grid-bg8.png";
 import type { ILecturerData } from "../type";
 import { useNavigate } from "react-router-dom";
 
