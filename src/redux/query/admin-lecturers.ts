@@ -24,6 +24,12 @@ export const adminLecturerSlice = api.injectEndpoints({
       }),
       providesTags: ["admin", "lecturers"],
     }),
+    getLectureDetails: builder.query<any, any>({
+      query: (id) => ({
+        url: `/admin/lecturers/${id}`,
+      }),
+      providesTags: ["admin", "lecturers"],
+    }),
     updateLecturer: builder.mutation<any, any>({
       query: ({ id, data }) => ({
         url: `/admin/lecturers/${id}`,
@@ -46,6 +52,7 @@ export const adminLecturerSlice = api.injectEndpoints({
 export const {
   useCreateLecturerMutation,
   useGetAllLecturersQuery,
+  useGetLectureDetailsQuery,
   useGetLecturersByDepartmentQuery,
   useUpdateLecturerMutation,
   useDeleteLecturerMutation,

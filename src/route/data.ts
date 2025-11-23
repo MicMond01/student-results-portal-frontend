@@ -46,6 +46,7 @@ const AdminDepartment = lazy(() => import("@/screens/admin/departments"));
 const DepartmentDetailsPage = lazy(
   () => import("@/screens/admin/departments/DepartmentDetailsPage")
 );
+const AdminLectures = lazy(() => import("@/screens/admin/lecturers"));
 
 export type IRoute = {
   link: string;
@@ -219,6 +220,13 @@ const routeData: IRoute[] = [
     title: "Departments",
     code: "ad-departments",
     component: DepartmentDetailsPage,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/lecturers",
+    title: "Departments",
+    code: "ad-lecturers",
+    component: AdminLectures,
     allowedRoles: ["admin"],
   },
 ];

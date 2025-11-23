@@ -33,11 +33,11 @@ export interface IAdminLecturer {
   academicAdvisor: any;
   status: string;
   school: any;
-  profilePhoto: any;
+  profilePhoto: string;
   dateOfBirth: string;
   phone: string;
-  email: string;
-  address: any;
+  email: any;
+  address: string;
   placeOfBirth: any;
   stateOfOrigin: any;
   jambNo: any;
@@ -57,11 +57,12 @@ export interface IAdminLecturer {
   name: string;
   identifier: string;
   role: string;
-  staffId: string;
-  gender: string;
+  __v: number;
   createdAt: string;
   updatedAt: string;
-  __v: number;
+  gender: string;
+  staffId: string;
+  isHod: boolean;
 }
 
 export interface IAdminSingleDepatment {
@@ -69,8 +70,6 @@ export interface IAdminSingleDepatment {
   department: IAdminDepartment;
   statistics: IDeptStatistics;
 }
-
-
 
 export interface IDeptStatistics {
   totalLecturers: number;

@@ -5,7 +5,6 @@ import Sidebar from "@/components/navigation/Sidebar";
 import Topbar from "@/components/navigation/TopBar";
 import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumbs from "@/components/navigation/Breadcrumbs";
-import ManageDepartmentDialog from "@/screens/admin/departments/ManageDepartmentDialog";
 
 const pageVariants = {
   initial: { opacity: 0, y: 8, filter: "blur(2px)" },

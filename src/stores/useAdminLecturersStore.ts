@@ -2,7 +2,7 @@
 import type { IDepartment } from "@/screens/admin/type";
 import { create } from "zustand";
 
-interface AdminDepartmentState {
+interface AdminLecturersState {
   searchQuery: string;
   view: "list" | "details";
   isManageOpen: boolean;
@@ -22,7 +22,7 @@ interface AdminDepartmentState {
   resetViewToList: () => void;
 }
 
-export const useAdminDepartmentStore = create<AdminDepartmentState>((set) => ({
+export const useAdminLecturersStore = create<AdminLecturersState>((set) => ({
   searchQuery: "",
   view: "list",
   isManageOpen: false,
