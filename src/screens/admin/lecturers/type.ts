@@ -58,6 +58,8 @@ export interface IAdminDepartment {
 export interface LecturerFormData {
   name: string;
   email: string;
+  identifier: string;
+  password: string;
   phone: string;
   gender: string;
   dateOfBirth: string;
@@ -70,7 +72,6 @@ export interface LecturerFormData {
   highestDegree: string;
   institution: string;
   officeLocation: string;
-  isHod: boolean;
 }
 
 export interface LecturerFilterState {

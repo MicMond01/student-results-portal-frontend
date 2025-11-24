@@ -28,24 +28,43 @@ import {
 import StatCard from "./stat-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GradeDistributionChart from "@/components/ui-components/GradeDistributionChart";
-import type { IAdminLecturer } from "./type";
-import { useGetLectureDetailsQuery } from "@/redux/query/admin-lecturers";
+import type { IAdminLecturer, LecturerFormData } from "./type";
+import {
+  useDeleteLecturerMutation,
+  useGetLectureDetailsQuery,
+  useUpdateLecturerMutation,
+} from "@/redux/query/admin-lecturers";
 import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { useAdminLecturersStore } from "@/stores/useAdminLecturersStore";
+import LecturerProfileSkeleton from "./lecturer-profile-skeleton";
+import ManageLecturerDialog from "./manage-lecturer-dialog";
 
-interface LecturerProfilePageProps {
-  lecturer: IAdminLecturer;
-  onBack: () => void;
-  onEdit: (lecturer: IAdminLecturer) => void;
-  onDelete: (id: string) => void;
-}
+const LecturerProfilePage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [deleteLecturerTrigger, { isLoading: isDeleting }] =
+    useDeleteLecturerMutation();
+  const [updateLecturerTrigger, { isLoading: isUpdating }] =
+    useUpdateLecturerMutation();
 
-const LecturerProfilePage = ({
-  lecturer,
-  onBack,
-  onEdit,
-  onDelete,
-}: LecturerProfilePageProps) => {
-  const { data: lecturerDetails } = useGetLectureDetailsQuery(lecturer._id);
+  const { openEditDialog, closeDialog } = useAdminLecturersStore();
+  const handleDeleteLecturer = async (id: string) => {
+    const toastId = toast.loading("Deleting Lecturer...");
+
+    try {
+      await deleteLecturerTrigger(id).unwrap();
+
+      toast.success("Lecturer successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Delete Lecturer", {
+        id: toastId,
+      });
+    }
+  };
+
+  const { data: lecturerDetails, isLoading } = useGetLectureDetailsQuery(id);
   const {
     lecturer: lecturerData,
     stats,
@@ -57,13 +76,34 @@ const LecturerProfilePage = ({
   // Combine name parts to get initials
   const initials = getNameInitials(lecturerData?.name || "");
 
+  const handleSaveLecturer = async (data: LecturerFormData) => {
+    const toastId = toast.loading("Updating Lecturer Profile...");
+
+    try {
+      await updateLecturerTrigger({
+        id: lecturerData?._id || "",
+        data,
+      }).unwrap();
+      toast.success("Lecturer successfully updated!", { id: toastId });
+      closeDialog();
+    } catch (error: any) {
+      const message =
+        error?.data?.msg || error?.data?.message || "An error occurred";
+      toast.error(message, { id: toastId });
+    }
+  };
+
+  if (isLoading) {
+    return <LecturerProfileSkeleton />;
+  }
+
   return (
     <div className="min-h-screen p-4 lg:p-8 animate-in fade-in duration-300">
       <div className="mx-auto  max-w-380 space-y-6">
         <div className="flex justify-between items-center">
           <Button
             variant="ghost"
-            onClick={onBack}
+            onClick={() => navigate("/admin/lecturers")}
             className="pl-0 hover:bg-transparent hover:text-indigo-600"
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Lecturers
@@ -81,7 +121,7 @@ const LecturerProfilePage = ({
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 text-center sm:text-left">
+              <div className="flex-1 text-center pt-8 sm:text-left">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                   <h1 className="text-2xl font-bold text-gray-900">
                     {lecturerData?.name}
@@ -118,16 +158,18 @@ const LecturerProfilePage = ({
                 <Button variant="outline">
                   <Mail className="mr-2 h-4 w-4" /> Contact
                 </Button>
-                <Button onClick={() => onEdit(lecturer)}>
+                <Button
+                  onClick={() => openEditDialog(lecturerData as IAdminLecturer)}
+                >
                   <Edit2 className="mr-2 h-4 w-4" /> Edit Profile
                 </Button>
                 <ConfirmationDialog
                   title="Confirm Delete"
                   triggerLabel="Delete Lecturer"
                   description="Are you sure you want to delete this Lecturer? "
-                  action={() => onDelete(lecturer._id)}
+                  action={() => handleDeleteLecturer(lecturerData?._id || "")}
                   type="delete"
-                  // confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}
+                  confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}
                 />
               </div>
             </div>
@@ -452,6 +494,11 @@ const LecturerProfilePage = ({
           </div>
         </div>
       </div>
+
+      <ManageLecturerDialog
+        onSave={handleSaveLecturer}
+        isLoading={isUpdating}
+      />
     </div>
   );
 };

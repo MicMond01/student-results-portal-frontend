@@ -1,60 +1,100 @@
-// useAdminDepartmentsStore.ts
-import type { IDepartment } from "@/screens/admin/type";
+import type {
+  IAdminLecturer,
+  LecturerFilterState,
+} from "@/screens/admin/lecturers/type";
 import { create } from "zustand";
 
 interface AdminLecturersState {
-  searchQuery: string;
+  // UI View
   view: "list" | "details";
-  isManageOpen: boolean;
-
-  selectedDeptId: string | null;
-  editingDept: IDepartment | null;
-
-  setSearchQuery: (query: string) => void;
   setView: (view: "list" | "details") => void;
-  setSelectedDeptId: (id: string | null) => void;
 
-  // Simple open/close without save function
-  openManageDialog: (dept?: IDepartment | null) => void;
-  closeManageDialog: () => void;
+  // Filters
+  filters: LecturerFilterState;
+  setFilters: (filters: Partial<LecturerFilterState>) => void;
 
-  viewDetails: (dept: IDepartment) => void;
-  resetViewToList: () => void;
+  // Selected lecturer for details page
+  selectedLecturer: IAdminLecturer | null;
+  setSelectedLecturer: (lecturer: IAdminLecturer | null) => void;
+
+  // Dialog states
+  isManageOpen: boolean;
+  setIsManageOpen: (open: boolean) => void;
+
+  editingLecturer: IAdminLecturer | null;
+  setEditingLecturer: (lecturer: IAdminLecturer | null) => void;
+
+  // Actions (triggers for create/edit)
+  openCreateDialog: () => void;
+  openEditDialog: (lecturer: IAdminLecturer) => void;
+  closeDialog: () => void;
+
+  // For navigating into details
+  viewDetails: (lecturer: IAdminLecturer) => void;
+
+  // Reset back to list view
+  resetToList: () => void;
 }
 
 export const useAdminLecturersStore = create<AdminLecturersState>((set) => ({
-  searchQuery: "",
+  // -------- STATES --------
   view: "list",
+
+  filters: {
+    query: "",
+    department: "all",
+  },
+
+  selectedLecturer: null,
+
   isManageOpen: false,
+  editingLecturer: null,
 
-  selectedDeptId: null,
-  editingDept: null,
-
-  setSearchQuery: (query) => set({ searchQuery: query }),
+  // -------- ACTIONS --------
 
   setView: (view) => set({ view }),
-  setSelectedDeptId: (id) => set({ selectedDeptId: id }),
 
-  openManageDialog: (dept = null) =>
+  setFilters: (newFilters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...newFilters },
+    })),
+
+  setSelectedLecturer: (lecturer) => set({ selectedLecturer: lecturer }),
+
+  setIsManageOpen: (open) => set({ isManageOpen: open }),
+
+  setEditingLecturer: (lecturer) => set({ editingLecturer: lecturer }),
+
+  // -------- DIALOG CONTROL --------
+
+  openCreateDialog: () =>
     set({
-      editingDept: dept,
+      editingLecturer: null,
       isManageOpen: true,
     }),
 
-  closeManageDialog: () =>
+  openEditDialog: (lecturer) =>
+    set({
+      editingLecturer: lecturer,
+      isManageOpen: true,
+    }),
+
+  closeDialog: () =>
     set({
       isManageOpen: false,
     }),
 
-  viewDetails: (dept) =>
+  // -------- DETAILS PAGE --------
+
+  viewDetails: (lecturer) =>
     set({
-      selectedDeptId: dept._id,
+      selectedLecturer: lecturer,
       view: "details",
     }),
 
-  resetViewToList: () =>
+  resetToList: () =>
     set({
       view: "list",
-      selectedDeptId: null,
+      selectedLecturer: null,
     }),
 }));

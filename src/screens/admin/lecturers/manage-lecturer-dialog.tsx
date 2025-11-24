@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { IAdminLecturer, LecturerFormData } from "./type";
+import type { LecturerFormData } from "./type";
 import {
   Dialog,
   DialogContent,
@@ -17,24 +17,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
+import { useAdminLecturersStore } from "@/stores/useAdminLecturersStore";
 
 const ManageLecturerDialog: React.FC<{
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  lecturer: IAdminLecturer | null;
   onSave: (data: LecturerFormData) => void;
   isLoading?: boolean;
-}> = ({ open, onOpenChange, lecturer, onSave, isLoading }) => {
+}> = ({ onSave, isLoading }) => {
   const { data: allDepartments } = useGetAllDepartmentsQuery();
 
+  const {
+    setIsManageOpen,
+    isManageOpen,
+    editingLecturer: lecturer,
+  } = useAdminLecturersStore();
+
   const isEditMode = !!lecturer;
+
   const [formData, setFormData] = useState<LecturerFormData>({
     name: "",
     email: "",
+    identifier: "",
+    password: "",
     phone: "",
     gender: "",
     dateOfBirth: "",
@@ -47,16 +53,17 @@ const ManageLecturerDialog: React.FC<{
     highestDegree: "",
     institution: "",
     officeLocation: "",
-    isHod: false,
   });
 
   useEffect(() => {
-    if (open) {
+    if (isManageOpen) {
       setFormData(
         lecturer
           ? {
               name: lecturer.name,
-              email: lecturer.identifier || lecturer.email || "",
+              email: lecturer.email || "",
+              identifier: lecturer.identifier || "",
+              password: "", // never prefill passwords
               phone: lecturer.phone || "",
               gender: lecturer.gender || "",
               dateOfBirth: lecturer.dateOfBirth
@@ -64,18 +71,19 @@ const ManageLecturerDialog: React.FC<{
                 : "",
               address: lecturer.address || "",
               staffId: lecturer.staffId || "",
-              department: lecturer.department._id || "",
+              department: lecturer.department?._id || "",
               rank: lecturer.rank || "",
               specialization: lecturer.specialization || "",
               yearsOfExperience: lecturer.yearsOfExperience || 0,
               highestDegree: lecturer.highestDegree || "",
               institution: lecturer.institution || "",
               officeLocation: lecturer.officeLocation || "",
-              isHod: lecturer.isHod || false,
             }
           : {
               name: "",
               email: "",
+              identifier: "",
+              password: "",
               phone: "",
               gender: "",
               dateOfBirth: "",
@@ -88,11 +96,10 @@ const ManageLecturerDialog: React.FC<{
               highestDegree: "",
               institution: "",
               officeLocation: "",
-              isHod: false,
             }
       );
     }
-  }, [open, lecturer]);
+  }, [isManageOpen, lecturer]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,7 +117,7 @@ const ManageLecturerDialog: React.FC<{
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isManageOpen} onOpenChange={setIsManageOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -122,12 +129,14 @@ const ManageLecturerDialog: React.FC<{
               : "Enter the details for the new lecturer."}
           </DialogDescription>
         </DialogHeader>
+
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* PERSONAL INFORMATION */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Personal Info */}
             <div className="md:col-span-2 font-semibold text-gray-900 border-b pb-2 mb-2">
               Personal Information
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input
@@ -136,9 +145,9 @@ const ManageLecturerDialog: React.FC<{
                 value={formData.name}
                 onChange={handleChange}
                 required
-                placeholder="e.g. Dr. John Doe"
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
@@ -148,9 +157,35 @@ const ManageLecturerDialog: React.FC<{
                 value={formData.email}
                 onChange={handleChange}
                 required
-                placeholder="john@university.edu"
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="identifier">Identifier</Label>
+              <Input
+                id="identifier"
+                name="identifier"
+                value={formData.identifier}
+                onChange={handleChange}
+                required
+                placeholder="Lecturer unique identifier"
+              />
+            </div>
+
+            {!isEditMode && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
               <Input
@@ -161,83 +196,89 @@ const ManageLecturerDialog: React.FC<{
                 placeholder="+234..."
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="gender">Gender</Label>
+              <Label>Gender</Label>
               <Select
-                value={formData?.gender}
+                value={formData.gender}
                 onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    gender: value,
-                  }))
+                  setFormData((prev) => ({ ...prev, gender: value }))
                 }
               >
-                <SelectTrigger id="gender">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem key={"male"} value={"Male"}>
-                    Male
-                  </SelectItem>
-                  <SelectItem key={"female"} value={"Female"}>
-                    Female
-                  </SelectItem>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Academic Info */}
-            <div className="md:col-span-2 font-semibold text-gray-900 border-b pb-2 mb-2 mt-4">
-              Academic & Employment
-            </div>
             <div className="space-y-2">
-              <Label htmlFor="staffId">Staff ID</Label>
+              <Label>Date of Birth</Label>
               <Input
-                id="staffId"
+                type="date"
+                name="dateOfBirth"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label>Address</Label>
+              <Input
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* ACADEMIC + EMPLOYMENT INFO */}
+            <div className="md:col-span-2 font-semibold text-gray-900 border-b pb-2 mb-2 mt-4">
+              Academic & Employment Information
+            </div>
+
+            <div className="space-y-2">
+              <Label>Staff ID</Label>
+              <Input
                 name="staffId"
                 value={formData.staffId}
                 onChange={handleChange}
                 required
-                placeholder="e.g. UN/CS/001"
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="department">department</Label>
+              <Label>Department</Label>
               <Select
-                value={formData?.department}
-                required
+                value={formData.department}
                 onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    department: value,
-                  }))
+                  setFormData((prev) => ({ ...prev, department: value }))
                 }
               >
-                <SelectTrigger id="department">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  {allDepartments?.departments.map((l) => (
-                    <SelectItem key={l._id} value={l._id}>
-                      {l.name}
+                  {allDepartments?.departments.map((d) => (
+                    <SelectItem key={d._id} value={d._id}>
+                      {d.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="rank">Rank</Label>
+              <Label>Rank</Label>
               <Select
-                value={formData?.rank}
-                required
+                value={formData.rank}
                 onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    rank: value,
-                  }))
+                  setFormData((prev) => ({ ...prev, rank: value }))
                 }
               >
-                <SelectTrigger id="rank">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Rank" />
                 </SelectTrigger>
                 <SelectContent>
@@ -259,52 +300,61 @@ const ManageLecturerDialog: React.FC<{
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="specialization">Specialization</Label>
+              <Label>Specialization</Label>
               <Input
-                id="specialization"
                 name="specialization"
                 value={formData.specialization}
                 onChange={handleChange}
-                placeholder="e.g. AI, Security"
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="officeLocation">Office Location</Label>
+              <Label>Years of Experience</Label>
               <Input
-                id="officeLocation"
+                type="number"
+                name="yearsOfExperience"
+                value={formData.yearsOfExperience}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Highest Degree</Label>
+              <Input
+                name="highestDegree"
+                value={formData.highestDegree}
+                onChange={handleChange}
+                placeholder="e.g. PhD in Cybersecurity"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Institution</Label>
+              <Input
+                name="institution"
+                value={formData.institution}
+                onChange={handleChange}
+                placeholder="University where degree was obtained"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Office Location</Label>
+              <Input
                 name="officeLocation"
                 value={formData.officeLocation}
                 onChange={handleChange}
-                placeholder="Block A, Room 1"
               />
             </div>
-            <div className="space-y-2 flex items-center pt-6">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="isHod"
-                  checked={formData.isHod}
-                  onCheckedChange={(val) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      isHod: Boolean(val),
-                    }))
-                  }
-                />
-                <Label
-                  htmlFor="isHod"
-                  className="mb-0 cursor-pointer text-indigo-700 font-medium"
-                >
-                  Assign as HOD
-                </Label>
-              </div>
-            </div>
           </div>
+
           <DialogFooter>
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => setIsManageOpen(false)}
               disabled={isLoading}
             >
               Cancel

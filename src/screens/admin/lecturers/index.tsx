@@ -22,6 +22,8 @@ import { toast } from "sonner";
 import LecturerProfilePage from "./LecturerProfilePage";
 import ManageLecturerDialog from "./manage-lecturer-dialog";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
+import { useNavigate } from "react-router-dom";
+import { useAdminLecturersStore } from "@/stores/useAdminLecturersStore";
 
 const AdminLectures = () => {
   const { data: lecturersList, isLoading: isLoadingLecturers } =
@@ -33,41 +35,24 @@ const AdminLectures = () => {
     useUpdateLecturerMutation();
   const [createLecturerTrigger, { isLoading: isCreating }] =
     useCreateLecturerMutation();
+  const navigate = useNavigate();
 
-  const [view, setView] = useState<"list" | "details">("list");
+  const {
+    view,
+    setIsManageOpen,
+    editingLecturer,
+    selectedLecturer,
+    openCreateDialog,
+    openEditDialog,
+  } = useAdminLecturersStore();
 
   const [filters, setFilters] = useState<LecturerFilterState>({
     query: "",
     department: "all",
   });
-  const [selectedLecturer, setSelectedLecturer] =
-    useState<IAdminLecturer | null>(null);
-
-  // Dialog States
-  const [isManageOpen, setIsManageOpen] = useState(false);
-  const [editingLecturer, setEditingLecturer] = useState<IAdminLecturer | null>(
-    null
-  );
-
-  // Actions
-  const handleCreate = () => {
-    setEditingLecturer(null);
-    setIsManageOpen(true);
-  };
-
-  const handleEdit = (lecturer: IAdminLecturer) => {
-    setEditingLecturer(lecturer);
-    setIsManageOpen(true);
-  };
 
   const handleViewDetails = (lecturer: IAdminLecturer) => {
-    setSelectedLecturer(lecturer);
-    setView("details");
-  };
-
-  const handleBack = () => {
-    setSelectedLecturer(null);
-    setView("list");
+    navigate(`/admin/lecturers/${lecturer._id}`);
   };
 
   const handleDeleteLecturer = async (id: string) => {
@@ -132,6 +117,7 @@ const AdminLectures = () => {
       toast.error(error?.data?.message || "Something went wrong", {
         id: toastId,
       });
+      console.log(error);
     }
   };
 
@@ -154,7 +140,7 @@ const AdminLectures = () => {
         <div className="mx-auto max-w-380">
           {view === "list" && (
             <div>
-              <Button onClick={() => handleCreate()}>
+              <Button onClick={() => openCreateDialog()}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Lecturer
               </Button>
@@ -170,7 +156,7 @@ const AdminLectures = () => {
                   <Table
                     header={lecturersListTableHeaders(
                       handleViewDetails,
-                      handleEdit,
+                      openEditDialog,
                       handleDeleteLecturer,
                       isDeleting
                     )}
@@ -183,20 +169,10 @@ const AdminLectures = () => {
             </div>
           )}
 
-          {view === "details" && selectedLecturer && (
-            <LecturerProfilePage
-              lecturer={selectedLecturer}
-              onBack={handleBack}
-              onEdit={handleEdit}
-              onDelete={handleDeleteLecturer}
-            />
-          )}
+          {view === "details" && selectedLecturer && <LecturerProfilePage />}
         </div>
       </main>
       <ManageLecturerDialog
-        open={isManageOpen}
-        onOpenChange={setIsManageOpen}
-        lecturer={editingLecturer}
         onSave={handleSaveLecturer}
         isLoading={isCreating || isUpdating}
       />
