@@ -18,7 +18,7 @@ export const lecturersListTableHeaders = (
     title: "Image",
     key: "profilePhoto",
     cell: (row) => (
-      <Avatar className="h-14 w-14 border-2 border-white shadow-md">
+      <Avatar className="  border-2 border-white shadow-md">
         <AvatarImage src={row.profilePhoto || undefined} alt={row.name} />
         <AvatarFallback className="bg-indigo-50 text-indigo-700 text-lg">
           {getNameInitials(row.name)}
@@ -27,15 +27,20 @@ export const lecturersListTableHeaders = (
     ),
   },
   {
-    title: "Name",
+    title: "Name and Staff ID",
     key: "name",
     cell: (row) => (
       <div>
-        <div className="font-medium">{row.name}</div>
+        <div className="font-medium flex gap-2 items-center">
+          {row.name}
+          <div className="">
+            {row.isHod && (
+              <Crown className="h-4 w-4 text-amber-500 fill-amber-500" />
+            )}
+          </div>
+        </div>
         <div className="text-xs text-muted-foreground line-clamp-1">
-          {row.isHod && (
-            <Crown className="h-4 w-4 text-amber-500 fill-amber-500" />
-          )}
+          {row.staffId}
         </div>
       </div>
     ),
@@ -43,45 +48,40 @@ export const lecturersListTableHeaders = (
   {
     title: "Gender",
     key: "gender",
+    thClass: "text-center",
     cell: (row) => (
       <div>
-        <div className="font-medium">{row.gender}</div>
-        <div className="text-xs text-muted-foreground line-clamp-1">
-          {row.gender}
-        </div>
+        <div className="text-center font-medium">{row.gender}</div>
+        <div className="text-xs text-muted-foreground line-clamp-1"></div>
       </div>
     ),
   },
   {
-    title: "Rank ",
+    title: "Rank & Department",
     key: "rank",
     cell: (row) => (
       <div>
         <div className="font-medium">{row.rank}</div>
         <div className="text-xs text-muted-foreground line-clamp-1">
-          {row.department.name} Semester
+          {row.department.name}
         </div>
       </div>
     ),
   },
   {
-    title: "Identifier",
+    title: "Identifier & Contact",
     key: "identifier",
-    thClass: "text-center",
     cell: (row) => (
-      <>
-        <div className="text-center font-medium">{row.identifier}</div>
-        <div className="text-center font-medium">{row.email || row.phone}</div>
-      </>
+      <div>
+        <div className="font-medium">{row.identifier}</div>
+        <div className="font-medium">{row.email || row.phone}</div>
+      </div>
     ),
   },
   {
     title: "Specialization",
     key: "specialization",
-    thClass: "text-center",
-    cell: (row) => (
-      <div className="text-center font-medium">{row.specialization} </div>
-    ),
+    cell: (row) => <div className="font-medium">{row.specialization} </div>,
   },
   {
     title: "Status",
@@ -90,7 +90,7 @@ export const lecturersListTableHeaders = (
     cell: (row) => (
       <Badge
         variant={row.status === "Active" ? "success" : "secondary"}
-        className="capitalize"
+        className="capitalize text-center"
       >
         {row.status || "Inactive"}
       </Badge>

@@ -1,6 +1,6 @@
 import type { IAdminDepartmentLecturers } from "@/screens/admin/departments/type";
 import { api } from "../baseConfig";
-import type { IAdminAllLecturers } from "@/screens/admin/lecturers/type";
+import type { IAdminAllLecturers, IAdminStats } from "@/screens/admin/lecturers/type";
 
 export const adminLecturerSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -24,7 +24,7 @@ export const adminLecturerSlice = api.injectEndpoints({
       }),
       providesTags: ["admin", "lecturers"],
     }),
-    getLectureDetails: builder.query<any, any>({
+    getLectureDetails: builder.query<IAdminStats, any>({
       query: (id) => ({
         url: `/admin/lecturers/${id}`,
       }),

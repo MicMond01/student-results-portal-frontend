@@ -162,12 +162,6 @@ const Sidebar: React.FC = () => {
             to: "/admin/departments",
             allowedRoles: ["admin"],
           },
-          {
-            id: "ad-department-dt",
-            label: "Department Details",
-            to: "/admin/department-details",
-            allowedRoles: ["admin"],
-          },
         ],
       },
       {

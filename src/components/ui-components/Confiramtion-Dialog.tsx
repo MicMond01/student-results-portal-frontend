@@ -24,7 +24,7 @@ export function ConfirmationDialog({
   action: () => void;
   triggerLabel?: string | React.ReactNode;
   confirmLabel?: string;
-  type: "save" | "delete" | "deleteIcon";
+  type: "save" | "delete";
 }) {
   return (
     <Dialog>

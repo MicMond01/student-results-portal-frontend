@@ -176,9 +176,6 @@ const ManageLecturerDialog: React.FC<{
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem key={"select"} value={"select"}>
-                    Select Gender
-                  </SelectItem>
                   <SelectItem key={"male"} value={"Male"}>
                     Male
                   </SelectItem>
@@ -244,7 +241,6 @@ const ManageLecturerDialog: React.FC<{
                   <SelectValue placeholder="Select Rank" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Select Rank</SelectItem>
                   <SelectItem value="Graduate Assistant">
                     Graduate Assistant
                   </SelectItem>
@@ -285,16 +281,16 @@ const ManageLecturerDialog: React.FC<{
             </div>
             <div className="space-y-2 flex items-center pt-6">
               <div className="flex items-center space-x-2">
-                {/* <Checkbox
+                <Checkbox
                   id="isHod"
                   checked={formData.isHod}
-                  onChange={(e) =>
+                  onCheckedChange={(val) =>
                     setFormData((prev) => ({
                       ...prev,
-                      isHod: e.target.checked,
+                      isHod: Boolean(val),
                     }))
                   }
-                /> */}
+                />
                 <Label
                   htmlFor="isHod"
                   className="mb-0 cursor-pointer text-indigo-700 font-medium"

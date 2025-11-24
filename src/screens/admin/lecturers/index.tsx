@@ -1,9 +1,10 @@
 import Banner from "@/components/ui-components/Banner";
 import { Button } from "@/components/ui/button";
 import {
+  useCreateLecturerMutation,
   useDeleteLecturerMutation,
   useGetAllLecturersQuery,
-  useGetLectureDetailsQuery,
+  useUpdateLecturerMutation,
 } from "@/redux/query/admin-lecturers";
 import { Plus } from "lucide-react";
 import { PiBooks } from "react-icons/pi";
@@ -12,13 +13,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import Table from "@/components/table/table";
 import { lecturersListTableHeaders } from "./table-config/lecturers-table-headers";
 import { useMemo, useState } from "react";
-import type { IAdminLecturer, LecturerFilterState } from "./type";
+import type {
+  IAdminLecturer,
+  LecturerFilterState,
+  LecturerFormData,
+} from "./type";
 import { toast } from "sonner";
+import LecturerProfilePage from "./LecturerProfilePage";
+import ManageLecturerDialog from "./manage-lecturer-dialog";
+import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 
 const AdminLectures = () => {
   const { data: lecturersList, isLoading: isLoadingLecturers } =
     useGetAllLecturersQuery();
-  const [deleteLecturerTrigger, {isLoading: isDeleting}] = useDeleteLecturerMutation()
+  const [deleteLecturerTrigger, { isLoading: isDeleting }] =
+    useDeleteLecturerMutation();
+  const { data: departmentList } = useGetAllDepartmentsQuery();
+  const [updateLecturerTrigger, { isLoading: isUpdating }] =
+    useUpdateLecturerMutation();
+  const [createLecturerTrigger, { isLoading: isCreating }] =
+    useCreateLecturerMutation();
 
   const [view, setView] = useState<"list" | "details">("list");
 
@@ -26,15 +40,15 @@ const AdminLectures = () => {
     query: "",
     department: "all",
   });
-    const [selectedLecturer, setSelectedLecturer] = useState<IAdminLecturer | null>(null);
-  
+  const [selectedLecturer, setSelectedLecturer] =
+    useState<IAdminLecturer | null>(null);
+
   // Dialog States
   const [isManageOpen, setIsManageOpen] = useState(false);
-  const [editingLecturer, setEditingLecturer] = useState<IAdminLecturer | null>(null);
-  
-    // Delete States
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [lecturerToDelete, setLecturerToDelete] = useState<string | null>(null);
+  const [editingLecturer, setEditingLecturer] = useState<IAdminLecturer | null>(
+    null
+  );
+
   // Actions
   const handleCreate = () => {
     setEditingLecturer(null);
@@ -46,41 +60,80 @@ const AdminLectures = () => {
     setIsManageOpen(true);
   };
 
-  const handleDeleteClick = (id: string) => {
-    setLecturerToDelete(id);
-    setIsDeleteOpen(true);
-  };
-
   const handleViewDetails = (lecturer: IAdminLecturer) => {
     setSelectedLecturer(lecturer);
-    setView('details');
+    setView("details");
   };
 
   const handleBack = () => {
     setSelectedLecturer(null);
-    setView('list');
+    setView("list");
   };
 
-  
+  const handleDeleteLecturer = async (id: string) => {
+    const toastId = toast.loading("Deleting Lecturer...");
 
+    try {
+      await deleteLecturerTrigger(id).unwrap();
 
-  const { data: lecturerDetails } = useGetLectureDetailsQuery(
-    "68f43863c364896a74c4041d"
-  );
+      toast.success("Lecturer successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Delete Lecturer", {
+        id: toastId,
+      });
+    }
+  };
 
-    const handleDeleteLecturer = async (id: string) => {
-      const toastId = toast.loading("Deleting Lecturer...");
-  
-      try {
-        await deleteLecturerTrigger(id).unwrap();
-  
-        toast.success("Lecturer successfully Deleted!", { id: toastId });
-      } catch (error: any) {
-        toast.error(error?.data?.message || "Failed to Delete Lecturer", {
+  const handleSaveLecturer = async (formData: LecturerFormData) => {
+    const toastId = toast.loading(
+      editingLecturer ? "Updating Lecturer..." : "Creating Lecturer..."
+    );
+
+    try {
+      const departmentObj = departmentList?.departments?.find(
+        (d) => d._id === formData.department
+      );
+
+      if (!departmentObj) {
+        toast.error("Please select a valid department", {
           id: toastId,
         });
+        return;
       }
-    };
+
+      if (editingLecturer) {
+        // ---------------- UPDATE LOGIC ----------------
+        const payload = {
+          ...formData,
+          department: departmentObj._id,
+        };
+
+        await updateLecturerTrigger({
+          id: editingLecturer._id,
+          data: payload,
+        }).unwrap();
+
+        setIsManageOpen(false);
+
+        toast.success("Lecturer successfully updated!", { id: toastId });
+      } else {
+        // ---------------- CREATE LOGIC ----------------
+        const payload = {
+          ...formData,
+          department: departmentObj._id,
+        };
+
+        await createLecturerTrigger(payload).unwrap();
+
+        toast.success("Lecturer successfully created!", { id: toastId });
+        setIsManageOpen(false);
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
+    }
+  };
 
   const filteredLecturers = useMemo(() => {
     return lecturersList?.lecturers.filter((l) => {
@@ -95,14 +148,13 @@ const AdminLectures = () => {
     });
   }, [lecturersList, filters]);
 
-  console.log("lecturer Details", lecturerDetails);
   return (
     <div className="min-h-screen">
       <main className="p-4 lg:p-8">
         <div className="mx-auto max-w-380">
           {view === "list" && (
             <div>
-              <Button onClick={() => handleCreate}>
+              <Button onClick={() => handleCreate()}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Lecturer
               </Button>
@@ -116,31 +168,38 @@ const AdminLectures = () => {
               <Card>
                 <CardContent className="p-0">
                   <Table
-            header={lecturersListTableHeaders(
-              handleViewDetails,
-              handleEdit,
-              handleDeleteLecturer,
-              isDeleting
-            )}
-            isLoading={isLoadingLecturers}
-            rows={filteredLecturers || []}
-            id="_id"
-          />
+                    header={lecturersListTableHeaders(
+                      handleViewDetails,
+                      handleEdit,
+                      handleDeleteLecturer,
+                      isDeleting
+                    )}
+                    isLoading={isLoadingLecturers}
+                    rows={filteredLecturers || []}
+                    id="_id"
+                  />
                 </CardContent>
               </Card>
             </div>
           )}
-          
-      {view === "details" && selectedLecturer && (
-        <LecturerDetailsPage
-          lecturer={selectedLecturer}
-          onBack={handleBack}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-        />
-      )} 
+
+          {view === "details" && selectedLecturer && (
+            <LecturerProfilePage
+              lecturer={selectedLecturer}
+              onBack={handleBack}
+              onEdit={handleEdit}
+              onDelete={handleDeleteLecturer}
+            />
+          )}
         </div>
       </main>
+      <ManageLecturerDialog
+        open={isManageOpen}
+        onOpenChange={setIsManageOpen}
+        lecturer={editingLecturer}
+        onSave={handleSaveLecturer}
+        isLoading={isCreating || isUpdating}
+      />
     </div>
   );
 };
