@@ -1,6 +1,9 @@
 import type { IAdminDepartmentLecturers } from "@/screens/admin/departments/type";
 import { api } from "../baseConfig";
-import type { IAdminAllLecturers, IAdminStats } from "@/screens/admin/lecturers/type";
+import type {
+  IAdminAllLecturers,
+  IAdminStats,
+} from "@/screens/admin/lecturers/type";
 
 export const adminLecturerSlice = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -39,6 +42,15 @@ export const adminLecturerSlice = api.injectEndpoints({
       invalidatesTags: ["admin", "lecturers"],
     }),
 
+    updateLecturerPassword: builder.mutation<any, any>({
+      query: ({ id, data }) => ({
+        url: `/admin/lecturers/${id}/change-password`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["admin", "lecturers"],
+    }),
+
     deleteLecturer: builder.mutation<any, any>({
       query: (id) => ({
         url: `/admin/lecturers/${id}`,
@@ -55,5 +67,6 @@ export const {
   useGetLectureDetailsQuery,
   useGetLecturersByDepartmentQuery,
   useUpdateLecturerMutation,
+  useUpdateLecturerPasswordMutation,
   useDeleteLecturerMutation,
 } = adminLecturerSlice;

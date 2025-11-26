@@ -1,3 +1,7 @@
+import type {
+  IAdminStudentData,
+  IAdminStudents,
+} from "@/screens/admin/students/types";
 import { api } from "../baseConfig";
 
 export const adminStudentsSlice = api.injectEndpoints({
@@ -10,12 +14,19 @@ export const adminStudentsSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["students", "admin"],
     }),
-    getAllStudents: builder.query<any, void>({
+    getAllStudents: builder.query<IAdminStudents, void>({
       query: () => ({
         url: "/admin/students",
       }),
       providesTags: ["admin", "students"],
     }),
+    getStudent: builder.query<IAdminStudentData, any>({
+      query: (id) => ({
+        url: `/admin/students/${id}`,
+      }),
+      providesTags: ["admin", "students"],
+    }),
+
     bulkCreateStudents: builder.mutation<any, any>({
       query: (payload) => ({
         url: `/admin/students/bulk`,
@@ -53,6 +64,7 @@ export const {
   useCreateStudentMutation,
   useGetAllStudentsQuery,
   useBulkCreateStudentsMutation,
+  useGetStudentQuery,
   useGetStudentsByDepartmentQuery,
   useUpdateStudentMutation,
   useDeleteStudentMutation,

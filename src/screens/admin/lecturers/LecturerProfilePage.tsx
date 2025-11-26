@@ -25,7 +25,6 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import StatCard from "./stat-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GradeDistributionChart from "@/components/ui-components/GradeDistributionChart";
 import type { IAdminLecturer, LecturerFormData } from "./type";
@@ -33,13 +32,17 @@ import {
   useDeleteLecturerMutation,
   useGetLectureDetailsQuery,
   useUpdateLecturerMutation,
+  useUpdateLecturerPasswordMutation,
 } from "@/redux/query/admin-lecturers";
 import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useAdminLecturersStore } from "@/stores/useAdminLecturersStore";
-import LecturerProfileSkeleton from "./lecturer-profile-skeleton";
 import ManageLecturerDialog from "./manage-lecturer-dialog";
+import LecturerProfileSkeleton from "./components/lecturer-profile-skeleton";
+import StatCard from "./components/stat-card";
+import { useState } from "react";
+import ResetPassword from "./components/ResetPassword";
 
 const LecturerProfilePage = () => {
   const { id } = useParams();
@@ -49,20 +52,10 @@ const LecturerProfilePage = () => {
   const [updateLecturerTrigger, { isLoading: isUpdating }] =
     useUpdateLecturerMutation();
 
+  const [updateLecturerPasswordTrigger, { isLoading: isUpdatingPassword }] =
+    useUpdateLecturerPasswordMutation();
+
   const { openEditDialog, closeDialog } = useAdminLecturersStore();
-  const handleDeleteLecturer = async (id: string) => {
-    const toastId = toast.loading("Deleting Lecturer...");
-
-    try {
-      await deleteLecturerTrigger(id).unwrap();
-
-      toast.success("Lecturer successfully Deleted!", { id: toastId });
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to Delete Lecturer", {
-        id: toastId,
-      });
-    }
-  };
 
   const { data: lecturerDetails, isLoading } = useGetLectureDetailsQuery(id);
   const {
@@ -73,7 +66,38 @@ const LecturerProfilePage = () => {
     recentResults,
   } = lecturerDetails || {};
 
-  // Combine name parts to get initials
+  const [showReset, setShowReset] = useState(false);
+
+  const updateLecturerPassword = async (data: string) => {
+    const toastId = toast.loading("Updating password...");
+    try {
+      await updateLecturerPasswordTrigger({
+        id: lecturerData?._id || "",
+        data,
+      }).unwrap();
+      toast.success("Password successfully updated!", { id: toastId });
+      closeDialog();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update password", {
+        id: toastId,
+      });
+    }
+  };
+
+  const handleDeleteLecturer = async (id: string) => {
+    const toastId = toast.loading("Deleting Lecturer...");
+
+    try {
+      await deleteLecturerTrigger(id).unwrap();
+
+      toast.success("Lecturer successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || error.data.msg, {
+        id: toastId,
+      });
+    }
+  };
+
   const initials = getNameInitials(lecturerData?.name || "");
 
   const handleSaveLecturer = async (data: LecturerFormData) => {
@@ -155,9 +179,9 @@ const LecturerProfilePage = () => {
                 </div>
               </div>
               <div className="flex gap-2 mt-4 sm:mt-0">
-                <Button variant="outline">
+                {/* <Button variant="outline">
                   <Mail className="mr-2 h-4 w-4" /> Contact
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => openEditDialog(lecturerData as IAdminLecturer)}
                 >
@@ -455,42 +479,57 @@ const LecturerProfilePage = () => {
             </Card>
 
             {/* Quick Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">System Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-500">Account Status</span>
-                  <Badge variant="secondary" className="capitalize">
-                    {lecturerData?.accountStatus}
-                  </Badge>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-500">Verification</span>
-                  {lecturerData?.isVerified ? (
-                    <span className="text-green-600 flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" /> Verified
+            {!showReset && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">System Status</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-500">Account Status</span>
+                    <Badge variant="secondary" className="capitalize">
+                      {lecturerData?.accountStatus}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-500">Verification</span>
+                    {lecturerData?.isVerified ? (
+                      <span className="text-green-600 flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" /> Verified
+                      </span>
+                    ) : (
+                      <span className="text-amber-600 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> Pending
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-500">First Login</span>
+                    <span className="font-medium">
+                      {lecturerData?.isFirstLogin ? "Yes" : "No"}
                     </span>
-                  ) : (
-                    <span className="text-amber-600 flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> Pending
-                    </span>
-                  )}
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-500">First Login</span>
-                  <span className="font-medium">
-                    {lecturerData?.isFirstLogin ? "Yes" : "No"}
-                  </span>
-                </div>
-                <div className="pt-2">
-                  <Button variant="outline" size="sm" className="w-full">
-                    Reset Password
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                  <div className="pt-2">
+                    <Button
+                      onClick={() => setShowReset(true)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      Reset Password
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {showReset && (
+              <ResetPassword
+                onClose={() => setShowReset(false)}
+                onSubmit={updateLecturerPassword}
+                isLoading={isUpdatingPassword}
+              />
+            )}
           </div>
         </div>
       </div>

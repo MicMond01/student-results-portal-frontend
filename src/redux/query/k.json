@@ -1,0 +1,221 @@
+{
+    "success": true,
+    "student": {
+        "matricNo": "LASU/CYS/2024/000020",
+        "faculty": "Faculty of Science",
+        "department": {
+            "_id": "6912dbf37f8e0c928cde7ace",
+            "faculty": "Faculty of Science",
+            "name": "Cybersecurity",
+            "code": "CYS"
+        },
+        "level": 100,
+        "program": "B.Sc. Cybersecurity",
+        "admissionYear": 2023,
+        "session": "2023/2024",
+        "academicAdvisor": "Dr. Oluwaseun Adeyemi",
+        "status": "Active",
+        "school": "Lagos State University",
+        "profilePhoto": "https://randomuser.me/api/portraits/women/20.jpg",
+        "dateOfBirth": "2004-05-13T08:29:37.916Z",
+        "phone": "+234 770 625 3553",
+        "email": "chiamaka.udoh@student.lasu.edu.ng",
+        "address": "94 Surulere Street, Lagos, Nigeria",
+        "placeOfBirth": "Kano",
+        "stateOfOrigin": "Abia",
+        "jambNo": "6425029543",
+        "rank": null,
+        "specialization": null,
+        "yearsOfExperience": null,
+        "officeLocation": null,
+        "highestDegree": null,
+        "institution": null,
+        "accountStatus": "pending",
+        "isFirstLogin": true,
+        "isVerified": false,
+        "isUsingDefaultPassword": true,
+        "previousPasswords": [],
+        "departmentName": null,
+        "_id": "6914199c91611f4c74811f21",
+        "name": "Chiamaka Udoh",
+        "identifier": "25000000020",
+        "role": "student",
+        "gender": "Female",
+        "createdAt": "2025-11-12T05:22:36.256Z",
+        "updatedAt": "2025-11-12T05:22:36.256Z",
+        "__v": 0,
+        "cgpa": 4.4
+    },
+    "stats": {
+        "totalCoursesRegistered": 10,
+        "totalResults": 10,
+        "cgpa": 4.4,
+        "currentSessionGPA": 4.4,
+        "totalCreditUnits": 30,
+        "resultsBySession": {
+            "2023/2024": {
+                "count": 10,
+                "courses": [
+                    {
+                        "code": "CYSC101",
+                        "title": "Introduction to Cyber Security",
+                        "grade": "B",
+                        "total": 69
+                    },
+                    {
+                        "code": "CYSC110",
+                        "title": "Computer Programming Fundamentals",
+                        "grade": "A",
+                        "total": 70
+                    },
+                   
+                ]
+            }
+        },
+        "gradeDistribution": {
+            "B": 4,
+            "A": 5,
+            "C": 1
+        },
+        "averageScore": "69.80",
+        "passRate": "100.00",
+        "academicStanding": "Second Class Upper"
+    },
+    "courses": {
+        "100": {
+            "First": [
+                {
+                    "_id": "6914196f91611f4c74811ed3",
+                    "code": "CYSC101",
+                    "title": "Introduction to Cyber Security",
+                    "creditUnit": 3,
+                    "lecturer": {
+                        "email": "dr..fatima.abubakar@lasu.edu.ng",
+                        "rank": "Senior Lecturer",
+                        "_id": "6914196291611f4c74811ec1",
+                        "name": "Dr. Fatima Abubakar"
+                    },
+                    "session": "2023/2024"
+                },
+               
+            ],
+            "Second": [
+                {
+                    "_id": "6914197491611f4c74811edd",
+                    "code": "CYSC201",
+                    "title": "Operating Systems Security",
+                    "creditUnit": 3,
+                    "lecturer": {
+                        "email": "mr..abdullahi.hassan@lasu.edu.ng",
+                        "rank": "Assistant Lecturer",
+                        "_id": "6914196a91611f4c74811ecd",
+                        "name": "Mr. Abdullahi Hassan"
+                    },
+                    "session": "2023/2024"
+                }
+            ]
+        }
+    },
+    "results": {
+        "First": [
+            {
+                "_id": "69141b3891611f4c748120db",
+                "student": "6914199c91611f4c74811f21",
+                "course": {
+                    "_id": "6914196f91611f4c74811ed3",
+                    "title": "Introduction to Cyber Security",
+                    "code": "CYSC101",
+                    "creditUnit": 3,
+                    "level": 100,
+                    "semester": "First",
+                    "session": "2023/2024"
+                },
+                "session": "2023/2024",
+                "semester": "First",
+                "ca": 36,
+                "exam": 33,
+                "uploadedBy": "6914196291611f4c74811ec1",
+                "createdAt": "2025-11-12T05:29:28.669Z",
+                "updatedAt": "2025-11-12T05:29:28.669Z",
+                "total": 69,
+                "grade": "B",
+                "__v": 0
+            }
+        ],
+        "Second": [
+            {
+                "_id": "69141b3c91611f4c748120e5",
+                "student": "6914199c91611f4c74811f21",
+                "course": {
+                    "_id": "6914197491611f4c74811edd",
+                    "title": "Operating Systems Security",
+                    "code": "CYSC201",
+                    "creditUnit": 3,
+                    "level": 100,
+                    "semester": "Second",
+                    "session": "2023/2024"
+                },
+                "session": "2023/2024",
+                "semester": "Second",
+                "ca": 26,
+                "exam": 37,
+                "uploadedBy": "6914196a91611f4c74811ecd",
+                "createdAt": "2025-11-12T05:29:32.975Z",
+                "updatedAt": "2025-11-12T05:29:32.975Z",
+                "total": 63,
+                "grade": "B",
+                "__v": 0
+            }
+        
+        ]
+    },
+    "allResults": [
+        {
+            "_id": "69141b3891611f4c748120db",
+            "student": "6914199c91611f4c74811f21",
+            "course": {
+                "_id": "6914196f91611f4c74811ed3",
+                "title": "Introduction to Cyber Security",
+                "code": "CYSC101",
+                "creditUnit": 3,
+                "level": 100,
+                "semester": "First",
+                "session": "2023/2024"
+            },
+            "session": "2023/2024",
+            "semester": "First",
+            "ca": 36,
+            "exam": 33,
+            "uploadedBy": "6914196291611f4c74811ec1",
+            "createdAt": "2025-11-12T05:29:28.669Z",
+            "updatedAt": "2025-11-12T05:29:28.669Z",
+            "total": 69,
+            "grade": "B",
+            "__v": 0
+        },
+        {
+            "_id": "69141b3991611f4c748120dd",
+            "student": "6914199c91611f4c74811f21",
+            "course": {
+                "_id": "6914196f91611f4c74811ed5",
+                "title": "Computer Programming Fundamentals",
+                "code": "CYSC110",
+                "creditUnit": 3,
+                "level": 100,
+                "semester": "First",
+                "session": "2023/2024"
+            },
+            "session": "2023/2024",
+            "semester": "First",
+            "ca": 29,
+            "exam": 41,
+            "uploadedBy": "6914196991611f4c74811ec9",
+            "createdAt": "2025-11-12T05:29:29.377Z",
+            "updatedAt": "2025-11-12T05:29:29.377Z",
+            "total": 70,
+            "grade": "A",
+            "__v": 0
+        },
+        
+    ]
+}
