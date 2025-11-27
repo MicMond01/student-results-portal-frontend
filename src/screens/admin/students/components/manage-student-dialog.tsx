@@ -19,12 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 const ManageStudentDialog: React.FC<{
   onSave: (data: StudentFormData) => void;
-  isUpdatingStudent: boolean;
-  isCreatingStudent: boolean;
-}> = ({ onSave, isUpdatingStudent, isCreatingStudent }) => {
+  isLoading: boolean;
+}> = ({ onSave, isLoading }) => {
   const { data: allDepartments } = useGetAllDepartmentsQuery();
 
   const {
@@ -53,17 +53,17 @@ const ManageStudentDialog: React.FC<{
       setFormData(
         student
           ? {
-              name: student.name,
-              email: student.email,
-              phone: student.phone,
-              matricNo: student.matricNo,
-              jambNo: student.jambNo,
-              department: student.department._id,
-              level: student.level,
-              program: student.program,
-              gender: student.gender,
-              address: student.address,
-              academicAdvisor: student.academicAdvisor,
+              name: student.name || "",
+              email: student.email || "",
+              phone: student.phone || "",
+              matricNo: student.matricNo || "",
+              jambNo: student.jambNo || "",
+              department: student.department?._id || "",
+              level: student.level || 100,
+              program: student.program || "",
+              gender: student.gender || "",
+              address: student.address || "",
+              academicAdvisor: student.academicAdvisor || "",
             }
           : {
               name: "",
@@ -234,17 +234,18 @@ const ManageStudentDialog: React.FC<{
               type="button"
               variant="outline"
               onClick={() => setIsDialogOpen(false)}
-              disabled={isUpdatingStudent || isCreatingStudent}
+              disabled={isLoading}
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isUpdatingStudent || isCreatingStudent}
-            >
-              {isEditMode
-                ? `${isUpdatingStudent ? "Updating..." : "Save Changes"} `
-                : `${isCreatingStudent ? "Creating..." : "Create Course"}`}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : isEditMode ? (
+                "Update Student"
+              ) : (
+                "Add Student"
+              )}
             </Button>
           </DialogFooter>
         </form>

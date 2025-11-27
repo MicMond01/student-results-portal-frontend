@@ -19,9 +19,12 @@ export const studentsListTableHeaders = (
     key: "profilePhoto",
     cell: (row) => (
       <Avatar className="  border-2 border-white shadow-md">
-        <AvatarImage src={row.profilePhoto || undefined} alt={row.name} />
+        <AvatarImage
+          src={row?.profilePhoto || undefined}
+          alt={row?.name ?? "N/A"}
+        />
         <AvatarFallback className="bg-indigo-50 text-indigo-700 text-lg">
-          {getNameInitials(row.name)}
+          {getNameInitials(row?.name || "")}
         </AvatarFallback>
       </Avatar>
     ),
@@ -31,9 +34,11 @@ export const studentsListTableHeaders = (
     key: "name",
     cell: (row) => (
       <div>
-        <div className="font-medium flex gap-2 items-center">{row.name}</div>
+        <div className="font-medium flex gap-2 items-center">
+          {row?.name || ""}
+        </div>
         <div className="text-xs text-muted-foreground line-clamp-1">
-          {row.matricNo}
+          {row?.matricNo ?? ""}
         </div>
       </div>
     ),
@@ -44,19 +49,19 @@ export const studentsListTableHeaders = (
     thClass: "text-center",
     cell: (row) => (
       <div>
-        <div className="text-center font-medium">{row.gender}</div>
+        <div className="text-center font-medium">{row?.gender ?? "N/A"}</div>
         <div className="text-xs text-muted-foreground line-clamp-1"></div>
       </div>
     ),
   },
   {
     title: "Program / Department",
-    key: "rank",
+    key: "program",
     cell: (row) => (
       <div>
-        <div className="font-medium">{row.program}</div>
+        <div className="font-medium">{row?.program ?? "N/A"}</div>
         <div className="text-xs text-muted-foreground line-clamp-1">
-          {row.department.name}
+          {row?.department?.name ?? "N/A"}
         </div>
       </div>
     ),
@@ -66,15 +71,15 @@ export const studentsListTableHeaders = (
     key: "identifier",
     cell: (row) => (
       <div>
-        <div className="font-medium">{row.identifier}</div>
-        <div className="font-medium">{row.email || row.phone}</div>
+        <div className="font-medium">{row?.identifier ?? "N/A"}</div>
+        <div className="font-medium">{(row?.email || row?.phone) ?? "N/A"}</div>
       </div>
     ),
   },
   {
     title: "Level",
     key: "level",
-    cell: (row) => <div className="font-medium">{row.level} </div>,
+    cell: (row) => <div className="font-medium">{row?.level ?? "N/A"}</div>,
   },
   {
     title: "Status",
@@ -82,10 +87,10 @@ export const studentsListTableHeaders = (
     thClass: "text-center",
     cell: (row) => (
       <Badge
-        variant={row.status === "Active" ? "success" : "secondary"}
+        variant={row?.status === "Active" ? "success" : "secondary"}
         className="capitalize text-center"
       >
-        {row.status || "Inactive"}
+        {(row?.status || "Inactive") ?? "N/A"}
       </Badge>
     ),
   },
@@ -108,7 +113,7 @@ export const studentsListTableHeaders = (
           variant="ghost"
           size="icon"
           onClick={() => onEdit(row)}
-          title="Edit Course"
+          title="Edit Student"
         >
           <Edit2 className="h-4 w-4 text-blue-600" />
         </Button>
@@ -116,7 +121,7 @@ export const studentsListTableHeaders = (
           <ConfirmationDialog
             title="Confirm Delete"
             description="Are you sure you want to delete this Lecturer? "
-            action={() => handleDeleteStudent(row._id)}
+            action={() => handleDeleteStudent(row?._id)}
             triggerLabel={<IoTrashBinOutline />}
             type="delete"
             confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}

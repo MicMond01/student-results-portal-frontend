@@ -24,12 +24,8 @@ const BulkUploadDialog = ({ onUpload, isUploading }: BulkUploadDialogProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    closeBulkUploadDialog,
-    bulkUploadingToExamId,
-    isBulkUploadOpen,
-    openBulkUploadDialog,
-  } = useLecturerExamsStore();
+  const { closeBulkUploadDialog, bulkUploadingToExamId, isBulkUploadOpen } =
+    useLecturerExamsStore();
   const [getTemplate] = useLazyGetDownloadTemplateQuery();
 
   const downloadExamFormat = async (format: string) => {

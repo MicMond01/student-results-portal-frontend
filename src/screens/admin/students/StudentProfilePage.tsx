@@ -14,27 +14,65 @@ import {
   Phone,
   School,
   Shield,
-  Trash2,
   TrendingUp,
   User,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import type { IAdminStudentData } from "./types";
+import { useNavigate, useParams } from "react-router-dom";
+import type { IAdminStudent, StudentFormData } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getNameInitials } from "@/lib/functions";
 import Badge from "@/components/ui-components/Badge";
 import InfoRow from "@/components/ui-components/InfoRow";
 import ExpandListDialog from "./components/expand-list-dialog";
+import {
+  useDeleteStudentMutation,
+  useGetStudentQuery,
+  useUpdateStudentMutation,
+} from "@/redux/query/admin-students";
+import StudentDetailsSkeleton from "./components/student-details-skeleton";
+import { toast } from "sonner";
+import ManageStudentDialog from "./components/manage-student-dialog";
+import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
 
-const StudentProfilePage: React.FC<{
-  studentData: IAdminStudentData;
-  onDelete: (id: string) => void;
-}> = ({ studentData, onDelete }) => {
-  const { student, courses, results } = studentData;
+const StudentProfilePage = () => {
+  const { id } = useParams();
+  const { data: studentData, isLoading } = useGetStudentQuery(id);
+  const { student, courses, results } = studentData || {};
+  const [updateStudentTrigger, { isLoading: isUpdatingStudent }] =
+    useUpdateStudentMutation();
+  const [deleteStudentTrigger, { isLoading: isDeleting }] =
+    useDeleteStudentMutation();
 
-  const { setEditingStudent, setActiveListDialog } = useAdminStudentsStore();
+  const { handleEdit, setActiveListDialog, closeDialog } =
+    useAdminStudentsStore();
   const navigate = useNavigate();
+
+  const handleSaveStudent = async (data: StudentFormData) => {
+    try {
+      await updateStudentTrigger({ id: student?._id || "", data }).unwrap();
+      toast.success("Student updated successfully");
+      closeDialog();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update student");
+    }
+  };
+
+  const handleDeleteStudent = async (id: string) => {
+    const toastId = toast.loading("Deleting Student...");
+
+    try {
+      await deleteStudentTrigger(id).unwrap();
+
+      toast.success("Student successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Delete Student", {
+        id: toastId,
+      });
+    }
+  };
+
+  if (isLoading) return <StudentDetailsSkeleton />;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -48,12 +86,20 @@ const StudentProfilePage: React.FC<{
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Student
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setEditingStudent(student)}>
+          <Button
+            variant="outline"
+            onClick={() => handleEdit(student as IAdminStudent)}
+          >
             <Edit2 className="mr-2 h-4 w-4" /> Edit Details
           </Button>
-          <Button variant="destructive" onClick={() => onDelete(student._id)}>
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
-          </Button>
+          <ConfirmationDialog
+            title="Confirm Delete"
+            triggerLabel="Delete Student"
+            description="Are you sure you want to delete this Student? "
+            action={() => handleDeleteStudent(student?._id || "")}
+            type="delete"
+            confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}
+          />
         </div>
       </div>
 
@@ -65,48 +111,48 @@ const StudentProfilePage: React.FC<{
             <div className="px-6 pb-6 -mt-12 text-center">
               <Avatar className="h-24 w-24 border-4 border-white shadow-lg mx-auto bg-white">
                 <AvatarImage
-                  src={student.profilePhoto}
+                  src={student?.profilePhoto}
                   className="object-cover"
                 />
                 <AvatarFallback className="text-2xl">
-                  {getNameInitials(student.name)}
+                  {getNameInitials(student?.name || "")}
                 </AvatarFallback>
               </Avatar>
               <h2 className="mt-3 text-xl font-bold text-gray-900">
-                {student.name}
+                {student?.name}
               </h2>
-              <p className="text-sm text-gray-500">{student.matricNo}</p>
+              <p className="text-sm text-gray-500">{student?.matricNo}</p>
 
               <div className="mt-4 flex justify-center gap-2">
-                <Badge variant="secondary">{student.level} Level</Badge>
+                <Badge variant="secondary">{student?.level} Level</Badge>
                 <Badge
                   variant={
-                    student.status === "Active" ? "success" : "secondary"
+                    student?.status === "Active" ? "success" : "secondary"
                   }
                 >
-                  {student.status}
+                  {student?.status}
                 </Badge>
               </div>
 
               <div className="mt-6 pt-6 border-t text-left space-y-1">
                 <InfoRow
                   label="Program"
-                  value={student.program}
+                  value={student?.program}
                   icon={GraduationCap}
                 />
                 <InfoRow
                   label="Department"
-                  value={student.department.name}
+                  value={student?.department?.name ?? "N/A"}
                   icon={School}
                 />
                 <InfoRow
                   label="Faculty"
-                  value={student.faculty}
+                  value={student?.faculty}
                   icon={BookOpen}
                 />
                 <InfoRow
                   label="Session"
-                  value={student.session}
+                  value={student?.session}
                   icon={Calendar}
                 />
               </div>
@@ -118,9 +164,9 @@ const StudentProfilePage: React.FC<{
               <CardTitle className="text-base">Contact Information</CardTitle>
             </CardHeader>
             <CardContent className="p-6 pt-0 space-y-2">
-              <InfoRow label="Email" value={student.email} icon={Mail} />
-              <InfoRow label="Phone" value={student.phone} icon={Phone} />
-              <InfoRow label="Address" value={student.address} icon={MapPin} />
+              <InfoRow label="Email" value={student?.email} icon={Mail} />
+              <InfoRow label="Phone" value={student?.phone} icon={Phone} />
+              <InfoRow label="Address" value={student?.address} icon={MapPin} />
             </CardContent>
           </Card>
 
@@ -133,7 +179,7 @@ const StudentProfilePage: React.FC<{
                 label="Account Status"
                 value={
                   <Badge variant="outline" className="capitalize">
-                    {student.accountStatus}
+                    {student?.accountStatus}
                   </Badge>
                 }
                 icon={Shield}
@@ -141,7 +187,7 @@ const StudentProfilePage: React.FC<{
               <InfoRow
                 label="Verified"
                 value={
-                  student.isVerified ? (
+                  student?.isVerified ? (
                     <span className="text-green-600 flex items-center gap-1">
                       <CheckCircle2 className="h-3 w-3" /> Yes
                     </span>
@@ -153,7 +199,7 @@ const StudentProfilePage: React.FC<{
               />
               <InfoRow
                 label="Portal ID"
-                value={student.identifier}
+                value={student?.identifier}
                 icon={Hash}
               />
             </CardContent>
@@ -202,7 +248,7 @@ const StudentProfilePage: React.FC<{
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y">
-                {courses[100].First.slice(0, 3).map((course, i) => (
+                {courses?.[100]?.First?.slice(0, 3).map((course, i) => (
                   <div
                     key={i}
                     className="flex items-center justify-between p-4 hover:bg-gray-50"
@@ -224,8 +270,8 @@ const StudentProfilePage: React.FC<{
                       Active
                     </Badge>
                   </div>
-                ))}
-                {courses[200]?.First.slice(0, 3).map((course, i) => (
+                )) ?? []}
+                {courses?.[200]?.First?.slice(0, 3).map((course, i) => (
                   <div
                     key={i}
                     className="flex items-center justify-between p-4 hover:bg-gray-50"
@@ -247,7 +293,7 @@ const StudentProfilePage: React.FC<{
                       Active
                     </Badge>
                   </div>
-                ))}
+                )) ?? []}
               </div>
             </CardContent>
           </Card>
@@ -266,7 +312,7 @@ const StudentProfilePage: React.FC<{
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y">
-                {results.First.slice(0, 3).map((result, i) => (
+                {results?.First?.slice(0, 3).map((result, i) => (
                   <div
                     key={i}
                     className="flex items-center justify-between p-4 hover:bg-gray-50"
@@ -277,7 +323,7 @@ const StudentProfilePage: React.FC<{
                       </div>
                       <div>
                         <div className="font-medium text-sm text-gray-900">
-                          {result?.course.creditUnit}
+                          {result?.course?.creditUnit ?? "N/A"}
                         </div>
                         <div className="text-xs text-gray-500">
                           {result.session}
@@ -288,13 +334,13 @@ const StudentProfilePage: React.FC<{
                       {result.total}%
                     </div>
                   </div>
-                ))}
+                )) ?? []}
               </div>
             </CardContent>
           </Card>
 
           {/* Academic Advisor Card */}
-          <Card className="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+          <Card className="bg-linear-to-br from-gray-900 to-gray-800 text-white">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-gray-700 flex items-center justify-center">
@@ -304,9 +350,11 @@ const StudentProfilePage: React.FC<{
                   <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
                     Academic Advisor
                   </p>
-                  <p className="font-bold text-lg">{student.academicAdvisor}</p>
+                  <p className="font-bold text-lg">
+                    {student?.academicAdvisor}
+                  </p>
                   <p className="text-xs text-gray-400">
-                    Department of {student.department.name}
+                    Department of {student?.department?.name ?? "N/A"}
                   </p>
                 </div>
                 <Button variant="secondary" size="sm" className="ml-auto">
@@ -319,7 +367,12 @@ const StudentProfilePage: React.FC<{
       </div>
 
       {/* EXPANDED LIST DIALOGS */}
-      <ExpandListDialog />
+      {studentData && <ExpandListDialog studentData={studentData} />}
+
+      <ManageStudentDialog
+        onSave={handleSaveStudent}
+        isLoading={isUpdatingStudent}
+      />
     </div>
   );
 };

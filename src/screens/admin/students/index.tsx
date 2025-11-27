@@ -1,7 +1,6 @@
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import {
   useCreateStudentMutation,
-  useGetStudentQuery,
   useUpdateStudentMutation,
 } from "@/redux/query/admin-students";
 import { useAdminStudentsStore } from "@/stores/useAdminStudentsStore";
@@ -22,8 +21,6 @@ const AdminStudents = () => {
   const { editingStudent, view, selectedStudent, setIsDialogOpen } =
     useAdminStudentsStore();
 
-  const { data } = useGetStudentQuery("68f4390dc364896a74c40a1b");
-  console.log(data);
   //Save Function
 
   const handleSaveStudent = async (formData: StudentFormData) => {
@@ -92,8 +89,7 @@ const AdminStudents = () => {
 
       <ManageStudentDialog
         onSave={handleSaveStudent}
-        isUpdatingStudent={isUpdatingStudent}
-        isCreatingStudent={isCreatingStudent}
+        isLoading={isUpdatingStudent || isCreatingStudent}
       />
     </div>
   );

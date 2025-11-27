@@ -26,7 +26,23 @@ export const adminStudentsSlice = api.injectEndpoints({
       }),
       providesTags: ["admin", "students"],
     }),
-
+    getDownloadUploadStudentsTemplate: builder.query<Blob, string>({
+      query: (format) => {
+        const clean = format.trim().toLowerCase();
+        console.log(clean);
+        return {
+          url: `/admin/students/template/${clean}`,
+          responseHandler: async (response: any) => {
+            if (!response.ok) {
+              const errorData = await response.json(); // ← Fixed: Parse as JSON, not text/blob
+              throw new Error(errorData.message || "Failed to download");
+            }
+            return response.blob();
+          },
+        };
+      },
+      keepUnusedDataFor: 0,
+    }),
     bulkCreateStudents: builder.mutation<any, any>({
       query: (payload) => ({
         url: `/admin/students/bulk`,
@@ -66,6 +82,8 @@ export const {
   useBulkCreateStudentsMutation,
   useGetStudentQuery,
   useGetStudentsByDepartmentQuery,
+  useGetDownloadUploadStudentsTemplateQuery,
+  useLazyGetDownloadUploadStudentsTemplateQuery,
   useUpdateStudentMutation,
   useDeleteStudentMutation,
 } = adminStudentsSlice;

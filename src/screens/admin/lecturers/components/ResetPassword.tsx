@@ -14,7 +14,7 @@ import { useState } from "react";
 
 interface ResetPasswordProps {
   onClose: () => void;
-  onSubmit: (password: string) => Promise<void>;
+  onSubmit: (password: string) => void;
   isLoading: boolean;
 }
 

@@ -10,6 +10,7 @@ interface AdminStudentsState {
   isDialogOpen: boolean;
   view: "list" | "details";
   activeListDialog: "courses" | "results" | null;
+  isBulkUploadOpen: boolean;
 
   //Actions
   setSelectedStudent: (student: IAdminStudentData | null) => void;
@@ -21,6 +22,9 @@ interface AdminStudentsState {
   handleReturnToList: (view: "list") => void;
   onCreateNew: () => void;
   handleEdit: (student: IAdminStudent) => void;
+  closeDialog: () => void;
+  setIsBulkUploadOpen: (open: boolean) => void;
+  closeBulkDialog: () => void;
 }
 
 export const useAdminStudentsStore = create<AdminStudentsState>((set) => ({
@@ -30,6 +34,7 @@ export const useAdminStudentsStore = create<AdminStudentsState>((set) => ({
   isDialogOpen: false,
   view: "list",
   activeListDialog: null,
+  isBulkUploadOpen: false,
 
   //Basic setters
   setSelectedStudent: (student) => set({ selectedStudent: student }),
@@ -37,6 +42,7 @@ export const useAdminStudentsStore = create<AdminStudentsState>((set) => ({
   setIsDialogOpen: (open) => set({ isDialogOpen: open }),
   setView: (viewType) => set({ view: viewType }),
   setActiveListDialog: (dialogType) => set({ activeListDialog: dialogType }),
+  setIsBulkUploadOpen: (open) => set({ isBulkUploadOpen: open }),
 
   //   Combine Actions
 
@@ -55,9 +61,19 @@ export const useAdminStudentsStore = create<AdminStudentsState>((set) => ({
       isDialogOpen: true,
     }),
 
+  closeDialog: () =>
+    set({
+      isDialogOpen: false,
+    }),
+
   handleEdit: (student: IAdminStudent) =>
     set({
       editingStudent: student,
       isDialogOpen: true,
+    }),
+
+  closeBulkDialog: () =>
+    set({
+      isBulkUploadOpen: false,
     }),
 }));
