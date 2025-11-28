@@ -43,13 +43,12 @@ const StudentsFilters = (props: IStudentsFilters) => {
 
     try {
       await uploadResult(data).unwrap();
-      console.log(data);
       toast.success("Result created successfully!", { id: toastId });
     } catch (error: any) {
       toast.error(error?.data?.msg || "Failed to create result", {
         id: toastId,
       });
-      console.log(error.data.msg);
+
       throw error;
     }
   };

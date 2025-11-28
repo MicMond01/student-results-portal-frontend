@@ -45,7 +45,6 @@ const LoginForm = () => {
         );
       }
     } catch (error: any) {
-      console.error("Login error:", error);
       const message = error?.data?.msg || error?.data?.message;
       toast.error(message);
       setErrorMsg(message);

@@ -1,7 +1,6 @@
 import Table from "@/components/table/table";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  useBulkCreateStudentsMutation,
   useDeleteStudentMutation,
   useGetAllStudentsQuery,
 } from "@/redux/query/admin-students";
@@ -25,7 +24,6 @@ const StudentListPage = () => {
     useDeleteStudentMutation();
   const navigate = useNavigate();
 
-  console.log(students);
   const [filters, setFilters] = useState<StudentFilterState>({
     query: "",
     department: "all",

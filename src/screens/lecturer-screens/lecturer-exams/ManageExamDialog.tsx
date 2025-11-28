@@ -60,7 +60,6 @@ const ManageExamDialog = ({
   useEffect(() => {
     const marks = questions.reduce((acc, q) => acc + (q.marks || 0), 0);
     setTotalMarks(marks);
-    console.log(marks);
   }, [questions]);
 
   //TODO: Make the inner AddQuestion Dialog Work

@@ -41,8 +41,6 @@ const BulkUploadDialog = () => {
 
   const [departmentId, setDepartmentId] = useState<string>("");
 
-  console.log(departmentId);
-  
   const handleUpload = async () => {
     if (file && departmentId) {
       const formData = new FormData();
@@ -76,8 +74,9 @@ const BulkUploadDialog = () => {
 
       toast.success("Template downloaded successfully", { id: toastId });
     } catch (error: any) {
-      console.error("Download error:", error);
-      toast.error(error.message || "Failed to download template", {
+      const message = error?.data?.msg || error?.data?.message;
+
+      toast.error(message || "Failed to download template", {
         id: toastId,
       });
     }

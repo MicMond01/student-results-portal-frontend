@@ -29,7 +29,6 @@ export const adminStudentsSlice = api.injectEndpoints({
     getDownloadUploadStudentsTemplate: builder.query<Blob, string>({
       query: (format) => {
         const clean = format.trim().toLowerCase();
-        console.log(clean);
         return {
           url: `/admin/students/template/${clean}`,
           responseHandler: async (response: any) => {

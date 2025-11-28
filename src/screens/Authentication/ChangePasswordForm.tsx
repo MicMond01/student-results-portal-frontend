@@ -23,8 +23,6 @@ const ChangePasswordForm = () => {
   const { user, token } = useAppSelector((state) => state.auth);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  console.log("User in ChangePasswordForm:", user);
-
   const {
     handleSubmit,
     control,

@@ -56,7 +56,6 @@ const StudentDetail = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  console.log(formData);
 
   const handleSave = async () => {
     const toastId = toast.loading("Updating result...");

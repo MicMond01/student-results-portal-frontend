@@ -114,10 +114,11 @@ const AdminLectures = () => {
         setIsManageOpen(false);
       }
     } catch (error: any) {
-      toast.error(error?.data?.message || "Something went wrong", {
+      const message = error?.data?.msg || error?.data?.message;
+
+      toast.error(message || "Something went wrong", {
         id: toastId,
       });
-      console.log(error);
     }
   };
 

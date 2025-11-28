@@ -14,6 +14,7 @@ import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
 import { useLazyGetDownloadTemplateQuery } from "@/redux/query/lecturer-exam";
+import { toast } from "sonner";
 
 interface BulkUploadDialogProps {
   onUpload: (examId: string, file: File) => void;
@@ -41,8 +42,10 @@ const BulkUploadDialog = ({ onUpload, isUploading }: BulkUploadDialogProps) => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Download error:", error);
+      toast.success("Template downloaded successfully");
+    } catch (error: any ) {
+      toast.error("Failed to download template");
+
     }
   };
 

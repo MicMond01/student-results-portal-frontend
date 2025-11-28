@@ -55,7 +55,6 @@ const LecturerCourses = () => {
     });
   }, [courses, searchTerm, selectedSemester, selectedSession]);
 
-  console.log(filteredCourses);
 
   return (
     <div className="min-h-screen  p-4 lg:p-8">

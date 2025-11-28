@@ -19,7 +19,6 @@ const ProfileDropdown = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   const navigateProfile = () => {
-    console.log(user?.role);
     if (user?.role === "lecturer") {
       navigate("/profile");
     }

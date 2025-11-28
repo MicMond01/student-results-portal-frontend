@@ -174,7 +174,7 @@ const Pagination = (props: IPagination) => {
     const end = Math.min(start + pagePerRow, total);
 
     setPag({ start, end });
-    console.log(`Page ${selected + 1}: Showing items ${start + 1} to ${end}`);
+    // console.log(`Page ${selected + 1}: Showing items ${start + 1} to ${end}`);
   };
 
   return (

@@ -5,7 +5,6 @@ import StatsCard from "./StatsCard";
 
 const Overview: React.FC = () => {
   const { data: analyticsData } = useGetLecturerCoursesAnalyticsQuery();
-  console.log(analyticsData);
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">

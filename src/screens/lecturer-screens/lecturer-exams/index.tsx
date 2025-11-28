@@ -68,9 +68,6 @@ const LecturerExams = () => {
     );
   }, [examData, selectedCourseId]);
 
-  console.log(selectedExams);
-  console.log(examData);
-
   // Create Exam Handler
   const handleCreateExam = async (examData: any) => {
     const toastId = toast.loading("Creating Exam...");
@@ -80,7 +77,6 @@ const LecturerExams = () => {
       toast.success("Exam successfully created!", { id: toastId });
       closeCreateExam();
     } catch (error) {
-      console.log(error);
       toast.error((error as any)?.data?.message || "Failed to create exam", {
         id: toastId,
       });
@@ -143,7 +139,6 @@ const LecturerExams = () => {
       toast.error((error as any)?.data?.message || "Failed to upload file", {
         id: toastId,
       });
-      console.log(error);
     }
   };
 

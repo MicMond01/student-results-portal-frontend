@@ -19,8 +19,6 @@ const AuthenticationPage = () => {
   const { user, nextStep } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  console.log(nextStep);
-
   useEffect(() => {
     // Handle automatic navigation logic
     if (nextStep === "verification") {
