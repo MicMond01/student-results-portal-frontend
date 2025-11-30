@@ -1,3 +1,4 @@
+import type { IAdminStdentResults } from "@/screens/admin/results/types";
 import { api } from "../baseConfig";
 
 export const adminResultSlice = api.injectEndpoints({
@@ -10,7 +11,7 @@ export const adminResultSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["results", "admin"],
     }),
-    getAllResults: builder.query<any, void>({
+    getAllResults: builder.query<IAdminStdentResults, void>({
       query: () => ({
         url: "/admin/results",
       }),

@@ -41,7 +41,6 @@ const Table = <T extends Record<string, any>>(props: ITable<T>) => {
       setChecked((prev) => prev.filter((x) => x !== uuid));
     } else setChecked((prev) => [...prev, uuid]);
   };
-  //spotify ads dey clear pass song for free plan
 
   return (
     <div>

@@ -8,6 +8,7 @@ const Badge: React.FC<
       | "outline"
       | "success"
       | "warning"
+      | "neutral"
       | "danger";
   }
 > = ({ className, variant = "default", ...props }) => {
@@ -17,6 +18,7 @@ const Badge: React.FC<
     outline: "border-gray-300 text-gray-700",
     success: "bg-green-100 text-green-800 border-green-200",
     danger: "bg-red-100 text-red-800 border-red-200",
+    neutral: "bg-slate-100 text-slate-700 border-slate-200",
     warning: "bg-amber-100 text-amber-800 border-amber-200",
   };
   return (
