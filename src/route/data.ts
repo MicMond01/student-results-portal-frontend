@@ -67,6 +67,7 @@ const CourseResultsPage = lazy(
   () => import("@/screens/admin/results/course-results")
 );
 const AdminExams = lazy(() => import("@/screens/admin/exams"));
+const AdminSessions = lazy(() => import("@/screens/admin/sessions"));
 
 export type IRoute = {
   link: string;
@@ -303,6 +304,13 @@ const routeData: IRoute[] = [
     title: "Exams",
     code: "ad-exams",
     component: AdminExams,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/sessions",
+    title: "Sessions",
+    code: "ad-sessions",
+    component: AdminSessions,
     allowedRoles: ["admin"],
   },
 ];

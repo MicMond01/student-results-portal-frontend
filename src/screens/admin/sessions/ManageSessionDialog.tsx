@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { ISession, SessionFormData } from "./type";
 import {
   Dialog,
@@ -18,15 +18,17 @@ const ManageSessionDialog: React.FC<{
   session: ISession | null;
   onSave: (data: SessionFormData) => void;
   isLoading?: boolean;
-}> = ({ open, onOpenChange, session, onSave, isLoading }) => {
-  const [formData, setFormData] = useState<SessionFormData>({
-    session: "",
-    startDate: "",
-    endDate: "",
-    isCurrent: false,
-    isActive: false,
-  });
-
+  setFormData: (data: SessionFormData) => void;
+  formData: SessionFormData;
+}> = ({
+  open,
+  onOpenChange,
+  session,
+  onSave,
+  isLoading,
+  setFormData,
+  formData,
+}) => {
   useEffect(() => {
     if (open) {
       setFormData(
@@ -103,8 +105,11 @@ const ManageSessionDialog: React.FC<{
               <Checkbox
                 id="isCurrent"
                 checked={formData.isCurrent}
-                onChange={(e) =>
-                  setFormData({ ...formData, isCurrent: e.target.checked })
+                onCheckedChange={(checked) =>
+                  setFormData({
+                    ...formData,
+                    isCurrent: Boolean(checked),
+                  })
                 }
               />
               <div className="grid gap-1.5 leading-none">
@@ -123,8 +128,11 @@ const ManageSessionDialog: React.FC<{
               <Checkbox
                 id="isActive"
                 checked={formData.isActive}
-                onChange={(e) =>
-                  setFormData({ ...formData, isActive: e.target.checked })
+                onCheckedChange={(checked) =>
+                  setFormData({
+                    ...formData,
+                    isActive: Boolean(checked),
+                  })
                 }
               />
               <div className="grid gap-1.5 leading-none">

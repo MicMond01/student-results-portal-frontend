@@ -192,6 +192,13 @@ const Sidebar: React.FC = () => {
         to: "/admin/exams",
         allowedRoles: ["admin"],
       },
+      {
+        id: "ad-sessions",
+        label: "Sessions",
+        icon: <Icon.exams className="h-5 w-5" />,
+        to: "/admin/sessions",
+        allowedRoles: ["admin"],
+      },
     ];
 
     // ✅ Filter items and children based on role

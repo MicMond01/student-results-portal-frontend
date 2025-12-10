@@ -34,7 +34,7 @@ export const adminSessiosSlice = api.injectEndpoints({
       invalidatesTags: ["admin", "sessions"],
     }),
 
-    deleteAcademicSession: builder.mutation<any, any>({
+    deleteAcademicSession: builder.mutation<any, string>({
       query: (id) => ({
         url: `/admin/sessions/${id}`,
         method: "DELETE",
