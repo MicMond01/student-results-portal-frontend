@@ -16,7 +16,7 @@ const AppLayout: React.FC = () => {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-bg-1">
+    <div className="flex h-screen w-full overflow-hidden bg-gray-100">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />

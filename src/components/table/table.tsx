@@ -58,7 +58,7 @@ const Table = <T extends Record<string, any>>(props: ITable<T>) => {
       />
       <div className="overflow-scroll">
         <table className="bg-background w-full overflow-hidden rounded-lg mt-2">
-          <thead className="border-b bg-primary text-white">
+          <thead className="border-b bg-gray-200 text-gray-800">
             <tr>
               {withCheckbox && (
                 <th className="p-3 text-start w-3">
@@ -92,7 +92,9 @@ const Table = <T extends Record<string, any>>(props: ITable<T>) => {
           <tbody>
             {rows.slice(pag.start, pag.end).map((row, rowIndex) => (
               <tr
-                className={cn("hover:bg-primary-3 cursor-pointer border-b")}
+                className={cn(
+                  "hover:bg-gray-100 bg-white cursor-pointer border-b"
+                )}
                 key={rowIndex}
                 onClick={() => onRowClick && onRowClick(row)}
               >

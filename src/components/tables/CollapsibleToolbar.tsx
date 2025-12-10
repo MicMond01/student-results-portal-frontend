@@ -1,4 +1,4 @@
-import { Download, Search, Trash, Upload } from "lucide-react";
+import { Download, Trash, Upload } from "lucide-react";
 import React from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -58,12 +58,22 @@ const TableToolbar: React.FC<ToolbarProps> = ({
 }) => {
   const hasSelection = checkedItems.length > 0;
 
+  const handleResetFilters = () => {
+    onSearchChange?.("");
+    onDepartmentFilterChange?.("");
+    onLevelFilterChange?.("");
+    onSessionFilterChange?.("");
+
+    // Optional: reset pagination
+    setNumPage(10);
+  };
+
   return (
     <div className="p-4 bg-white border-b border-slate-200 space-y-4">
       {/* Filters Row */}
-      <div className="flex flex-col lg:flex-row gap-3">
-        {/* Search */}
-        <div className="flex-1 min-w-[200px]">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="md:col-span-2 lg:col-span-2">
+          <Label htmlFor="departmentFilter">Name or Matric No.</Label>
           <Input
             placeholder="Search Name or Matric No..."
             // icon={<Search className="w-4 h-4" />}
@@ -73,9 +83,9 @@ const TableToolbar: React.FC<ToolbarProps> = ({
         </div>
 
         {/* Dropdown Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="">
           {onDepartmentFilterChange && (
-            <div className="space-y-2 w-full sm:w-48">
+            <div className="">
               <Label htmlFor="departmentFilter">All Departments</Label>
               <Select
                 value={departmentFilter}
@@ -94,9 +104,11 @@ const TableToolbar: React.FC<ToolbarProps> = ({
               </Select>
             </div>
           )}
+        </div>
 
+        <div className="">
           {onLevelFilterChange && (
-            <div className="space-y-2 w-full sm:w-32">
+            <div className="">
               <Label htmlFor="levelFilter">All Levels</Label>
               <Select value={levelFilter} onValueChange={onLevelFilterChange}>
                 <SelectTrigger id="levelFilter">
@@ -112,9 +124,11 @@ const TableToolbar: React.FC<ToolbarProps> = ({
               </Select>
             </div>
           )}
+        </div>
 
+        <div className="">
           {onSessionFilterChange && (
-            <div className="space-y-2 w-full sm:w-40">
+            <div className="">
               <Label htmlFor="sessionFilter">All Sessions</Label>
               <Select
                 value={sessionFilter}
@@ -134,6 +148,13 @@ const TableToolbar: React.FC<ToolbarProps> = ({
             </div>
           )}
         </div>
+        <Button
+          variant="outline"
+          onClick={handleResetFilters}
+          className="text-slate-700 hover:text-slate-900 mt-6"
+        >
+          Reset Filters
+        </Button>
       </div>
 
       {/* Actions Row */}
@@ -180,8 +201,8 @@ const TableToolbar: React.FC<ToolbarProps> = ({
             </Button>
           )}
 
-          <div className="space-y-2 w-24 ml-2">
-            <Label htmlFor="rowsPerPage">Rows per page</Label>
+          <div className=" w-44 ml-2">
+            {/* <Label htmlFor="rowsPerPage">Rows per page</Label> */}
             <Select
               value={String(pagePerRow)}
               onValueChange={(value) => setNumPage(Number(value))}

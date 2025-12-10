@@ -79,3 +79,45 @@ export interface IFilteredCourse {
   updatedAt: string;
   prerequisites?: string;
 }
+
+
+//Admin Courses by Department
+
+export interface IAdminDepartmentCourse {
+  success: boolean
+  count: number
+  courses: Course[]
+}
+
+export interface Course {
+  students: any[]
+  description: string
+  courseType: string
+  isActive: boolean
+  maxStudents: any
+  _id: string
+  title: string
+  code: string
+  creditUnit: number
+  semester: string
+  level: number
+  session: string
+  lecturer: CourseLecturer
+  department: Department
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export interface CourseLecturer {
+  email: string
+  _id: string
+  name: string
+}
+
+export interface Department {
+  _id: string
+  name: string
+  code: string
+  faculty: string
+}

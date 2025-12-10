@@ -16,9 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { useAdminCoursesStore } from "@/stores/useAdminCoursesStore";
 import Banner from "@/components/ui-components/Banner";
 import { PiBook } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 const CourseDetailsPage = () => {
   const { handleReturnToList, selectedCourse: course } = useAdminCoursesStore();
+
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
@@ -155,7 +158,12 @@ const CourseDetailsPage = () => {
                   ></div>
                 </div>
               )}
-              <Button className="w-full mt-6">View Enrolled Students</Button>
+              <Button
+                className="w-full mt-6"
+                onClick={() => navigate(`/admin/results/course/${course?._id}`)}
+              >
+                View Enrolled Students & Results
+              </Button>
             </CardContent>
           </Card>
         </div>

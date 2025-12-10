@@ -1,7 +1,7 @@
 import type {
   GroupedStudentData,
   IStudentResult,
-} from "@/screens/admin/results/types";
+} from "@/screens/admin/results/student-results/types";
 import jsPDF from "jspdf";
 
 export function groupResultsByStudent(

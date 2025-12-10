@@ -1,4 +1,3 @@
-import Banner from "@/components/ui-components/Banner";
 import { Button } from "@/components/ui/button";
 import {
   useCreateLecturerMutation,
@@ -7,7 +6,6 @@ import {
   useUpdateLecturerMutation,
 } from "@/redux/query/admin-lecturers";
 import { Plus } from "lucide-react";
-import { PiBooks } from "react-icons/pi";
 import LecturersFilters from "./table-config/lecturers-filters";
 import { Card, CardContent } from "@/components/ui/card";
 import Table from "@/components/table/table";
@@ -19,7 +17,6 @@ import type {
   LecturerFormData,
 } from "./type";
 import { toast } from "sonner";
-import LecturerProfilePage from "./LecturerProfilePage";
 import ManageLecturerDialog from "./manage-lecturer-dialog";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import { useNavigate } from "react-router-dom";
@@ -37,14 +34,8 @@ const AdminLectures = () => {
     useCreateLecturerMutation();
   const navigate = useNavigate();
 
-  const {
-    view,
-    setIsManageOpen,
-    editingLecturer,
-    selectedLecturer,
-    openCreateDialog,
-    openEditDialog,
-  } = useAdminLecturersStore();
+  const { setIsManageOpen, editingLecturer, openCreateDialog, openEditDialog } =
+    useAdminLecturersStore();
 
   const [filters, setFilters] = useState<LecturerFilterState>({
     query: "",
@@ -139,38 +130,44 @@ const AdminLectures = () => {
     <div className="min-h-screen">
       <main className="p-4 lg:p-8">
         <div className="mx-auto max-w-380">
-          {view === "list" && (
-            <div>
-              <Button onClick={() => openCreateDialog()}>
-                <Plus className="mr-2 h-4 w-4" />
-                Create Lecturer
-              </Button>
-              <Banner
-                title="Course Management"
-                desc=" View, create, and manage all courses in the university."
-                actionButton={<PiBooks className="text-primary" size={40} />}
-                containterClass="mb-8"
-              />
-              <LecturersFilters filters={filters} setFilters={setFilters} />
-              <Card>
-                <CardContent className="p-0">
-                  <Table
-                    header={lecturersListTableHeaders(
-                      handleViewDetails,
-                      openEditDialog,
-                      handleDeleteLecturer,
-                      isDeleting
-                    )}
-                    isLoading={isLoadingLecturers}
-                    rows={filteredLecturers || []}
-                    id="_id"
-                  />
-                </CardContent>
-              </Card>
+          <div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">
+                  Lecturers Directory
+                </h1>
+                <p className="text-slate-500">
+                  Manage student data and resultsView, create, and manage all
+                  courses in the university.
+                </p>
+              </div>
+              <div>
+                <Button onClick={() => openCreateDialog()}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Lecturer
+                </Button>
+              </div>
             </div>
-          )}
 
-          {view === "details" && selectedLecturer && <LecturerProfilePage />}
+            <LecturersFilters filters={filters} setFilters={setFilters} />
+            <Card>
+              <CardContent className="p-0">
+                <Table
+                  header={lecturersListTableHeaders(
+                    handleViewDetails,
+                    openEditDialog,
+                    handleDeleteLecturer,
+                    isDeleting
+                  )}
+                  isLoading={isLoadingLecturers}
+                  rows={filteredLecturers || []}
+                  id="_id"
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* {view === "details" && selectedLecturer && <LecturerProfilePage />} */}
         </div>
       </main>
       <ManageLecturerDialog

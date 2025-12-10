@@ -83,21 +83,27 @@ const StudentListPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-4 ml-auto">
-        <Button variant="outline" onClick={() => setIsBulkUploadOpen(true)}>
-          <Upload className="mr-2 h-4 w-4" /> Bulk Upload
-        </Button>
-        <Button onClick={onCreateNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Student
-        </Button>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Student Management Directory
+          </h1>
+          <p className="text-slate-500">
+            View, create, and manage all students in the university.
+          </p>
+        </div>
+
+        <div className="flex gap-4 ml-auto">
+          <Button variant="outline" onClick={() => setIsBulkUploadOpen(true)}>
+            <Upload className="mr-2 h-4 w-4" /> Bulk Upload
+          </Button>
+          <Button onClick={onCreateNew}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create Student
+          </Button>
+        </div>
       </div>
-      <Banner
-        title="Student Management"
-        desc=" View, create, and manage all students in the university."
-        actionButton={<PiStudentBold className="text-primary" size={40} />}
-        containterClass="mb-8"
-      />
+
       <StudentsFilters
         filters={filters}
         setFilters={setFilters}

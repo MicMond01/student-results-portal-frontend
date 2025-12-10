@@ -1,18 +1,21 @@
 import { Edit, Trash } from "lucide-react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import type { IStudentResult } from "../types";
 import Badge from "@/components/ui-components/Badge";
+import { useAdminResultsStore } from "@/stores/useAdminResultsStore";
+import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
+import { toast } from "sonner";
+import { useDeleteResultMutation } from "@/redux/query/admin-results";
 
-interface ResultsTableProps {
+interface ResultsCollapsDetailsProps {
   results: IStudentResult[];
-  onEditResult: (result: IStudentResult) => void;
-  onDeleteResult: (resultId: string) => void;
   isLoading?: boolean;
 }
 
-// Group results by Session and Semester
-const groupResults = (results: IStudentResult[]) => {
-  const grouped: Record<string, Record<string, IStudentResult[]>> = {};
+type GroupedResults = Record<string, Record<string, IStudentResult[]>>;
+
+const groupResults = (results: IStudentResult[]): GroupedResults => {
+  const grouped: GroupedResults = {};
 
   results.forEach((result) => {
     if (!grouped[result.session]) {
@@ -23,16 +26,45 @@ const groupResults = (results: IStudentResult[]) => {
     }
     grouped[result.session][result.semester].push(result);
   });
+
   return grouped;
 };
 
-const ResultsTable: React.FC<ResultsTableProps> = ({
+const getGradeColor = (grade: string) => {
+  if (grade === "A") return "success";
+  if (grade === "B" || grade === "C") return "neutral";
+  if (grade === "F") return "danger";
+  return "warning";
+};
+
+const ResultsCollapsDetails: React.FC<ResultsCollapsDetailsProps> = ({
   results,
-  onEditResult,
-  onDeleteResult,
 }) => {
+  const openEditModal = useAdminResultsStore((state) => state.openEditModal);
+  const [deleteResultTrigger] = useDeleteResultMutation();
   const groupedData = useMemo(() => groupResults(results), [results]);
-  const sessions = Object.keys(groupedData).sort().reverse(); // Show latest session first
+  const sessions = useMemo(
+    () => Object.keys(groupedData).sort().reverse(),
+    [groupedData]
+  );
+
+  const handleEditResult = (result: IStudentResult) => {
+    openEditModal(result);
+  };
+
+  const handleDeleteResult = async (resultId: string) => {
+    const toastId = toast.loading("Deleting Result...");
+
+    try {
+      await deleteResultTrigger(resultId).unwrap();
+
+      toast.success("Result successfully Deleted!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Delete Result", {
+        id: toastId,
+      });
+    }
+  };
 
   if (results.length === 0) {
     return (
@@ -49,6 +81,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
           key={session}
           className="border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white"
         >
+          {/* Session Header */}
           <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
             <h3 className="font-semibold text-slate-700">{session} Session</h3>
             <Badge>
@@ -56,16 +89,20 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
             </Badge>
           </div>
 
+          {/* Semesters */}
           {Object.keys(groupedData[session]).map((semester, idx) => (
             <div
               key={semester}
               className={idx > 0 ? "border-t border-slate-200" : ""}
             >
+              {/* Semester Header */}
               <div className="bg-white px-4 py-2 border-b border-slate-100">
-                <span className="text-xs font-bold text-primary-600 uppercase tracking-wider">
+                <span className="text-xs font-bold text-primary uppercase tracking-wider">
                   {semester} Semester
                 </span>
               </div>
+
+              {/* Results Table */}
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
                   <thead className="text-xs text-slate-500 uppercase bg-slate-50">
@@ -89,14 +126,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {groupedData[session][semester].map((result) => {
-                      const gradeColor =
-                        result.grade === "A"
-                          ? "success"
-                          : result.grade === "B" || result.grade === "C"
-                          ? "neutral"
-                          : result.grade === "F"
-                          ? "danger"
-                          : "warning";
+                      const gradeColor = getGradeColor(result.grade);
 
                       return (
                         <tr
@@ -124,19 +154,23 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
                           <td className="px-4 py-3 text-right no-print">
                             <div className="flex justify-end gap-1">
                               <button
-                                onClick={() => onEditResult(result)}
+                                onClick={() => handleEditResult(result)}
                                 className="p-1.5 hover:bg-slate-100 text-slate-500 rounded-md transition-colors"
                                 title="Edit"
+                                aria-label="Edit result"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
-                              <button
-                                onClick={() => onDeleteResult(result._id)}
-                                className="p-1.5 hover:bg-red-50 text-red-400 rounded-md transition-colors"
-                                title="Delete"
-                              >
-                                <Trash className="w-4 h-4" />
-                              </button>
+
+                              <ConfirmationDialog
+                                title="Delete this Result"
+                                description="Are you sure you want to delete this result? This action cannot be undone."
+                                action={() => handleDeleteResult(result._id)}
+                                type="delete"
+                                triggerLabel={
+                                  <Trash className="w-4 h-4 mt-1 text-red-400" />
+                                }
+                              />
                             </div>
                           </td>
                         </tr>
@@ -153,4 +187,4 @@ const ResultsTable: React.FC<ResultsTableProps> = ({
   );
 };
 
-export default ResultsTable;
+export default ResultsCollapsDetails;

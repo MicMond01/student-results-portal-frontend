@@ -54,7 +54,19 @@ const AdminStudents = lazy(() => import("@/screens/admin/students"));
 const StudentProfilePage = lazy(
   () => import("@/screens/admin/students/StudentProfilePage")
 );
-const AdminResults = lazy(() => import("@/screens/admin/results"));
+const AdminResults = lazy(
+  () => import("@/screens/admin/results/student-results")
+);
+const StudentResultProfileDetails = lazy(
+  () => import("@/screens/admin/results/student-results/StudentResultProfile")
+);
+const LecturerResultPage = lazy(
+  () => import("@/screens/admin/results/lecturer-results/LecturerResultPage")
+);
+const CourseResultsPage = lazy(
+  () => import("@/screens/admin/results/course-results")
+);
+const AdminExams = lazy(() => import("@/screens/admin/exams"));
 
 export type IRoute = {
   link: string;
@@ -263,6 +275,34 @@ const routeData: IRoute[] = [
     title: "Students Results",
     code: "ad-results",
     component: AdminResults,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/results/:id",
+    title: "Students Results Profile",
+    code: "ad-results",
+    component: StudentResultProfileDetails,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/results/lecturer/:lecturerId",
+    title: "Lecturer Results",
+    code: "ad-results",
+    component: LecturerResultPage,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/results/course/:courseId",
+    title: "Lecturer Results",
+    code: "ad-results",
+    component: CourseResultsPage,
+    allowedRoles: ["admin"],
+  },
+  {
+    link: "/admin/exams",
+    title: "Exams",
+    code: "ad-exams",
+    component: AdminExams,
     allowedRoles: ["admin"],
   },
 ];

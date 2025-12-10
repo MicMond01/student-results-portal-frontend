@@ -54,7 +54,7 @@ const StudentsFilters = (props: IStudentsFilters) => {
   };
 
   return (
-    <div className="shadow-sm bg-background px-5 py-5 rounded-lg mb-5">
+    <div className="shadow-sm bg-background px-5 py-5 mb-5">
       <div className="text-sm my-2 font-semibold">
         <span>Filter Student Results</span>
       </div>

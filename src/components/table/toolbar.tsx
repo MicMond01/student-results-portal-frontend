@@ -34,28 +34,34 @@ const Toolbar = (props: IToolbar) => {
     downloadables,
   } = props;
   return (
-    <div className="w-full flex justify-between items-center p-2 rounded-lg bg-[#dcd2e7]">
-      <div>
-        <div className="flex items-center gap-3">
-          <Label>Showing:</Label>
-          <Select
-            value={pagePerRow.toString()}
-            onValueChange={(val) => {
-              setNumPage(Number(val));
-              setPag({ start: 0, end: Number(val) });
-            }}
-          >
-            <SelectTrigger className="w-16 h-8">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-            </SelectContent>
-          </Select>
-          <Label>of {total} items</Label>
+    <div className="w-full flex justify-between items-center p-2 bg-white">
+      <div className="w-full">
+        <div className=" flex justify-between items-center w-full px-4">
+          <div className="">
+            Total: Item <span className="font-bold">{total}</span>
+          </div>
+
+          <div className="flex items-center gap-3 ml-auto">
+            <Label>Showing:</Label>
+            <Select
+              value={pagePerRow.toString()}
+              onValueChange={(val) => {
+                setNumPage(Number(val));
+                setPag({ start: 0, end: Number(val) });
+              }}
+            >
+              <SelectTrigger className="w-16 h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectContent>
+            </Select>
+            <Label>of {total} items</Label>
+          </div>
         </div>
 
         {checkedItems.length > 0 && onDeleteCheck && (

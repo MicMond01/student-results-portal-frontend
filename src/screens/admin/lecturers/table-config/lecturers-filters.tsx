@@ -45,7 +45,7 @@ const LecturersFilters: React.FC<{
   }, [searchedDept]);
 
   return (
-    <Card>
+    <Card className="rounded-none">
       <CardContent className="p-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
           <Input

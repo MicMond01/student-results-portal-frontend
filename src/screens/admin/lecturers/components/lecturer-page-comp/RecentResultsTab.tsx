@@ -1,6 +1,8 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Badge from "@/components/ui-components/Badge";
 import type { IAdminStatRecentResult } from "../../type";
+import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface RecentResultsTabProps {
   recentResults: IAdminStatRecentResult[];
@@ -9,10 +11,19 @@ interface RecentResultsTabProps {
 const RecentResultsTab: React.FC<RecentResultsTabProps> = ({
   recentResults,
 }) => {
+  const navigate = useNavigate();
+  const { id } = useParams();
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Recently Uploaded Results</CardTitle>
+        <Button
+          size="sm"
+          className="ml-auto"
+          onClick={() => navigate(`/admin/results/lecturer/${id}`)}
+        >
+          View All
+        </Button>
       </CardHeader>
       <CardContent className="p-0">
         <div className="overflow-x-auto">

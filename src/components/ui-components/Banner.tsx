@@ -15,7 +15,7 @@ const Banner = (props: IBanner) => {
   return (
     <div
       className={cn(
-        "flex items-center justify-between px-4 py-8 my-4 rounded-md shadow-sm bg-[#e5d9f2]",
+        "flex items-center justify-between px-4 py-8 my-4 rounded-md shadow-sm bg-white",
         containterClass
       )}
     >

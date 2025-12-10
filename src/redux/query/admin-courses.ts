@@ -1,4 +1,4 @@
-import type { AdminCourses } from "@/screens/admin/courses/type";
+import type { AdminCourses, IAdminDepartmentCourse } from "@/screens/admin/courses/type";
 import { api } from "../baseConfig";
 
 export const adminCourseSlice = api.injectEndpoints({
@@ -18,7 +18,7 @@ export const adminCourseSlice = api.injectEndpoints({
       }),
       providesTags: ["admin", "course"],
     }),
-    getCoursesByDepartment: builder.query<any, void>({
+    getCoursesByDepartment: builder.query<IAdminDepartmentCourse, string>({
       query: (deptId) => ({
         url: `/admin/courses/department/${deptId}`,
       }),

@@ -1,10 +1,11 @@
 // import { any } from "@/screens/roles/types";
 // import type { AnyResolvedKeyframe } from "framer-motion";
+import type { IAdminSessions } from "@/screens/admin/sessions/type";
 import { api } from "../baseConfig";
 
 export const adminSessiosSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getAllAcademicSessions: builder.query<any, any>({
+    getAllAcademicSessions: builder.query<IAdminSessions, void>({
       query: () => ({
         url: "/admin/sessions",
       }),
@@ -45,6 +46,7 @@ export const adminSessiosSlice = api.injectEndpoints({
 
 export const {
   useGetAllAcademicSessionsQuery,
+  useLazyGetAllAcademicSessionsQuery,
   useCreateAcademicSessionMutation,
   useGetCurrentAcademicSessionQuery,
   useUpdateAcademicSessionMutation,

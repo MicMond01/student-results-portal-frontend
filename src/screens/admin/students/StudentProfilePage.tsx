@@ -303,9 +303,10 @@ const StudentProfilePage = () => {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-base">Recent Results</CardTitle>
               <Button
-                variant="link"
+                // variant="link"
                 size="sm"
-                onClick={() => setActiveListDialog("results")}
+                // onClick={() => setActiveListDialog("results")}
+                onClick={() => navigate(`/admin/results/${student?._id}`)}
               >
                 View All
               </Button>

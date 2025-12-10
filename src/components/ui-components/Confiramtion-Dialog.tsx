@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
+import { useState } from "react";
 
 export function ConfirmationDialog({
   title,
@@ -26,8 +27,22 @@ export function ConfirmationDialog({
   confirmLabel?: string;
   type: "save" | "delete";
 }) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await action();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         {typeof triggerLabel === "string" ? (
           <Button
@@ -71,7 +86,8 @@ export function ConfirmationDialog({
                 ? "text-red-100 hover:bg-red-600 bg-red-500"
                 : "bg-primary-4 text-primary-3 "
             } `}
-            onClick={action}
+            onClick={handleConfirm}
+            disabled={loading}
           >
             {confirmLabel}
           </Button>
