@@ -21,6 +21,7 @@ import ManageLecturerDialog from "./manage-lecturer-dialog";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import { useNavigate } from "react-router-dom";
 import { useAdminLecturersStore } from "@/stores/useAdminLecturersStore";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 const AdminLectures = () => {
   const { data: lecturersList, isLoading: isLoadingLecturers } =
@@ -131,17 +132,18 @@ const AdminLectures = () => {
       <main className="p-4 lg:p-8">
         <div className="mx-auto max-w-380">
           <div>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                  <FaPeopleGroup className="h-7 w-7 text-indigo-600" />
                   Lecturers Directory
                 </h1>
-                <p className="text-slate-500">
+                <p className="text-gray-500 mt-1 text-sm">
                   Manage student data and resultsView, create, and manage all
                   courses in the university.
                 </p>
               </div>
-              <div>
+              <div className="flex gap-3">
                 <Button onClick={() => openCreateDialog()}>
                   <Plus className="mr-2 h-4 w-4" />
                   Create Lecturer

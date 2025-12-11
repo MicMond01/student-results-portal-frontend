@@ -9,6 +9,7 @@ import Banner from "@/components/ui-components/Banner";
 import ResultsStats from "./ResultsStats";
 import ResultsAccordion from "./ResultsAccordion";
 import { generateResultsPDF } from "@/lib/generateResultsPDF";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 const StudentResults = () => {
   const { data: resultData } = useGetMyResultsQuery();
@@ -16,16 +17,14 @@ const StudentResults = () => {
   const { data: profileData } = useGetOwnProfileQuery();
   const profile = profileData?.profile;
 
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
+  const sessions = academicSessions?.sessions || [];
+
   const [selectedSession, setSelectedSession] = useState(
     results?.[0]?.session || "all"
   );
   const [selectedSemester, setSelectedSemester] = useState("all");
   const [isDownloading, setIsDownloading] = useState(false);
-
-  const sessions = useMemo(
-    () => ["all", ...(results?.map((group) => group.session) || [])],
-    [results]
-  );
 
   const semesters = ["all", "First", "Second"];
 

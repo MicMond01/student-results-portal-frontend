@@ -9,10 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { ISession } from "@/screens/admin/sessions/type";
 
 interface Props {
   statistics?: { cgpa: number; totalCreditUnits: number };
-  sessions: string[];
+  sessions: ISession[];
   semesters: string[];
   selectedSession: string;
   selectedSemester: string;
@@ -72,8 +73,8 @@ const ResultsStats = ({
           </SelectTrigger>
           <SelectContent>
             {sessions.map((session) => (
-              <SelectItem key={session} value={session}>
-                {session === "all" ? "All Sessions" : session}
+              <SelectItem key={session._id} value={session.session}>
+                {selectedSession === "all" ? "All Sessions" : session.session}
               </SelectItem>
             ))}
           </SelectContent>

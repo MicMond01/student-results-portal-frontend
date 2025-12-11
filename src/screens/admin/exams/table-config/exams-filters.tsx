@@ -13,18 +13,18 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { ExamsFilterState } from "../types";
 import { useGetCoursesByDepartmentQuery } from "@/redux/query/admin-courses";
+import type { ISession } from "../../sessions/type";
 
 const ExamsFilters: React.FC<{
   filters: ExamsFilterState;
   setFilters: React.Dispatch<React.SetStateAction<ExamsFilterState>>;
-  uniqueSession: string[];
+  uniqueSession: ISession[];
 }> = ({ filters, setFilters, uniqueSession }) => {
   const { data: departmentList } = useGetAllDepartmentsQuery();
 
   const { data: coursesByDepartment } = useGetCoursesByDepartmentQuery(
     filters.department
   );
-
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({ ...prev, query: e.target.value }));
@@ -73,8 +73,8 @@ const ExamsFilters: React.FC<{
             <SelectContent>
               <SelectItem value="all">All Sessions</SelectItem>
               {uniqueSession.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s}
+                <SelectItem key={s._id} value={s.session}>
+                  {s.session}
                 </SelectItem>
               ))}
             </SelectContent>

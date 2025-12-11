@@ -1,3 +1,4 @@
+import type { ISession } from "@/screens/admin/sessions/type";
 import type { ReactNode } from "react";
 
 export interface TableColumn<T> {
@@ -72,5 +73,5 @@ export interface CollapsibleTableProps<T> {
 
   sessionFilter?: string;
   onSessionFilterChange?: (val: string) => void;
-  sessions?: string[];
+  sessions?: ISession[];
 }

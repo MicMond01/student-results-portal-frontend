@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import type { ISession } from "@/screens/admin/sessions/type";
 
 interface ToolbarProps {
   checkedItems: string[];
@@ -33,7 +34,7 @@ interface ToolbarProps {
 
   sessionFilter?: string;
   onSessionFilterChange?: (val: string) => void;
-  sessions?: string[];
+  sessions?: ISession[];
 }
 
 const TableToolbar: React.FC<ToolbarProps> = ({
@@ -139,8 +140,8 @@ const TableToolbar: React.FC<ToolbarProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   {sessions.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {s}
+                    <SelectItem key={s._id} value={s.session}>
+                      {s.session}
                     </SelectItem>
                   ))}
                 </SelectContent>

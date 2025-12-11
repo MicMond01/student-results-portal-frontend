@@ -5,12 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useStudentResultsQuery } from "@/redux/query/admin-results";
 import ResultsCollapsDetails from "./table-config/results-collaps-details";
 import ResultsDialogs from "./ResultsDialogs";
-import { useMemo } from "react";
 import { toast } from "sonner";
 import {
   useCreateResultMutation,
   useUpdateResultMutation,
 } from "@/redux/query/admin-results";
+import { useLazyGetAcademicTranscriptQuery } from "@/redux/query/admin-transcript";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 const calculateGrade = (total: number) => {
   if (total >= 70) return "A";
@@ -27,6 +28,9 @@ const StudentResultProfile = () => {
   const { data, isLoading } = useStudentResultsQuery(id);
   const [createResultTrigger] = useCreateResultMutation();
   const [updateResultTrigger] = useUpdateResultMutation();
+  const [getTranscript] = useLazyGetAcademicTranscriptQuery();
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
+  const uniqueSessions = academicSessions?.sessions || [];
 
   // Get state and actions from store
   const openCreateModal = useAdminResultsStore(
@@ -36,20 +40,19 @@ const StudentResultProfile = () => {
   const resultForm = useAdminResultsStore((state) => state.resultForm);
   const closeModals = useAdminResultsStore((state) => state.closeModals);
 
-  // Get unique sessions from student's results
-  const uniqueSessions = useMemo(() => {
-    if (!data?.results) return [];
-    const sessions = new Set<string>();
-    data.results.forEach((r) => sessions.add(r.session));
-    return Array.from(sessions).sort().reverse();
-  }, [data]);
-
   // Computed values for form
   const calculatedTotal = (resultForm.ca || 0) + (resultForm.exam || 0);
   const calculatedGrade = calculateGrade(calculatedTotal);
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrint = async (studentId: string) => {
+    const toastId = toast.loading("Generating transcript...");
+    try {
+      await getTranscript(studentId).unwrap();
+      toast.success("Transcript generated successfully!", { id: toastId });
+    } catch (error: any) {
+      const message = error?.data?.msg || error?.data?.message;
+      toast.error(message, { id: toastId });
+    }
   };
 
   const handleAddResult = () => {
@@ -161,7 +164,7 @@ const StudentResultProfile = () => {
                 </div>
               </div>
               <div className="flex gap-2 mb-1 no-print">
-                <Button variant="outline" onClick={handlePrint}>
+                <Button variant="outline" onClick={() => handlePrint(id!)}>
                   <PrinterIcon className="w-4 h-4 mr-2" />
                   Print Transcript
                 </Button>

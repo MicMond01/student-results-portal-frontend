@@ -16,6 +16,7 @@ import {
   useFilteredResults,
 } from "@/stores/useAdminResultsStore";
 import { toast } from "sonner";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 export const calculateGrade = (total: number) => {
   if (total >= 70) return "A";
@@ -31,6 +32,8 @@ const AdminResults = () => {
     useGetAllResultsQuery();
   const [createResultTrigger] = useCreateResultMutation();
   const [updateResultTrigger] = useUpdateResultMutation();
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
+  const uniqueSessions = academicSessions?.sessions || [];
 
   const setData = useAdminResultsStore((state) => state.setData);
   const modals = useAdminResultsStore((state) => state.modals);
@@ -50,13 +53,6 @@ const AdminResults = () => {
         .map(String),
     [studentResultData]
   );
-
-  const uniqueSessions = useMemo(() => {
-    if (!studentResultData?.results) return [];
-    const sessions = new Set<string>();
-    studentResultData.results.forEach((r) => sessions.add(r.session));
-    return Array.from(sessions).sort().reverse();
-  }, [studentResultData]);
 
   useEffect(() => {
     if (studentResultData?.results) {
@@ -129,7 +125,7 @@ const AdminResults = () => {
               onExportCSV={handleExportCSV}
               onExportPDF={handleExportPDF}
               levels={uniqueLevels}
-              sessions={uniqueSessions}
+              sessions={uniqueSessions || []}
             />
           </div>
         </div>

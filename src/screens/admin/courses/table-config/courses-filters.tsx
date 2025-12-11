@@ -11,6 +11,7 @@ import {
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import type { ISession } from "../../sessions/type";
 
 type CourseFilterState = {
   query: string;
@@ -22,7 +23,7 @@ type CourseFilterState = {
 const CoursesFilters: React.FC<{
   filters: CourseFilterState;
   setFilters: React.Dispatch<React.SetStateAction<CourseFilterState>>;
-  sessions: string[];
+  sessions: ISession[];
   levels: (string | number)[];
 }> = ({ filters, setFilters, sessions, levels }) => {
   const { data: departmentList } = useGetAllDepartmentsQuery();
@@ -68,9 +69,9 @@ const CoursesFilters: React.FC<{
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Sessions</SelectItem>
-              {sessions.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s}
+              {sessions?.map((s) => (
+                <SelectItem key={s._id} value={s.session}>
+                  {s.session}
                 </SelectItem>
               ))}
             </SelectContent>

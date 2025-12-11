@@ -47,6 +47,7 @@ export const api = createApi({
     "results",
     "students",
     "dashboard",
+    "transcript",
   ],
   endpoints: (_builder) => ({}),
 });

@@ -1,4 +1,5 @@
 import { useLecturerResultsQuery } from "@/redux/query/admin-results";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 import type { LecturerResultsFiltersState } from "@/screens/admin/results/student-results/types";
 import { useMemo, useState } from "react";
 
@@ -7,6 +8,9 @@ export const useLecturerResultsPage = (lecturerId: string) => {
   const { data: resultsData, isLoading } = useLecturerResultsQuery(lecturerId, {
     skip: !lecturerId,
   });
+
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
+  const uniqueSessions = academicSessions?.sessions || [];
 
   const [filters, setFilters] = useState<LecturerResultsFiltersState>({
     query: "",
@@ -39,13 +43,6 @@ export const useLecturerResultsPage = (lecturerId: string) => {
   const uniqueCourses = useMemo(() => {
     if (!resultsData?.results) return [];
     return [...new Set(resultsData.results.map((l) => l.course.title).sort())];
-  }, [resultsData]);
-
-  const uniqueSessions = useMemo(() => {
-    if (!resultsData?.results) return [];
-    const sessions = new Set<string>();
-    resultsData.results.forEach((r) => sessions.add(r.session));
-    return Array.from(sessions).sort().reverse();
   }, [resultsData]);
 
   return {

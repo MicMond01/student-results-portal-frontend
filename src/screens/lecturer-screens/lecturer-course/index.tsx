@@ -19,21 +19,18 @@ import { useMemo, useState } from "react";
 import CourseCard from "./CourseCard";
 import Banner from "@/components/ui-components/Banner";
 import { ImBooks } from "react-icons/im";
-
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 const LecturerCourses = () => {
   // In a real app, this data would come from an API call
   const { data } = useGetCoursesAssignedToLecturerQuery();
   const courses = data?.courses || [];
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
+  const uniqueSessions = academicSessions?.sessions || [];
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("all");
   const [selectedSession, setSelectedSession] = useState("all");
-
-  // Get unique sessions for the filter dropdown
-  const uniqueSessions = useMemo(() => {
-    return ["all", ...new Set(courses.map((course) => course.session))];
-  }, [courses]);
 
   // Filter logic
   const filteredCourses = useMemo(() => {
@@ -54,7 +51,6 @@ const LecturerCourses = () => {
       return searchMatch && semesterMatch && sessionMatch;
     });
   }, [courses, searchTerm, selectedSemester, selectedSession]);
-
 
   return (
     <div className="min-h-screen  p-4 lg:p-8">
@@ -116,8 +112,8 @@ const LecturerCourses = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {uniqueSessions.map((session) => (
-                    <SelectItem key={session} value={session}>
-                      {session === "all" ? "All Sessions" : session}
+                    <SelectItem key={session._id} value={session.session}>
+                      {selectedSession === "all" ? "All Sessions" : session.session}
                     </SelectItem>
                   ))}
                 </SelectContent>

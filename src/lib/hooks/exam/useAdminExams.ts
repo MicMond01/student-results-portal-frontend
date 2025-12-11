@@ -14,6 +14,7 @@ import {
   useUpdateAnExamMutation,
 } from "@/redux/query/admin-exams";
 import { toast } from "sonner";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 export default function useAdminExams() {
   const [deleteExamTrigger, { isLoading: isDeletingExam }] =
@@ -22,6 +23,9 @@ export default function useAdminExams() {
     useUpdateAnExamMutation();
   const { data, isLoading: isLoadingExams } = useGetAllExamsQuery();
   const exams = data?.exams;
+
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
+  const uniqueSession = academicSessions?.sessions || [];
 
   const [filters, setFilters] = useState<ExamsFilterState>({
     search: "",
@@ -124,18 +128,6 @@ export default function useAdminExams() {
       );
     });
   }, [exams, filters]);
-
-  const uniqueSession = useMemo(() => {
-    if (!exams) return [];
-    return [
-      ...new Set(
-        exams
-          ?.map((l) => l.session)
-          .sort()
-          .reverse()
-      ),
-    ];
-  }, [exams]);
 
   const handlePreview = (exam: IExam) => {
     setSelectedExam(exam);

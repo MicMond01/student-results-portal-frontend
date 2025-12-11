@@ -16,9 +16,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useResultsDialog } from "@/lib/hooks/useResultsDialog";
+import type { ISession } from "../../sessions/type";
 
 interface ResultsDialogsProps {
-  uniqueSessions: string[];
+  uniqueSessions: ISession[];
   calculatedTotal: number;
   calculatedGrade: string;
   onSave: () => void;
@@ -89,8 +90,8 @@ const ResultsDialogs: React.FC<ResultsDialogsProps> = ({
                   </SelectTrigger>
                   <SelectContent>
                     {uniqueSessions.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
+                      <SelectItem key={s._id} value={s.session}>
+                        {s.session}
                       </SelectItem>
                     ))}
                   </SelectContent>

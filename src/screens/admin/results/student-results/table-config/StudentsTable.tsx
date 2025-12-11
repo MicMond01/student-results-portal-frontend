@@ -12,11 +12,12 @@ import {
 } from "@/stores/useAdminResultsStore";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import BulkUploadDialog from "../../components/BulkUploadDialog";
+import type { ISession } from "@/screens/admin/sessions/type";
 
 interface StudentsTableProps {
   isLoading: boolean;
   levels?: string[];
-  sessions?: string[];
+  sessions?: ISession[];
   onExportCSV?: () => void;
   onExportPDF?: () => void;
 }
@@ -100,7 +101,7 @@ const StudentsTable: React.FC<StudentsTableProps> = ({
         levels={levels}
         sessionFilter={filters.session}
         onSessionFilterChange={(value) => updateFilters({ session: value })}
-        sessions={sessions}
+        sessions={sessions || []}
         renderSubComponent={(row) => (
           <div className="bg-white rounded-lg">
             <div className="flex justify-between items-end mb-4">

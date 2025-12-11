@@ -1,4 +1,3 @@
-// SessionCard.tsx (new reusable card component)
 import type { ISession } from "./type";
 import { Calendar, ChevronRight, Clock, Edit, Trash } from "lucide-react";
 import { formatDate } from "@/lib/admin-results-helper";
@@ -7,43 +6,20 @@ import { Button } from "@/components/ui/button";
 interface SessionCardProps {
   session: ISession;
   onEdit: (session: ISession) => void;
+  getSessionStatus: (session: ISession) => string;
   onDelete: (id: string) => void;
+  getStatusStyle: (status: string) => string;
+  getIconStyle: (status: string) => string;
 }
 
 const SessionCard: React.FC<SessionCardProps> = ({
   session,
   onEdit,
+  getSessionStatus,
   onDelete,
+  getStatusStyle,
+  getIconStyle,
 }) => {
-  const getSessionStatus = (session: ISession) => {
-    if (session.isCurrent) return "CURRENT";
-    const now = new Date();
-    if (new Date(session.startDate) > now) return "UPCOMING";
-    return "COMPLETED";
-  };
-
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case "CURRENT":
-        return "bg-green-100 text-green-700 border-green-200";
-      case "UPCOMING":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      default:
-        return "bg-slate-100 text-slate-600 border-slate-200";
-    }
-  };
-
-  const getIconStyle = (status: string) => {
-    switch (status) {
-      case "CURRENT":
-        return "bg-blue-50 text-blue-600";
-      case "UPCOMING":
-        return "bg-indigo-50 text-indigo-600";
-      default:
-        return "bg-slate-50 text-slate-500";
-    }
-  };
-
   const status = getSessionStatus(session);
 
   return (

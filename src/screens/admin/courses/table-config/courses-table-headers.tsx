@@ -114,7 +114,7 @@ export const coursesListTableHeaders = (
         <div className=" text-red-500 cursor-pointer mt-2">
           <ConfirmationDialog
             title="Confirm Delete"
-            description="Are you sure you want to delete this student result? "
+            description="Are you sure you want to delete this course? "
             action={() => onDelete(row._id)}
             triggerLabel={<IoTrashBinOutline />}
             type="delete"

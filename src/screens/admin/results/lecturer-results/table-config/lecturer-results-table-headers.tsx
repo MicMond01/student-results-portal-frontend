@@ -113,6 +113,7 @@ export const lecturersResultsTableHeaders = (
           className="p-1.5 hover:bg-slate-100 text-slate-500 rounded-md transition-colors"
           title="Edit"
           size="icon"
+          variant="ghost"
         >
           <Edit className="w-4 h-4" />
         </Button>

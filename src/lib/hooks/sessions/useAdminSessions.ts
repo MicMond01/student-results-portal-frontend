@@ -1,4 +1,4 @@
-// useAdminSessions.ts (new hook file)
+// useAdminSessions.ts (updated)
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -39,13 +39,30 @@ export default function useAdminSessions() {
   const [isManageOpen, setIsManageOpen] = useState(false);
   const [editingSession, setEditingSession] = useState<ISession | null>(null);
 
+  // Improved status calculation
   const getSessionStatus = (session: ISession) => {
-    if (session.isCurrent) return "CURRENT";
     const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    
     const start = new Date(session.startDate);
+    start.setHours(0, 0, 0, 0);
+    
     const end = new Date(session.endDate);
-    if (now >= start && now <= end) return "CURRENT"; // Auto-detect ongoing as CURRENT if between dates
-    if (start > now) return "UPCOMING";
+    end.setHours(0, 0, 0, 0);
+    
+    // Priority 1: If explicitly marked as current, return CURRENT
+    if (session.isCurrent) return "CURRENT";
+    
+    // Priority 2: Check if session hasn't started yet (future session)
+    if (now < start) return "UPCOMING";
+    
+    // Priority 3: Check if session has ended (past session)
+    if (now > end) return "COMPLETED";
+    
+    // Priority 4: Session is ongoing (between start and end dates)
+    if (now >= start && now <= end) return "CURRENT";
+    
+    // Fallback
     return "COMPLETED";
   };
 
@@ -55,6 +72,8 @@ export default function useAdminSessions() {
         return "bg-green-100 text-green-700 border-green-200";
       case "UPCOMING":
         return "bg-blue-100 text-blue-700 border-blue-200";
+      case "COMPLETED":
+        return "bg-slate-100 text-slate-600 border-slate-200";
       default:
         return "bg-slate-100 text-slate-600 border-slate-200";
     }
@@ -66,6 +85,8 @@ export default function useAdminSessions() {
         return "bg-blue-50 text-blue-600";
       case "UPCOMING":
         return "bg-indigo-50 text-indigo-600";
+      case "COMPLETED":
+        return "bg-slate-50 text-slate-500";
       default:
         return "bg-slate-50 text-slate-500";
     }
@@ -75,7 +96,7 @@ export default function useAdminSessions() {
     setEditingSession(session);
     setFormData({
       session: session.session,
-      startDate: session.startDate.split("T")[0], // Format for input
+      startDate: session.startDate.split("T")[0],
       endDate: session.endDate.split("T")[0],
       isCurrent: session.isCurrent,
       isActive: session.isActive,
@@ -90,7 +111,7 @@ export default function useAdminSessions() {
       startDate: "",
       endDate: "",
       isCurrent: false,
-      isActive: false,
+      isActive: true, // Default to active for new sessions
     });
     setIsManageOpen(true);
   };
@@ -109,7 +130,9 @@ export default function useAdminSessions() {
 
   const filteredSessions = useMemo(() => {
     return sessions?.filter((session) => {
-      const matchesSearch = session.session.includes(searchQuery);
+      const matchesSearch = session.session
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       const status = getSessionStatus(session);
       const matchesStatus = statusFilter
         ? statusFilter === "All Statuses"
@@ -125,6 +148,20 @@ export default function useAdminSessions() {
       editingSession ? "Updating Session..." : "Creating Session..."
     );
     try {
+      // If this session should be marked as current, unset all other current sessions first
+      if (data.isCurrent && sessions) {
+        const currentSessions = sessions.filter(
+          (s) => s.isCurrent && (!editingSession || s._id !== editingSession._id)
+        );
+
+        for (const s of currentSessions) {
+          await updateSessionTrigger({
+            id: s._id,
+            data: { isCurrent: false },
+          }).unwrap();
+        }
+      }
+
       if (editingSession) {
         // Editing an existing session
         await updateSessionTrigger({
@@ -134,21 +171,6 @@ export default function useAdminSessions() {
         toast.success("Session successfully updated!", { id: toastId });
       } else {
         // Creating a new session
-
-        // 1. If this new session should be current, unset all other current sessions
-        if (data.isCurrent && sessions) {
-          const currentSessions = sessions.filter((s) => s.isCurrent);
-
-          for (const s of currentSessions) {
-            await updateSessionTrigger({
-              id: s._id,
-              data: { isCurrent: false },
-            }).unwrap();
-          }
-          toast.success("Previous current sessions updated!", { id: toastId });
-        }
-
-        // 2. Create ONE session
         await createSessionTrigger(data).unwrap();
         toast.success("Session successfully created!", { id: toastId });
       }
@@ -156,7 +178,7 @@ export default function useAdminSessions() {
       setIsManageOpen(false);
     } catch (error: any) {
       const message = error?.data?.msg || error?.data?.message;
-      toast.error(message || "Failed to save session");
+      toast.error(message || "Failed to save session", { id: toastId });
     }
   };
 
@@ -189,23 +211,12 @@ export default function useAdminSessions() {
     setEditingSession,
     filteredSessions,
     sessionSatausoptions,
+    getSessionStatus,
+    getStatusStyle,
+    getIconStyle,
     handleEdit,
     handleOpenCreate,
     handleDelete,
     handleSave,
   };
 }
-
-//   const handleDelete = async (id: string) => {
-//     const toastId = toast.loading("Deleting Session...");
-
-//     try {
-//       await deleteSessionTrigger(id).unwrap();
-
-//       toast.success("Session successfully Deleted!", { id: toastId });
-//     } catch (error: any) {
-//       toast.error(error?.data?.message || "Failed to Delete Session", {
-//         id: toastId,
-//       });
-//     }
-//   };

@@ -96,7 +96,7 @@ const LecturerResultPage = () => {
       </main>
 
       <ResultsDialogs
-        uniqueSessions={pageData.uniqueSessions}
+        uniqueSessions={pageData.uniqueSessions || []}
         calculatedTotal={crud.calculatedTotal}
         calculatedGrade={crud.calculatedGrade}
         onSave={crud.handleSave}

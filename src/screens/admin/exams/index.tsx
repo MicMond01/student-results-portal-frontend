@@ -35,9 +35,6 @@ const AdminExams = () => {
     // handleStatusToggle,
   } = useAdminExams();
 
-  const { data: sessionsData } = useGetAllAcademicSessionsQuery();
-  console.log("sessionsData");
-  console.log(sessionsData);
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 lg:p-8 font-sans text-slate-900">
@@ -57,59 +54,59 @@ const AdminExams = () => {
             <Button variant="outline" onClick={handleExportList}>
               <Printer className="mr-2 h-4 w-4" /> Export List
             </Button>
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
+            <Button className=" text-white shadow-md">
               <Plus className="mr-2 h-4 w-4" /> Create Exam
             </Button>
           </div>
         </div>
-      </div>
 
-      {/* Filters */}
-      <ExamsFilters
-        filters={filters}
-        setFilters={setFilters}
-        uniqueSession={uniqueSession}
-      />
+        {/* Filters */}
+        <ExamsFilters
+          filters={filters}
+          setFilters={setFilters}
+          uniqueSession={uniqueSession || []}
+        />
 
-      {/* Table */}
+        {/* Table */}
 
-      <Card>
-        <CardContent className="p-0">
-          <Table
-            header={examsTableHeaders(
-              handlePreview,
-              handleDownloadPDF,
-              handleDeleteExam,
-              handleEditQuestionsTrigger
-            )}
-            isLoading={isLoadingExams}
-            rows={filteredExams || []}
-            id="_id"
-          />
-        </CardContent>
-      </Card>
+        <Card>
+          <CardContent className="p-0">
+            <Table
+              header={examsTableHeaders(
+                handlePreview,
+                handleDownloadPDF,
+                handleDeleteExam,
+                handleEditQuestionsTrigger
+              )}
+              isLoading={isLoadingExams}
+              rows={filteredExams || []}
+              id="_id"
+            />
+          </CardContent>
+        </Card>
 
-      {/* Modals */}
-      <ExamPreviewDialog
-        isOpen={isPreviewOpen}
-        setIsOpen={setIsPreviewOpen}
-        exam={selectedExam}
-        handleDownloadPDF={handleDownloadPDF}
-      />
+        {/* Modals */}
+        <ExamPreviewDialog
+          isOpen={isPreviewOpen}
+          setIsOpen={setIsPreviewOpen}
+          exam={selectedExam}
+          handleDownloadPDF={handleDownloadPDF}
+        />
 
-      <EditQuestionsDialog
-        isOpen={isEditQuestionsOpen}
-        setIsOpen={setIsEditQuestionsOpen}
-        questions={editingExam?.questions || []}
-        handleSaveQuestions={handleSaveQuestions}
-      />
+        <EditQuestionsDialog
+          isOpen={isEditQuestionsOpen}
+          setIsOpen={setIsEditQuestionsOpen}
+          questions={editingExam?.questions || []}
+          handleSaveQuestions={handleSaveQuestions}
+        />
 
-      {/* <ExamStatusDialog
+        {/* <ExamStatusDialog
         isOpen={isStatusDialogOpen}
         setIsOpen={setIsStatusDialogOpen}
         exam={statusExam}
         handleSaveStatus={handleSaveStatus}
       /> */}
+      </div>
     </div>
   );
 };

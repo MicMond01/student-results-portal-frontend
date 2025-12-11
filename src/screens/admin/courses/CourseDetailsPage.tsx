@@ -28,7 +28,7 @@ const CourseDetailsPage = () => {
       {/* Header */}
       <div>
         <Button
-          variant="outline"
+          variant="link"
           onClick={() => handleReturnToList("list")}
           className="mb-4"
         >
@@ -37,14 +37,11 @@ const CourseDetailsPage = () => {
         </Button>
 
         <Banner
-          title="Course Details"
-          desc=" View all course details in the university."
+          title={`${course?.title} - ${course?.code}`}
+          desc="View and manage all course details in the university."
           actionButton={<PiBook className="text-primary" size={40} />}
           containterClass="mb-8"
         />
-
-        <h1 className="text-3xl font-bold text-gray-900">{course?.title}</h1>
-        <p className="text-lg text-indigo-600 font-medium">{course?.code}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -79,7 +76,10 @@ const CourseDetailsPage = () => {
                 icon={UserIcon}
                 label="Lecturer"
                 value={
-                  <a href="#" className="text-indigo-600 hover:underline">
+                  <a
+                    href={`/admin/lecturers/${course?.lecturer._id}`}
+                    className="text-indigo-600 hover:underline"
+                  >
                     {course?.lecturer.name}
                   </a>
                 }
