@@ -1,4 +1,3 @@
-import { useGetLecturerProfileQuery } from "@/redux/query/lecturer";
 import StatisticsGrid from "./lecturer-profile-compo/StatisticsGrid";
 import AboutLecturer from "./lecturer-profile-compo/AboutLecturer";
 import CourseList from "./lecturer-profile-compo/CourseList";
@@ -7,6 +6,7 @@ import LecturerSidebar from "./lecturer-profile-compo/LecturerSidebar";
 import ProfileHeader from "./lecturer-profile-compo/ProfileHeader";
 import Banner from "@/components/ui-components/Banner";
 import { CgProfile } from "react-icons/cg";
+import { useGetLecturerProfileQuery } from "@/redux/query/lecturer-profile";
 
 const LecturerProfile = () => {
   const { data: lecturerData, isLoading } = useGetLecturerProfileQuery();

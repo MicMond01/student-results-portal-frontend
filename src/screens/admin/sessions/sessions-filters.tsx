@@ -53,7 +53,7 @@ const SessionsFilters = ({
             }}
           >
             <SelectTrigger id="sessionStatus">
-              <SelectValue placeholder="Select Course" />
+              <SelectValue placeholder="Select Session Status" />
             </SelectTrigger>
             <SelectContent>
               {sessionSatausoptions.map((d) => (

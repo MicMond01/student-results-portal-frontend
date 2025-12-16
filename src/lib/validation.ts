@@ -14,7 +14,8 @@ const loginSchema = z.object({
 const verificationSchema = z.object({
   dateOfBirth: z.string().min(1, "Date of Birth is required"),
   phone: z.string().min(1, "Phone Number is required"),
-  jambNo: z.string().min(1, "JAMB/Matric No. is required"),
+  jambNo: z.string().optional(),
+  staffId: z.string().optional(),
 });
 
 const changePasswordSchema = z

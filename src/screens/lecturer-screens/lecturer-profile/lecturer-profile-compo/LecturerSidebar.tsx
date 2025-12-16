@@ -17,12 +17,14 @@ import {
   School,
   Users,
 } from "lucide-react";
-import type { ILecturerData, ILecturerLatestCourse } from "./type";
+import type { ILecturerData, ILecturerLatestCourse } from "../type";
+import { useNavigate } from "react-router-dom";
 
 const LecturerSidebar: React.FC<{
   lecturer: ILecturerData;
   latestCourse: ILecturerLatestCourse;
 }> = ({ lecturer, latestCourse }) => {
+  const navigate = useNavigate();
   return (
     <aside className="space-y-6">
       {/* Contact & Office Information */}
@@ -68,7 +70,12 @@ const LecturerSidebar: React.FC<{
             label="Enrolled Students"
             value={latestCourse.studentCount}
           />
-          <Button className="w-full">Manage Course</Button>
+          <Button
+            className="w-full"
+            onClick={() => navigate(`/courses/${latestCourse._id}`)}
+          >
+            Manage Course
+          </Button>
         </CardContent>
       </Card>
     </aside>

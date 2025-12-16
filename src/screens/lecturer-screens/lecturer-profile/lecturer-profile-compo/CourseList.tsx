@@ -9,8 +9,10 @@ import {
 } from "../../../../components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ILecturerCourse } from "../type";
+import { useNavigate } from "react-router-dom";
 
 const CourseList: React.FC<{ courses: ILecturerCourse[] }> = ({ courses }) => {
+  const navigate = useNavigate();
   return (
     <Card>
       <CardHeader>
@@ -43,7 +45,11 @@ const CourseList: React.FC<{ courses: ILecturerCourse[] }> = ({ courses }) => {
                   <Users className="mr-1.5 h-4 w-4" />
                   {course.studentCount} Students
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate(`/courses/${course.id}`)}
+                >
                   View
                 </Button>
               </div>

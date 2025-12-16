@@ -23,18 +23,51 @@ const VerificationForm = () => {
   const dispatch = useAppDispatch();
   const { token } = useAppSelector((state) => state.auth);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { user } = useAppSelector((state) => state.auth);
+
+  const dynamicVerificationSchema = VerificationSchema.superRefine(
+    (data, ctx) => {
+      if (
+        user?.role === "student" &&
+        (!data.jambNo || data.jambNo.length < 10)
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["jambNo"],
+          message: "JAMB No. must be at least 10 characters",
+        });
+      }
+
+      if (
+        user?.role === "lecturer" &&
+        (!data.staffId || data.staffId.length < 6)
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["staffId"],
+          message: "Staff ID must be at least 6 characters",
+        });
+      }
+    }
+  );
 
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<AuthVerificationForm>({
-    resolver: zodResolver(VerificationSchema),
-    defaultValues: { dateOfBirth: "", phone: "", jambNo: "" },
+    resolver: zodResolver(dynamicVerificationSchema),
+    defaultValues: {
+      dateOfBirth: "",
+      phone: "",
+      jambNo: "",
+      staffId: "",
+    },
     mode: "onChange",
   });
 
   const submitHandler = async (values: AuthVerificationForm) => {
+    console.log(values);
     const normalizedPhone = normalizeNigerianPhone(values.phone);
     if (!normalizedPhone) {
       setErrorMsg(
@@ -63,13 +96,14 @@ const VerificationForm = () => {
       const message = error?.data?.msg || error?.data?.message;
       setErrorMsg(message);
       toast.error(message, { id: toastId });
+      console.log(message);
     }
   };
 
   return (
     <AuthLayout
       title="Verify Your Identity"
-      description={`Welcome, ${loggedinUser?.name}! Please provide the following details to activate your account.`}
+      description={`Welcome, ${user?.name}! Please provide the following details to activate your account.`}
     >
       <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
         {errorMsg && (
@@ -107,14 +141,22 @@ const VerificationForm = () => {
         </div>
         <div className="space-y-2">
           <FormInput
-            name="jambNo"
-            label="JAMB No."
-            placeholder="Your JAMB or Matric No."
+            name={user?.role === "student" ? "jambNo" : "staffId"}
+            label={user?.role === "student" ? "JAMB No." : "Staff ID"}
+            placeholder={user?.role === "student" ? "JAMB No." : "Staff ID"}
             control={control}
           />
-          {errors.jambNo && (
-            <p className="text-sm text-destructive">{errors.jambNo.message}</p>
-          )}
+          {user?.role === "student"
+            ? errors.jambNo && (
+                <p className="text-sm text-destructive">
+                  {errors.jambNo.message}
+                </p>
+              )
+            : errors.staffId && (
+                <p className="text-sm text-destructive">
+                  {errors.staffId.message}
+                </p>
+              )}
         </div>
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

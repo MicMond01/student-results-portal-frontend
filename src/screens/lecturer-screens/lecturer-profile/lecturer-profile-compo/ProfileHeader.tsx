@@ -39,7 +39,7 @@ const ProfileHeader: React.FC<{ lecturer: ILecturerData }> = ({ lecturer }) => {
           <Button
             className="text-primary-3 bg-primary-4"
             size="sm"
-            onClick={() => navigate("/profile/update")}
+            onClick={() => navigate("/profile-update")}
           >
             <Edit className="mr-2 h-4 w-4 " />
             Edit Profile
@@ -65,9 +65,9 @@ const ProfileHeader: React.FC<{ lecturer: ILecturerData }> = ({ lecturer }) => {
         </div>
         <div className="p-2">
           <span className="block font-semibold text-gray-800">
-            {lecturer.department}
+            {lecturer.faculty}
           </span>
-          <span className="text-xs text-gray-500">Department</span>
+          <span className="text-xs text-gray-500">Faculty</span>
         </div>
       </div>
     </Card>

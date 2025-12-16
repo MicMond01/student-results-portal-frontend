@@ -17,12 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  useGetLecturerProfileQuery,
-  useUpdateLecturerProfileMutation,
-} from "@/redux/query/lecturer";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useGetLecturerProfileQuery, useUpdateLecturerProfileMutation } from "@/redux/query/lecturer-profile";
 
 interface ProfileFormData {
   fullName: string;
@@ -127,8 +124,8 @@ const PersonalDetailsForm = () => {
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent className="bg-bg-2 border-0">
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
               </SelectContent>
             </Select>
           </div>

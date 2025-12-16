@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { routeData, authRouteData, vrificationRoute } from "./data";
+import { routeData, authRouteData, verificationRoute } from "./data";
 import AppLayout from "@/layout/AppLayout";
 import { Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute";
@@ -20,7 +20,7 @@ const Fallback = () => (
 const AppRoutes = () => {
   return (
     <Routes>
-      {vrificationRoute
+      {verificationRoute
         .filter((route) => route.allowedStep !== undefined)
         .map((route) => {
           return (

@@ -99,20 +99,16 @@ export const studentResultsTableHeaders = (
   {
     title: "Action",
     key: "updatedAt",
-    thClass: "text-center",
 
     cell: (row) => (
       <div className="flex justify-center gap-4">
         <div
           onClick={() => navigate(row._id)}
-          className="rounded-full text-primary p-2 bg-primary-3 text-muted hover:bg-muted  cursor-pointer"
+          className="rounded-full text-primary p-2 bg-primary-3/10 text-muted hover:bg-muted  cursor-pointer"
         >
           <MdOutlineRemoveRedEye />
         </div>
-        <div className="rounded-full p-2 text-green-600 bg-green-100  text-muted hover:bg-muted cursor-pointer">
-          <FaEdit />
-        </div>
-        <div className="rounded-full p-2 text-red-600 bg-red-100  text-muted hover:bg-muted cursor-pointer">
+        <div className="rounded-full p-2 text-red-600 bg-red-100/10  text-muted hover:bg-muted cursor-pointer">
           <ConfirmationDialog
             title="Confirm Delete"
             description="Are you sure you want to delete this student result? "

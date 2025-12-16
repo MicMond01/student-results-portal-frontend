@@ -11,15 +11,6 @@ import { type Dispatch, type SetStateAction } from "react";
 import { MdOutlineLockReset } from "react-icons/md";
 import type { IFilterState } from "../types";
 import { SearchInput } from "@/components/ui-components/SearchInput";
-import {
-  useGetCoursesAssignedToLecturerQuery,
-  useUploadResultForStudentMutation,
-} from "@/redux/query/lecturer";
-import { toast } from "sonner";
-import {
-  CreateResultDialog,
-  type ResultFormData,
-} from "@/components/ui-components/CreateResultDialog";
 
 interface IStudentsFilters {
   filters: IFilterState;
@@ -30,35 +21,13 @@ interface IStudentsFilters {
 
 const StudentsFilters = (props: IStudentsFilters) => {
   const { filters, setFilters, sessions, courses } = props;
-  const { data: coursesData } = useGetCoursesAssignedToLecturerQuery();
-
-  const [uploadResult, { isLoading }] = useUploadResultForStudentMutation();
-
-  const currentCourse =
-    coursesData?.courses?.find((course) => course.code === filters.courseCode)
-      ?._id || "";
-
-  const handleCreateResult = async (data: ResultFormData) => {
-    const toastId = toast.loading("Creating result...");
-
-    try {
-      await uploadResult(data).unwrap();
-      toast.success("Result created successfully!", { id: toastId });
-    } catch (error: any) {
-      toast.error(error?.data?.msg || "Failed to create result", {
-        id: toastId,
-      });
-
-      throw error;
-    }
-  };
 
   return (
     <div className="shadow-sm bg-background px-5 py-5 mb-5">
       <div className="text-sm my-2 font-semibold">
         <span>Filter Student Results</span>
       </div>
-      <form className="grid grid-cols-1 md:grid-cols-5 gap-5 relative items-center">
+      <form className="grid grid-cols-1 md:grid-cols-4 gap-5 relative items-center">
         <SearchInput
           type="text"
           placeholder="Search student name or matric..."
@@ -121,24 +90,11 @@ const StudentsFilters = (props: IStudentsFilters) => {
           onClick={() =>
             setFilters({ studentName: "", session: "", courseCode: "DSD022" })
           }
-          className="max-w-[120px]"
           size="sm"
-          variant="outline"
           type="button"
         >
           <MdOutlineLockReset className="size-4 mr-2" /> Reset
         </Button>
-
-        <div className="">
-          <CreateResultDialog
-            courses={coursesData?.courses || []}
-            onSubmit={handleCreateResult}
-            isLoading={isLoading}
-            triggerLabel="Add Result"
-            defaultSession={filters.session}
-            defaultCourse={currentCourse}
-          />
-        </div>
 
         {/* Active Filters Display */}
         {(filters.session || filters.courseCode || filters.studentName) && (

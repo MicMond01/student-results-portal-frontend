@@ -18,11 +18,14 @@ import {
 } from "lucide-react";
 import CourseInfoItem from "./lecturer-compo/CourseInfoItem";
 import type { ILecturerCourse } from "@/types/lecturer";
+import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
   course: ILecturerCourse;
 }
 const CourseCard = ({ course }: CourseCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <Card className="flex flex-col justify-between overflow-hidden transition-shadow hover:shadow-lg">
       <CardHeader>
@@ -51,7 +54,11 @@ const CourseCard = ({ course }: CourseCardProps) => {
         <CourseInfoItem icon={Building} label={course.department} />
       </CardContent>
       <CardFooter>
-        <Button variant="ghost" className="w-full justify-between">
+        <Button
+          variant="ghost"
+          className="w-full justify-between"
+          onClick={() => navigate(`/courses/${course._id}`)}
+        >
           Manage Course
           <ChevronRight className="h-4 w-4" />
         </Button>

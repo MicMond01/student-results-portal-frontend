@@ -3,16 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getNameInitials } from "@/lib/functions";
-import {
-  useGetLecturerProfileQuery,
-  useUpdateProfilePhotoMutation,
-} from "@/redux/query/lecturer";
+import { useGetLecturerProfileQuery, useUpdateLecturerProfileMutation } from "@/redux/query/lecturer-profile";
 import { Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const ProfileCard = () => {
   const { data: lecturerData } = useGetLecturerProfileQuery();
-  const [updatePhoto] = useUpdateProfilePhotoMutation();
+  const [updatePhoto] = useUpdateLecturerProfileMutation();
 
   const handleUpdatePhoto = async (photoUrl: string) => {
     const toastId = toast.loading("Updating photo...");

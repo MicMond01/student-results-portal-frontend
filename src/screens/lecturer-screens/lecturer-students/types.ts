@@ -49,6 +49,7 @@ export interface IStudentInfo {
   _id: string;
   name: string;
   identifier: string;
+  matricNo: string;
 }
 
 export interface IStudentCourse {

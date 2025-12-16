@@ -8,13 +8,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, X } from "lucide-react";
-import {
-  useEditStudentResultMutation,
-  useGetResultWithStudentInfoQuery,
-} from "@/redux/query/lecturer";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
+import Banner from "@/components/ui-components/Banner";
+import { PiStudentBold } from "react-icons/pi";
+import {
+  useEditStudentResultMutation,
+  useGetResultWithStudentInfoQuery,
+} from "@/redux/query/lecturer-results";
 
 const StudentDetail = () => {
   const { id: resultId } = useParams();
@@ -56,7 +58,6 @@ const StudentDetail = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-
   const handleSave = async () => {
     const toastId = toast.loading("Updating result...");
 
@@ -67,8 +68,6 @@ const StudentDetail = () => {
       }).unwrap();
 
       toast.success("Result updated successfully!", { id: toastId });
-
-      navigate(-1);
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update result", {
         id: toastId,
@@ -103,6 +102,13 @@ const StudentDetail = () => {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Students
         </Button>
+
+        <Banner
+          title="My Student Data"
+          desc={`View and manage student result for ${data?.student.name}`}
+          actionButton={<PiStudentBold className="text-primary" size={40} />}
+          containterClass="mb-8"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Side - Student Info Card */}
@@ -139,10 +145,12 @@ const StudentDetail = () => {
                 <h3 className="font-semibold text-lg mb-4">Personal Info</h3>
 
                 <InfoRow label="Full Name" value={data?.student.name || ""} />
+
                 <InfoRow
                   label="Matric Number"
-                  value={data?.student.identifier || ""}
+                  value={data?.student.matricNo || ""}
                 />
+
                 <InfoRow
                   label="Email"
                   value={`${data?.student.name.replace(" ", "")}@school.edu`}
@@ -159,9 +167,7 @@ const StudentDetail = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-3 mb-6">
                   <TabsTrigger value="edit-result">Edit Result</TabsTrigger>
-                  <TabsTrigger value="change-password">
-                    Change Password
-                  </TabsTrigger>
+
                   <TabsTrigger value="notifications">Notifications</TabsTrigger>
                 </TabsList>
 
@@ -318,21 +324,6 @@ const StudentDetail = () => {
                       triggerLabel="Save"
                       confirmLabel={isLoading ? "Saving..." : "Yes, Save"}
                     />
-                  </div>
-                </TabsContent>
-
-                {/* Change Password Tab */}
-                <TabsContent value="change-password" className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">
-                      Change Student Password
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-6">
-                      Reset the student's password. This feature is coming soon.
-                    </p>
-                  </div>
-                  <div className="text-center py-12 text-muted-foreground">
-                    <p>This feature will be available in the next update.</p>
                   </div>
                 </TabsContent>
 

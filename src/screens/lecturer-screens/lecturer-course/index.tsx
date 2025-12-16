@@ -13,24 +13,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetCoursesAssignedToLecturerQuery } from "@/redux/query/lecturer";
 import { Book, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import CourseCard from "./CourseCard";
 import Banner from "@/components/ui-components/Banner";
 import { ImBooks } from "react-icons/im";
-import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
+import { Button } from "@/components/ui/button";
+import {
+  useGetCourseDetailsQuery,
+  useGetCoursesAssignedToLecturerQuery,
+} from "@/redux/query/lecturer-courses";
 
 const LecturerCourses = () => {
   // In a real app, this data would come from an API call
   const { data } = useGetCoursesAssignedToLecturerQuery();
   const courses = data?.courses || [];
-  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
-  const uniqueSessions = academicSessions?.sessions || [];
+  const { data: courseDetails } = useGetCourseDetailsQuery(
+    "68f43864c364896a74c40429"
+  );
+  console.log("Course Details", courseDetails);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("all");
   const [selectedSession, setSelectedSession] = useState("all");
+
+  const uniqueSessions = useMemo(() => {
+    return [...new Set(courses.map((c) => c.session))];
+  }, [courses]);
 
   // Filter logic
   const filteredCourses = useMemo(() => {
@@ -75,7 +84,7 @@ const LecturerCourses = () => {
           </CardHeader>
           <CardContent>
             {/* Filter Controls */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
@@ -111,13 +120,27 @@ const LecturerCourses = () => {
                   <SelectValue placeholder="Filter by session" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Sessions</SelectItem>
                   {uniqueSessions.map((session) => (
-                    <SelectItem key={session._id} value={session.session}>
-                      {selectedSession === "all" ? "All Sessions" : session.session}
+                    <SelectItem key={session} value={session}>
+                      {session}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+
+              <div className="flex justify-end w-full">
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedSemester("all");
+                    setSelectedSession("all");
+                  }}
+                >
+                  Reset
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

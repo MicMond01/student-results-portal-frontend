@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useChangePasswordMutation } from "@/redux/query/lecturer";
 import type { PasswordFormData } from "@/types/lecturer";
 import { passwordSchema } from "@/lib/validation";
+import { useChangePasswordMutation } from "@/redux/query/lecturer-profile";
 
 // ✅ Zod schema for password validation
 

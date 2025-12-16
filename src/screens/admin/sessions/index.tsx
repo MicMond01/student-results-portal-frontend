@@ -26,6 +26,11 @@ const AdminSessions = () => {
     handleOpenCreate,
     handleDelete,
     handleSave,
+    isDeleting,
+    handleCloseSession,
+    handleReOpenSession,
+    isClosing,
+    isReOpening,
   } = useAdminSessions();
 
   return (
@@ -71,6 +76,11 @@ const AdminSessions = () => {
                   getSessionStatus={getSessionStatus}
                   getStatusStyle={getStatusStyle}
                   getIconStyle={getIconStyle}
+                  isDeleting={isDeleting}
+                  isClosing={isClosing}
+                  isReOpening={isReOpening}
+                  handleCloseSession={handleCloseSession}
+                  handleReOpenSession={handleReOpenSession}
                 />
               ))}
 

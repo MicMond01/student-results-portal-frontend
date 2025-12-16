@@ -2,9 +2,11 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
+  useCloseAcademicSessionMutation,
   useCreateAcademicSessionMutation,
   useDeleteAcademicSessionMutation,
   useGetAllAcademicSessionsQuery,
+  useReOpenAcademicSessionMutation,
   useUpdateAcademicSessionMutation,
 } from "@/redux/query/admin-sessions";
 import type { ISession, SessionFormData } from "@/screens/admin/sessions/type";
@@ -19,6 +21,11 @@ export default function useAdminSessions() {
     useUpdateAcademicSessionMutation();
   const [deleteSessionTrigger, { isLoading: isDeleting }] =
     useDeleteAcademicSessionMutation();
+
+  const [closeSessionTrigger, { isLoading: isClosing }] =
+    useCloseAcademicSessionMutation();
+  const [reOpenSessionTrigger, { isLoading: isReOpening }] =
+    useReOpenAcademicSessionMutation();
 
   const sessions: ISession[] = sessionsData?.sessions || [];
 
@@ -43,25 +50,25 @@ export default function useAdminSessions() {
   const getSessionStatus = (session: ISession) => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-    
+
     const start = new Date(session.startDate);
     start.setHours(0, 0, 0, 0);
-    
+
     const end = new Date(session.endDate);
     end.setHours(0, 0, 0, 0);
-    
+
     // Priority 1: If explicitly marked as current, return CURRENT
     if (session.isCurrent) return "CURRENT";
-    
+
     // Priority 2: Check if session hasn't started yet (future session)
     if (now < start) return "UPCOMING";
-    
+
     // Priority 3: Check if session has ended (past session)
     if (now > end) return "COMPLETED";
-    
+
     // Priority 4: Session is ongoing (between start and end dates)
     if (now >= start && now <= end) return "CURRENT";
-    
+
     // Fallback
     return "COMPLETED";
   };
@@ -128,6 +135,31 @@ export default function useAdminSessions() {
     }
   };
 
+  const handleCloseSession = async (id: string) => {
+    const toastId = toast.loading("Closing Session...");
+    try {
+      await closeSessionTrigger(id).unwrap();
+      toast.success("Session closed successfully!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to close session", {
+        id: toastId,
+      });
+    }
+  };
+
+  const handleReOpenSession = async (id: string) => {
+    const toastId = toast.loading("Reopening Session...");
+    try {
+      await reOpenSessionTrigger(id).unwrap();
+      toast.success("Session reopened successfully!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to reopen session", {
+        id: toastId,
+      });
+      console.log(error);
+    }
+  };
+
   const filteredSessions = useMemo(() => {
     return sessions?.filter((session) => {
       const matchesSearch = session.session
@@ -151,7 +183,8 @@ export default function useAdminSessions() {
       // If this session should be marked as current, unset all other current sessions first
       if (data.isCurrent && sessions) {
         const currentSessions = sessions.filter(
-          (s) => s.isCurrent && (!editingSession || s._id !== editingSession._id)
+          (s) =>
+            s.isCurrent && (!editingSession || s._id !== editingSession._id)
         );
 
         for (const s of currentSessions) {
@@ -195,6 +228,10 @@ export default function useAdminSessions() {
     createSessionTrigger,
     isCreating,
     updateSessionTrigger,
+    handleCloseSession,
+    handleReOpenSession,
+    isClosing,
+    isReOpening,
     isUpdating,
     deleteSessionTrigger,
     isDeleting,

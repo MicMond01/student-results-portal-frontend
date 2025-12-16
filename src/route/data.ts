@@ -18,6 +18,12 @@ const UpdateProfile = lazy(
 const LecturerCourses = lazy(
   () => import("@/screens/lecturer-screens/lecturer-course/index")
 );
+const LecturerCourseDetails = lazy(
+  () =>
+    import(
+      "@/screens/lecturer-screens/lecturer-course/course-details/lecturer-course-details"
+    )
+);
 const LecturerExams = lazy(
   () => import("@/screens/lecturer-screens/lecturer-exams/index")
 );
@@ -106,7 +112,7 @@ const authRouteData: IRoute[] = [
   // },
 ];
 
-const vrificationRoute: IRoute[] = [
+const verificationRoute: IRoute[] = [
   {
     link: "/verify-identity",
     title: "Verify-Identity",
@@ -185,6 +191,13 @@ const routeData: IRoute[] = [
     title: "lecturer-courses",
     code: "lecturer-courses",
     component: LecturerCourses,
+    allowedRoles: ["lecturer"],
+  },
+  {
+    link: "/courses/:id",
+    title: "lecturer-courses",
+    code: "lecturer-courses",
+    component: LecturerCourseDetails,
     allowedRoles: ["lecturer"],
   },
   {
@@ -314,4 +327,4 @@ const routeData: IRoute[] = [
     allowedRoles: ["admin"],
   },
 ];
-export { routeData, authRouteData, vrificationRoute };
+export { routeData, authRouteData, verificationRoute };

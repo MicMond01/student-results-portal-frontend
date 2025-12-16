@@ -33,6 +33,20 @@ export const adminSessiosSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["admin", "sessions"],
     }),
+    closeAcademicSession: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/admin/sessions/${id}/close`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["admin", "sessions"],
+    }),
+    reOpenAcademicSession: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/admin/sessions/${id}/reopen`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["admin", "sessions"],
+    }),
 
     deleteAcademicSession: builder.mutation<any, string>({
       query: (id) => ({
@@ -50,5 +64,7 @@ export const {
   useCreateAcademicSessionMutation,
   useGetCurrentAcademicSessionQuery,
   useUpdateAcademicSessionMutation,
+  useCloseAcademicSessionMutation,
+  useReOpenAcademicSessionMutation,
   useDeleteAcademicSessionMutation,
 } = adminSessiosSlice;

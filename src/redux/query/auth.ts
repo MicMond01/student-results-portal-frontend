@@ -24,7 +24,8 @@ export interface AuthUser {
 export interface AuthVerificationForm {
   dateOfBirth: string;
   phone: string;
-  jambNo: string;
+  jambNo?: string;
+  staffId?: string;
 }
 
 export interface AuthVerificationFormResponse {
@@ -34,6 +35,11 @@ export interface AuthVerificationFormResponse {
   requiresPasswordChange: boolean;
 }
 
+export interface ChangePasswordForm {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 export interface ChangePasswordFormProps {
   currentPassword: string;
   newPassword: string;

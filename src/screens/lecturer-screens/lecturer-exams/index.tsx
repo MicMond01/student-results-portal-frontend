@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SelectTrigger } from "@radix-ui/react-select";
-import { useGetCoursesAssignedToLecturerQuery } from "@/redux/query/lecturer";
+import { useGetCoursesAssignedToLecturerQuery } from "@/redux/query/lecturer-courses";
 import { Plus } from "lucide-react";
 import {
   useAddQuestionTOExamMutation,

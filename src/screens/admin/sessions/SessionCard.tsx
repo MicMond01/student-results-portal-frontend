@@ -2,6 +2,8 @@ import type { ISession } from "./type";
 import { Calendar, ChevronRight, Clock, Edit, Trash } from "lucide-react";
 import { formatDate } from "@/lib/admin-results-helper";
 import { Button } from "@/components/ui/button";
+import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
+import { IoLockClosed, IoLockOpen } from "react-icons/io5";
 
 interface SessionCardProps {
   session: ISession;
@@ -10,6 +12,11 @@ interface SessionCardProps {
   onDelete: (id: string) => void;
   getStatusStyle: (status: string) => string;
   getIconStyle: (status: string) => string;
+  isDeleting: boolean;
+  isClosing: boolean;
+  isReOpening: boolean;
+  handleCloseSession: (id: string) => void;
+  handleReOpenSession: (id: string) => void;
 }
 
 const SessionCard: React.FC<SessionCardProps> = ({
@@ -19,6 +26,11 @@ const SessionCard: React.FC<SessionCardProps> = ({
   onDelete,
   getStatusStyle,
   getIconStyle,
+  isDeleting,
+  isClosing,
+  isReOpening,
+  handleCloseSession,
+  handleReOpenSession,
 }) => {
   const status = getSessionStatus(session);
 
@@ -85,14 +97,40 @@ const SessionCard: React.FC<SessionCardProps> = ({
         >
           <Edit className="w-3.5 h-3.5 mr-2" /> Edit
         </Button>
-        <Button
-          variant="destructive"
-          size="icon"
-          className="bg-red-50 text-red-500 border-red-100 hover:bg-red-100 hover:text-red-600 hover:border-red-200"
-          onClick={() => onDelete(session._id)}
-        >
-          <Trash className="w-4 h-4" />
-        </Button>
+        {session.isActive ? (
+          <div className="flex items-center justify-center w-10 h-full rounded-md bg-gray-400/10 text-gray-400 border-none hover:bg-gray-400/30 hover:text-gray-400 hover:border-red-200">
+            <ConfirmationDialog
+              title="Confirm Close Session"
+              triggerLabel={<IoLockClosed className="w-4 h-4" />}
+              description="Are you sure you want to close this session?"
+              action={() => handleCloseSession(session._id)}
+              type="delete"
+              confirmLabel={isClosing ? "Closing..." : "Yes, Close"}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center w-10 h-full rounded-md bg-primary-4/10 text-primary-4 border-none hover:bg-primary-4/30 hover:text-primary-4 hover:border-red-200">
+            <ConfirmationDialog
+              title="Confirm Reopen Session"
+              triggerLabel={<IoLockOpen className="w-4 h-4" />}
+              description="Are you sure you want to reopen this session?"
+              action={() => handleReOpenSession(session._id)}
+              type="save"
+              confirmLabel={isReOpening ? "Reopening..." : "Yes, Reopen"}
+            />
+          </div>
+        )}
+
+        <div className="flex items-center justify-center w-10 h-full rounded-md bg-red-50 text-red-500 border-red-100 hover:bg-red-100 hover:text-red-600 hover:border-red-200">
+          <ConfirmationDialog
+            title="Confirm Delete"
+            triggerLabel={<Trash className="w-4 h-4" />}
+            description="Are you sure you want to delete this session?, This action cannot be undone. "
+            action={() => onDelete(session._id)}
+            type="delete"
+            confirmLabel={isDeleting ? "Deleting..." : "Yes, Delete"}
+          />
+        </div>
       </div>
     </div>
   );
