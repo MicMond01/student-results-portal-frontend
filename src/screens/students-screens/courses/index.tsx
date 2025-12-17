@@ -5,18 +5,18 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetMyCoursesQuery } from "@/redux/query/student";
 import { BookOpen, Calendar } from "lucide-react";
 import CourseTable from "./table/CourseTable";
 import Banner from "@/components/ui-components/Banner";
+import { useGetAvailableCoursesQuery } from "@/redux/query/student-course-registration";
 
 const StudentCourses = () => {
   const { data: courseData } = useGetMyCoursesQuery();
+  const { data } = useGetAvailableCoursesQuery();
+  console.log(data);
 
   const { groupedCourses } = courseData || {};
 

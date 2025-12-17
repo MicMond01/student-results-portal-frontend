@@ -5,6 +5,7 @@ import {
   BadgeCheck,
   BookOpen,
   Calendar,
+  Calendar1,
   CheckCircle2,
   Edit2,
   GraduationCap,
@@ -135,6 +136,11 @@ const StudentProfilePage = () => {
               </div>
 
               <div className="mt-6 pt-6 border-t text-left space-y-1">
+                <InfoRow
+                  label="Date of Birth"
+                  value={student?.dateOfBirth}
+                  icon={Calendar1}
+                />
                 <InfoRow
                   label="Program"
                   value={student?.program}

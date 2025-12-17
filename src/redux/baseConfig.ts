@@ -76,6 +76,7 @@ export const api = createApi({
     "user",
     "lecturer",
     "courses",
+    "courseRegistration",
     "result",
     "admin",
     "course",

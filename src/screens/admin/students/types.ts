@@ -297,6 +297,7 @@ export interface StudentFilterState {
 export interface StudentFormData {
   name: string;
   email: string;
+  dateOfBirth: string;
   phone: string;
   matricNo: string;
   jambNo: string;

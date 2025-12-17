@@ -37,6 +37,7 @@ const ManageStudentDialog: React.FC<{
   const [formData, setFormData] = useState<StudentFormData>({
     name: "",
     email: "",
+    dateOfBirth: "",
     phone: "",
     matricNo: "",
     jambNo: "",
@@ -55,6 +56,7 @@ const ManageStudentDialog: React.FC<{
           ? {
               name: student.name || "",
               email: student.email || "",
+              dateOfBirth: student.dateOfBirth || "",
               phone: student.phone || "",
               matricNo: student.matricNo || "",
               jambNo: student.jambNo || "",
@@ -68,6 +70,7 @@ const ManageStudentDialog: React.FC<{
           : {
               name: "",
               email: "",
+              dateOfBirth: "",
               phone: "",
               matricNo: "",
               jambNo: "",
@@ -113,12 +116,22 @@ const ManageStudentDialog: React.FC<{
                 required
               />
             </div>
-            <div className="col-span-2">
+            <div className="space-y-2">
               <Label>Email Address</Label>
               <Input
                 name="email"
                 type="email"
                 value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Date of Birth</Label>
+              <Input
+                name="dateOfBirth"
+                type="dateOfBirth"
+                value={formData.dateOfBirth}
                 onChange={handleChange}
                 required
               />

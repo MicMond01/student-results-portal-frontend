@@ -36,7 +36,7 @@ export interface ILecturerStats {
 }
 
 export interface ILecturerLatestCourse {
-  _id: string
+  _id: string;
   title: string;
   code: string;
   semester: string;
