@@ -45,6 +45,9 @@ const AdminStudents = () => {
         const payload = {
           ...formData,
           department: departmentObj._id,
+          dateOfBirth: formData.dateOfBirth
+            ? formData.dateOfBirth.toISOString()
+            : undefined,
         };
 
         await updateStudentTrigger({
@@ -62,6 +65,9 @@ const AdminStudents = () => {
           students: [],
           isActive: true,
           department: departmentObj._id,
+          dateOfBirth: formData.dateOfBirth
+            ? formData.dateOfBirth.toISOString()
+            : undefined,
           password: "123456",
         };
 

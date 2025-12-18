@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,13 +20,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { ChevronDownIcon, Loader2 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const ManageStudentDialog: React.FC<{
   onSave: (data: StudentFormData) => void;
   isLoading: boolean;
 }> = ({ onSave, isLoading }) => {
   const { data: allDepartments } = useGetAllDepartmentsQuery();
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   const {
     editingStudent: student,
@@ -37,7 +44,7 @@ const ManageStudentDialog: React.FC<{
   const [formData, setFormData] = useState<StudentFormData>({
     name: "",
     email: "",
-    dateOfBirth: "",
+    dateOfBirth: null,
     phone: "",
     matricNo: "",
     jambNo: "",
@@ -56,7 +63,9 @@ const ManageStudentDialog: React.FC<{
           ? {
               name: student.name || "",
               email: student.email || "",
-              dateOfBirth: student.dateOfBirth || "",
+              dateOfBirth: student.dateOfBirth
+                ? new Date(student.dateOfBirth)
+                : null,
               phone: student.phone || "",
               matricNo: student.matricNo || "",
               jambNo: student.jambNo || "",
@@ -70,7 +79,7 @@ const ManageStudentDialog: React.FC<{
           : {
               name: "",
               email: "",
-              dateOfBirth: "",
+              dateOfBirth: null,
               phone: "",
               matricNo: "",
               jambNo: "",
@@ -127,14 +136,40 @@ const ManageStudentDialog: React.FC<{
               />
             </div>
             <div className="space-y-2">
-              <Label>Date of Birth</Label>
-              <Input
-                name="dateOfBirth"
-                type="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                required
-              />
+              <Label htmlFor="date" className="px-1">
+                Date of birth
+              </Label>
+              <Popover open={openCalendar} onOpenChange={setOpenCalendar}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="date"
+                    className="w-full justify-between font-normal"
+                  >
+                    {formData.dateOfBirth
+                      ? formData.dateOfBirth.toLocaleDateString()
+                      : "Select date"}
+                    <ChevronDownIcon />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    captionLayout="dropdown"
+                    selected={formData.dateOfBirth ?? undefined}
+                    onSelect={(date) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        dateOfBirth: date ?? null,
+                      }));
+                      setOpenCalendar(false);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <Label>Phone</Label>

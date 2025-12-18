@@ -22,7 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { IAdminStudent, StudentFormData } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getNameInitials } from "@/lib/functions";
+import { formatDate, getNameInitials } from "@/lib/functions";
 import Badge from "@/components/ui-components/Badge";
 import InfoRow from "@/components/ui-components/InfoRow";
 import ExpandListDialog from "./components/expand-list-dialog";
@@ -138,7 +138,7 @@ const StudentProfilePage = () => {
               <div className="mt-6 pt-6 border-t text-left space-y-1">
                 <InfoRow
                   label="Date of Birth"
-                  value={student?.dateOfBirth}
+                  value={formatDate(student?.dateOfBirth ?? "")}
                   icon={Calendar1}
                 />
                 <InfoRow
