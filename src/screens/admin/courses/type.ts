@@ -5,13 +5,12 @@ export interface AdminCourses {
 }
 
 export interface AdminCourse {
-  students: string[];
-  description?: string;
-  courseType: string;
-  isActive: boolean;
-  maxStudents: any;
+  registrationOpen: boolean;
+  registrationDeadline: any;
   _id: string;
-  department: AdminDepartment;
+  department: Department;
+  students: string[];
+  isActive: boolean;
   code: string;
   title: string;
   creditUnit: number;
@@ -22,7 +21,10 @@ export interface AdminCourse {
   __v: number;
   createdAt: string;
   updatedAt: string;
-  prerequisites?: string;
+  courseType: string;
+  description: string;
+  maxStudents: any;
+  registrationOpenDate: string;
 }
 
 export interface AdminDepartment {
@@ -80,44 +82,43 @@ export interface IFilteredCourse {
   prerequisites?: string;
 }
 
-
 //Admin Courses by Department
 
 export interface IAdminDepartmentCourse {
-  success: boolean
-  count: number
-  courses: Course[]
+  success: boolean;
+  count: number;
+  courses: Course[];
 }
 
 export interface Course {
-  students: any[]
-  description: string
-  courseType: string
-  isActive: boolean
-  maxStudents: any
-  _id: string
-  title: string
-  code: string
-  creditUnit: number
-  semester: string
-  level: number
-  session: string
-  lecturer: CourseLecturer
-  department: Department
-  createdAt: string
-  updatedAt: string
-  __v: number
+  students: any[];
+  description: string;
+  courseType: string;
+  isActive: boolean;
+  maxStudents: any;
+  _id: string;
+  title: string;
+  code: string;
+  creditUnit: number;
+  semester: string;
+  level: number;
+  session: string;
+  lecturer: CourseLecturer;
+  department: Department;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface CourseLecturer {
-  email: string
-  _id: string
-  name: string
+  email: string;
+  _id: string;
+  name: string;
 }
 
 export interface Department {
-  _id: string
-  name: string
-  code: string
-  faculty: string
+  _id: string;
+  name: string;
+  code: string;
+  faculty: string;
 }

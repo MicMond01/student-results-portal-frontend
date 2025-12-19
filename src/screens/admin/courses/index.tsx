@@ -5,7 +5,7 @@ import {
 } from "@/redux/query/admin-courses";
 import type { CourseFormData } from "./type";
 import CourseDetailsPage from "./CourseDetailsPage";
-import ManageCourseDialog from "./manage-course-dialog";
+import ManageCourseDialog from "./components/manage-course-dialog";
 import { toast } from "sonner";
 import { useGetAllLecturersQuery } from "@/redux/query/admin-lecturers";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";

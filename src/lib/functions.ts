@@ -47,3 +47,5 @@ export const loadScript = (src: string) => {
     document.body.appendChild(script);
   });
 };
+
+

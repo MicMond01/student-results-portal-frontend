@@ -42,7 +42,7 @@ export const adminCourseRegistrationSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["courses", "courseRegistration"],
     }),
-    getRegistrationStatistics: builder.query<any, any>({
+    getRegistrationStatistics: builder.query<any, void>({
       query: () => ({
         url: `admin/course-registration/statistics`,
       }),
@@ -52,5 +52,10 @@ export const adminCourseRegistrationSlice = api.injectEndpoints({
 });
 
 export const {
-    
+  useUpdateRegistrationSettingsMutation,
+  useCloseRegistrationMutation,
+  useOpenRegistrationMutation,
+  useBulkSetDeadlineForDepartmentMutation,
+  useSetDeadlineForSessionMutation,
+  useGetRegistrationStatisticsQuery,
 } = adminCourseRegistrationSlice;

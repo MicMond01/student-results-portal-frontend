@@ -49,6 +49,8 @@ const StudentProfilePage = () => {
     useAdminStudentsStore();
   const navigate = useNavigate();
 
+  console.log(student);
+
   const handleSaveStudent = async (data: StudentFormData) => {
     try {
       await updateStudentTrigger({ id: student?._id || "", data }).unwrap();
