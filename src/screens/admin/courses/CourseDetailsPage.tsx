@@ -41,7 +41,7 @@ const CourseDetailsPage = () => {
 
   const navigate = useNavigate();
 
-  // console.log(course);
+  console.log(course);
 
   const handleSaveChanges = async () => {
     const toastId = toast.loading("Updating Registration Settings...");
