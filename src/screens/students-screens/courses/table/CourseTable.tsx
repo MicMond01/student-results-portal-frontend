@@ -7,14 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { User } from "lucide-react";
 import type { ISemesterCourse } from "../type";
 
 const CourseTable = ({ courses }: { courses: ISemesterCourse[] }) => {
   return (
     <Table>
       <TableHeader>
-        <TableRow className="h-16">
+        <TableRow className=" gap-4 px-6 py-3 bg-gray-50/50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           <TableHead className="pl-12">Code</TableHead>
           <TableHead>Course Title</TableHead>
           <TableHead>Lecturer</TableHead>
@@ -34,11 +33,25 @@ const CourseTable = ({ courses }: { courses: ISemesterCourse[] }) => {
               <TableCell className="pl-12">
                 <Badge variant="outline">{course.code}</Badge>
               </TableCell>
-              <TableCell className="font-medium ">{course.title}</TableCell>
-              <TableCell className="text-gray-600">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-gray-400" />
-                  {course.lecturer.name}
+              <TableCell className="font-medium ">
+                <p className="text-sm font-semibold text-gray-900">
+                  {course.title}
+                </p>
+                <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700">
+                  Level {course.level}
+                </span>
+              </TableCell>
+              <TableCell className="text-gray-600 flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-600 font-bold">
+                  {course.lecturer.name.charAt(0)}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-700">
+                    {course.lecturer.name}
+                  </span>
+                  <p className="text-sm text-gray-700">
+                    {course.lecturer.email}
+                  </p>
                 </div>
               </TableCell>
               <TableCell className="text-right font-medium pr-12">

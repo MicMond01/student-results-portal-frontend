@@ -1,5 +1,4 @@
 import Table from "@/components/table/table";
-import Banner from "@/components/ui-components/Banner";
 import { useState, useMemo } from "react";
 import { PiStudentDuotone } from "react-icons/pi";
 import StudentsFilters from "./table-config/students-filters";

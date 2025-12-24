@@ -48,4 +48,16 @@ export const loadScript = (src: string) => {
   });
 };
 
+export const getDaysRemaining = (deadline: string | Date) => {
+  const today = new Date();
+  const endDate = new Date(deadline);
 
+  // Normalize to midnight to avoid partial-day errors
+  today.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+
+  const diffInMs = endDate.getTime() - today.getTime();
+  const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+
+  return diffInDays;
+};

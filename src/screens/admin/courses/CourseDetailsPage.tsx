@@ -45,18 +45,19 @@ const CourseDetailsPage = () => {
 
   const handleSaveChanges = async () => {
     const toastId = toast.loading("Updating Registration Settings...");
+
     try {
       await updateRegistrationTrigger({
         courseId: course?._id || "",
         settings: {
           registrationOpen: regOpen,
-          isActive,
           registrationOpenDate: openDate
             ? new Date(openDate).toISOString()
             : null,
           registrationDeadline: deadlineDate
             ? new Date(deadlineDate).toISOString()
             : null,
+          maxStudents: null,
         },
       }).unwrap();
       toast.success("Registration settings updated successfully!", {
