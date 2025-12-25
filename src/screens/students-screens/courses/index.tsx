@@ -58,7 +58,6 @@ const StudentCourses = () => {
   );
 
   const handleRegister = async () => {
-    const toastId = ""
   }
 
 
