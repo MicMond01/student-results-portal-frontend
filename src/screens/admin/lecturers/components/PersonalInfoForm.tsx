@@ -120,7 +120,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
         />
       </div>
 
-      <div className="space-y-2 md:col-span-2">
+      <div className="space-y-2 ">
         <Label>Address</Label>
         <Input name="address" value={formData.address} onChange={onChange} />
       </div>

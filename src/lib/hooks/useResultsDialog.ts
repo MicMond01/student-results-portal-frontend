@@ -1,7 +1,11 @@
 import { useGetCoursesByDepartmentQuery } from "@/redux/query/admin-courses";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import { useGetStudentsByDepartmentQuery } from "@/redux/query/admin-students";
-import { useAdminResultsStore, useModalState, useResultFormData } from "@/stores/useAdminResultsStore";
+import {
+  useAdminResultsStore,
+  useModalState,
+  useResultFormData,
+} from "@/stores/useAdminResultsStore";
 import { useMemo } from "react";
 
 export const useResultsDialog = () => {
@@ -10,11 +14,13 @@ export const useResultsDialog = () => {
   const { updateResultForm, setStudentForForm, closeModals } =
     useAdminResultsStore();
 
+
   const { data: departments } = useGetAllDepartmentsQuery();
   const { data: departmentStudents } = useGetStudentsByDepartmentQuery(
     resultForm.departmentId,
     { skip: !resultForm.departmentId }
   );
+
   const { data: departmentCourses } = useGetCoursesByDepartmentQuery(
     resultForm.departmentId,
     { skip: !resultForm.departmentId }

@@ -215,7 +215,7 @@ const ResultsDialogs: React.FC<ResultsDialogsProps> = ({
                     <SelectValue placeholder="Choose student" />
                   </SelectTrigger>
                   <SelectContent>
-                    {dialog.students?.students?.map((student: any) => (
+                    {dialog.students?.map((student: any) => (
                       <SelectItem key={student._id} value={student._id}>
                         {student.name} - {student.matricNo}
                       </SelectItem>

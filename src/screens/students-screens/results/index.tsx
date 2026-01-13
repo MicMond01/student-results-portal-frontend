@@ -9,7 +9,7 @@ import Banner from "@/components/ui-components/Banner";
 import ResultsStats from "./ResultsStats";
 import ResultsAccordion from "./ResultsAccordion";
 import { generateResultsPDF } from "@/lib/generateResultsPDF";
-import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/student-sessions";
 
 const StudentResults = () => {
   const { data: resultData } = useGetMyResultsQuery();

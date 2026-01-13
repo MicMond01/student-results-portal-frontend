@@ -22,27 +22,27 @@ import {
   useGetAvailableCoursesQuery,
   useGetMyRegisteredCoursesQuery,
   useRegisterForCourseMutation,
+  useUnregisterFromCourseMutation,
 } from "@/redux/query/student-course-registration";
 import StatCard from "./components/StatCard";
 import { getDaysRemaining } from "@/lib/functions";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
+import { toast } from "sonner";
 
 const StudentCourses = () => {
   const { data: courseData } = useGetMyCoursesQuery();
   const { data: unregisterdCourses } = useGetAvailableCoursesQuery();
   const { data: registeredCourses } = useGetMyRegisteredCoursesQuery();
-  const [registerCourseTrigger, {isLoading: isRegistering}] = useRegisterForCourseMutation()
+  const [registerCourseTrigger, { isLoading: isRegistering }] =
+    useRegisterForCourseMutation();
+  const [unRegisterCourseTrigger, { isLoading: isUnRegistering }] =
+    useUnregisterFromCourseMutation();
 
   const [activeTab, setActiveTab] = useState<"all" | "open" | "registered">(
     "all"
   );
-
-  console.log("Avilable courses with registration open", unregisterdCourses);
-
-  console.log("courseData", courseData);
-  console.log("registeredCourses", registeredCourses);
 
   const { groupedCourses } = courseData || {};
 
@@ -57,9 +57,32 @@ const StudentCourses = () => {
     0
   );
 
-  const handleRegister = async () => {
-  }
+  const handleRegister = async (courseId: string) => {
+    const toastId = toast.loading("Registering for course...");
+    try {
+      await registerCourseTrigger(courseId).unwrap();
+      toast.success("Course registered successfully!", { id: toastId });
+      console.log(courseId);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to register for course", {
+        id: toastId,
+      });
+      console.log(error);
+    }
+  };
 
+  const handleUnregister = async (courseId: string) => {
+    const toastId = toast.loading("Unregistering from course...");
+    try {
+      await unRegisterCourseTrigger(courseId).unwrap();
+      toast.success("Course unregistered successfully!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to unregister from course", {
+        id: toastId,
+      });
+      console.log(error);
+    }
+  };
 
   return (
     <div className="min-h-screen p-4 lg:p-8">
@@ -100,7 +123,7 @@ const StudentCourses = () => {
             title="Registered"
             value={registeredCount}
             icon={CheckCircle2}
-            change="1 Pending"
+            change=""
             changeText="approval"
             colorClass="text-blue-600"
             iconBg="bg-blue-50 group-hover:bg-blue-600 group-hover:text-white"
@@ -280,20 +303,17 @@ const StudentCourses = () => {
                     <div className="col-span-1 text-center font-semibold text-gray-900">
                       {course.creditUnit}
                     </div>
-                    <div className="col-span-2 text-right">
+                    <div className="col-span-2 ml-auto">
                       <ConfirmationDialog
                         title="Register"
                         description="Are you sure you want to register for this course? "
-                        action={handleRegister}
+                        action={() => handleRegister(course._id)}
                         type="save"
                         triggerLabel="Register"
                         confirmLabel={
                           isRegistering ? "Registering..." : "Yes, Register"
                         }
                       />
-                      <button className="px-4 py-2 bg-[#7c3aed] hover:bg-violet-700 text-white text-xs font-medium rounded-md shadow-sm transition-colors">
-                        Register
-                      </button>
                     </div>
                   </div>
                 ))}
@@ -306,10 +326,11 @@ const StudentCourses = () => {
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50/50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <div className="col-span-2">Code</div>
-                <div className="col-span-3">Course</div>
+                <div className="col-span-2">Course</div>
                 <div className="col-span-2">Lecturer</div>
                 <div className="col-span-2">Period</div>
-                <div className="col-span-3 text-right">Status</div>
+                <div className="col-span-2 text-right">Status</div>
+                <div className="col-span-2 text-right">Action</div>
               </div>
               <div className="divide-y divide-gray-100">
                 {registeredCourses?.courses.length === 0 && (
@@ -330,7 +351,7 @@ const StudentCourses = () => {
                         {course.code}
                       </span>
                     </div>
-                    <div className="col-span-3">
+                    <div className="col-span-2">
                       <p className="text-sm font-semibold text-gray-900">
                         {course.title}
                       </p>
@@ -348,7 +369,7 @@ const StudentCourses = () => {
                         {course.semester} Semester / Lvl {course.level}
                       </span>
                     </div>
-                    <div className="col-span-3 text-right flex flex-col items-end gap-1">
+                    <div className="col-span-2 text-right flex flex-col items-end gap-1">
                       {course.isRegistered ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span>{" "}
@@ -363,6 +384,20 @@ const StudentCourses = () => {
                       <span className="text-[10px] text-gray-400">
                         Reg Open: {course.isRegistrationOpen ? "Yes" : "No"}
                       </span>
+                    </div>
+                    <div className="col-span-2 ml-auto">
+                      <ConfirmationDialog
+                        title="Unregister"
+                        description="Are you sure you want to unregister for this course? "
+                        action={() => handleUnregister(course._id)}
+                        type="delete"
+                        triggerLabel="Unregister"
+                        confirmLabel={
+                          isUnRegistering
+                            ? "Unregistering..."
+                            : "Yes, Unregister"
+                        }
+                      />
                     </div>
                   </div>
                 ))}

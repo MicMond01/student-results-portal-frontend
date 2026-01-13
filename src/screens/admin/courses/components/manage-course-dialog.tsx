@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useGetAllDepartmentsQuery } from "@/redux/query/admin-departments";
 import { useGetLecturersByDepartmentQuery } from "@/redux/query/admin-lecturers";
 import { useAdminCoursesStore } from "@/stores/useAdminCoursesStore";
+import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 type CourseFormData = {
   title: string;
@@ -48,6 +49,7 @@ const ManageCourseDialog: React.FC<{
     useGetLecturersByDepartmentQuery(departmentId, {
       skip: !departmentId,
     });
+  const { data: academicSessions } = useGetAllAcademicSessionsQuery();
 
   const {
     isDialogOpen,
@@ -153,14 +155,26 @@ const ManageCourseDialog: React.FC<{
             </div>
             <div className="space-y-2">
               <Label htmlFor="session">Session</Label>
-              <Input
-                id="session"
-                name="session"
+              <Select
                 value={formData.session}
-                onChange={handleChange}
-                placeholder="e.g., 2024/2025"
-                required
-              />
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    session: value,
+                  }))
+                }
+              >
+                <SelectTrigger id="session">
+                  <SelectValue placeholder="Select session" />
+                </SelectTrigger>
+                <SelectContent>
+                  {academicSessions?.sessions.map((session) => (
+                    <SelectItem key={session._id} value={session.session}>
+                      {session.session}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="semester">Semester</Label>

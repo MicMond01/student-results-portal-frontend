@@ -118,7 +118,7 @@ const ManageLecturerDialog: React.FC<{
 
   return (
     <Dialog open={isManageOpen} onOpenChange={setIsManageOpen}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-[40vw]">
         <DialogHeader>
           <DialogTitle>
             {isEditMode ? "Edit Lecturer" : "Add New Lecturer"}

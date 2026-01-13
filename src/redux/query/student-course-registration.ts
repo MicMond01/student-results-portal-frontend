@@ -1,21 +1,23 @@
-import type { IStudentRegisteredCourses, IStudentUnregisteredCourses } from "@/screens/students-screens/courses/type";
+import type {
+  IStudentRegisteredCourses,
+  IStudentUnregisteredCourses,
+} from "@/screens/students-screens/courses/type";
 import { api } from "../baseConfig";
 
 export const studentCourseRegistrationSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    registerForCourse: builder.mutation<any, any>({
+    registerForCourse: builder.mutation<any, string>({
       query: (courseId) => ({
         url: `student/course-registration/register`,
         method: "POST",
-        body: courseId,
+        body: { courseId },
       }),
       invalidatesTags: ["courses", "courseRegistration"],
     }),
-    unregisterFromCourse: builder.mutation<any, any>({
-      query: ({ courseId, studentId }) => ({
+    unregisterFromCourse: builder.mutation<any, string>({
+      query: (courseId) => ({
         url: `student/course-registration/unregister/${courseId}`,
-        method: "POST",
-        body: studentId,
+        method: "DELETE",
       }),
       invalidatesTags: ["courses", "courseRegistration"],
     }),
