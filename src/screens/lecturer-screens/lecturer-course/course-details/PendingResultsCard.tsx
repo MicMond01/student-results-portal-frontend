@@ -7,11 +7,13 @@ import type { StudentsWithoutResult } from "./types";
 interface PendingResultsCardProps {
   student: StudentsWithoutResult[];
   onEdit?: () => void;
+  onSelectStudent: (id: string) => void;
 }
 
 const PendingResultsCard: React.FC<PendingResultsCardProps> = ({
   student,
   onEdit,
+  onSelectStudent,
 }) => {
   return (
     <Card className="w-full rounded-2xl shadow-sm max-h-full">
@@ -41,7 +43,10 @@ const PendingResultsCard: React.FC<PendingResultsCardProps> = ({
                   size="icon"
                   variant="ghost"
                   className="text-gray-500 hover:text-gray-700"
-                  onClick={onEdit}
+                  onClick={() => {
+                    onEdit?.();
+                    onSelectStudent(student.matricNo);
+                  }}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>

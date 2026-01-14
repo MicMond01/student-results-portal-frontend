@@ -123,8 +123,9 @@ const LecturerStudents: React.FC = () => {
     try {
       await deleteResult(id).unwrap();
       toast.success("Result deleted successfully");
-    } catch (error) {
-      toast.error("Error deleting result");
+    } catch (error: any) {
+      const message = error?.data?.msg || error?.data?.message;
+      toast.error(message || "Failed to delete result");
     }
   };
 

@@ -6,6 +6,7 @@ import { useSidebar } from "@/context/sidebar";
 import { Icon } from "@/components/ui/Icon";
 import { useLazyGetLoggedInUserQuery } from "@/redux/query/auth";
 import type { NavItem } from "@/types/app";
+import { useAppSelector } from "@/lib/hooks/dispatch-hooks";
 
 const Sidebar: React.FC = () => {
   const { collapsed, hoverExpand, setHoverExpand } = useSidebar();
@@ -13,6 +14,8 @@ const Sidebar: React.FC = () => {
   const [userRole, setUserRole] = useState<"admin" | "lecturer" | "student">(
     "student"
   );
+
+  const { user } = useAppSelector((state) => state.auth);
 
   // ✅ Fetch logged-in user once
   useEffect(() => {
@@ -212,6 +215,21 @@ const Sidebar: React.FC = () => {
           <SidebarItem key={item.id} item={item} />
         ))}
       </nav>
+      <div>
+        {user?.role === "lecturer" || user?.role === "admin" ? (
+          <div className="flex items-center gap-2 border-t-2 border-gray-300/50 h-15">
+            <span className="text-lg font-semibold text-foreground ml-10">
+              {user?.role === "lecturer" ? "Lecturer" : "Admin"}
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 border-t-2 border-gray-300/50 h-15">
+            <span className="text-lg font-semibold text-foreground ml-10">
+              Student
+            </span>
+          </div>
+        )}
+      </div>
     </motion.aside>
   );
 };

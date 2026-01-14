@@ -17,6 +17,11 @@ import CardHeader from "./CardHeader";
 import CourseStudents from "./CourseStudents";
 import type { GradeDistribution, Stats } from "./types";
 import PendingResultsCard from "./PendingResultsCard";
+import { type ResultFormData } from "@/components/ui-components/CreateResultDialog";
+import { toast } from "sonner";
+import { useUploadResultForStudentMutation } from "@/redux/query/lecturer-results";
+import { CreateResultDialog } from "./CreateResultDialog";
+import { useState } from "react";
 
 const LecturerCourseDetails = () => {
   const { id } = useParams();
@@ -27,6 +32,12 @@ const LecturerCourseDetails = () => {
     });
   const { course, stats, students, results, studentsWithoutResults } =
     courseDetails || {};
+  const [uploadResult, { isLoading: isCreatingResult }] =
+    useUploadResultForStudentMutation();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  console.log(selectedStudent);
 
   const EMPTY_GRADE_DISTRIBUTION: GradeDistribution = {
     A: 0,
@@ -48,12 +59,30 @@ const LecturerCourseDetails = () => {
 
   if (isLoadingDetails) return <PageSkeleton />;
 
+  const handleCreateResult = async (data: ResultFormData) => {
+    const toastId = toast.loading("Creating result...");
+
+    try {
+      await uploadResult(data).unwrap();
+      toast.success("Result created successfully!", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.data?.msg || "Failed to create result", {
+        id: toastId,
+      });
+
+      throw error;
+    }
+  };
+
   return (
     <div className="min-h-screen  p-6 lg:p-8 text-slate-800 animate-in fade-in duration-500">
       {/* Navigation & Header */}
       <div className="mb-8">
-        <Button variant="ghost" onClick={() => navigate("/courses")} 
-           className="flex items-center gap-2 text-gray-500 mb-4 hover:text-indigo-600 cursor-pointer transition-colors w-fit" >
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/courses")}
+          className="flex items-center gap-2 text-gray-500 mb-4 hover:text-indigo-600 cursor-pointer transition-colors w-fit"
+        >
           <ArrowLeft className="h-4 w-4" />
           <span className="text-sm font-medium">Back to Courses</span>
         </Button>
@@ -134,7 +163,8 @@ const LecturerCourseDetails = () => {
           <div className="lg:col-span-1 space-y-6">
             <PendingResultsCard
               student={studentsWithoutResults || []}
-              onEdit={() => console.log("Edit clicked")}
+              onEdit={() => setIsDialogOpen(true)}
+              onSelectStudent={setSelectedStudent}
             />
           </div>
         )}
@@ -147,6 +177,17 @@ const LecturerCourseDetails = () => {
           studentsWithoutResults={studentsWithoutResults || []}
         />
       </div>
+
+      <CreateResultDialog
+        courses={course}
+        onSubmit={handleCreateResult}
+        isLoading={isCreatingResult}
+        defaultSession={course?.session || ""}
+        defaultCourse={course?._id || ""}
+        selectedStudent={selectedStudent}
+        open={isDialogOpen}
+        setOpen={setIsDialogOpen}
+      />
     </div>
   );
 };
