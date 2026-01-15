@@ -26,6 +26,8 @@ const ExamsFilters: React.FC<{
     filters.department
   );
 
+  console.log("filters.department", filters.department);
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({ ...prev, query: e.target.value }));
   };

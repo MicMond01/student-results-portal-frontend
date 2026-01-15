@@ -89,33 +89,25 @@ const DepartmentDetailsPage = () => {
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Departments
           </Button>
 
-          <Banner
-            title={dept.name}
-            desc="View and manage department, HOD, and structure."
-            actionButton={
-              <div className="ml-auto text-right flex flex-col items-end">
-                <div className="flex items-center gap-3 mb-1">
-                  <Badge variant="default" className="text-lg px-3">
-                    {dept.code}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2">
-                  <School className="h-4 w-4" />
-                  <span className="font-medium">{dept.faculty}</span>
-                </div>
-              </div>
-            }
-            containterClass="mb-8"
-          />
-
-          <div className="flex ml-auto flex-col md:flex-row ">
-            <Button
-              onClick={() => openManageDialog(dept)}
-              className="shadow-sm justify-end"
-            >
-              <Edit2 className="mr-2 h-4 w-4" />
-              Edit Department
-            </Button>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                <School className="text-primary" size={40} />
+                {dept.name}
+              </h1>
+              <p className="text-gray-500 mt-1 text-sm">
+                "View and manage department, HOD, and structure."
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => openManageDialog(dept)}
+                className="shadow-sm justify-end"
+              >
+                <Edit2 className="mr-2 h-4 w-4" />
+                Edit Department
+              </Button>
+            </div>
           </div>
         </div>
 

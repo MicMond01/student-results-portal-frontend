@@ -14,7 +14,6 @@ export const useResultsDialog = () => {
   const { updateResultForm, setStudentForForm, closeModals } =
     useAdminResultsStore();
 
-
   const { data: departments } = useGetAllDepartmentsQuery();
   const { data: departmentStudents } = useGetStudentsByDepartmentQuery(
     resultForm.departmentId,
@@ -25,6 +24,8 @@ export const useResultsDialog = () => {
     resultForm.departmentId,
     { skip: !resultForm.departmentId }
   );
+
+  console.log("resultFormDepartmentId", resultForm.departmentId);
 
   const isFormValid = useMemo(() => {
     return (
