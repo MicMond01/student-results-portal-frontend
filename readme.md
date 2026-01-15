@@ -1200,3 +1200,663 @@ interface StatCardProps {
 ```typescript
 interface DataTableProps<T> {
   data: T[];
+  columns: ColumnDef<T>[];
+  loading?: boolean;
+  pagination?: boolean;
+  onRowClick?: (row: T) => void;
+}
+```
+
+## 📜 Scripts
+
+```bash
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Lint code with ESLint
+
+# Type Checking
+tsc --noEmit        # Check TypeScript types
+
+# Production
+npm run build && npm run preview
+```
+
+## 🎯 Key Features Implementation
+
+### Bulk Upload System
+
+**Template Generation:**
+```typescript
+// Download template endpoint
+const downloadTemplate = (format: 'excel' | 'txt') => {
+  const url = `/admin/students/template/${format}`;
+  // Trigger download
+};
+```
+
+**Upload Processing:**
+```typescript
+interface BulkUploadResponse {
+  success: boolean;
+  successCount: number;
+  failedCount: number;
+  success: Array<CreatedRecord>;
+  failed: Array<{
+    data: any;
+    error: string;
+  }>;
+}
+
+// Display results in toast/modal
+const handleBulkUpload = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('department', selectedDepartment);
+  
+  const response = await api.post('/admin/students/bulk', formData);
+  
+  // Show success/failure report
+  showBulkUploadResults(response.data);
+};
+```
+
+### Grade Calculation
+
+```typescript
+// Grade calculation utility
+const calculateGrade = (total: number): string => {
+  if (total >= 70) return 'A';
+  if (total >= 60) return 'B';
+  if (total >= 50) return 'C';
+  if (total >= 45) return 'D';
+  if (total >= 40) return 'E';
+  return 'F';
+};
+
+const calculateGradePoint = (grade: string): number => {
+  const gradePoints: Record<string, number> = {
+    'A': 5.0, 'B': 4.0, 'C': 3.0,
+    'D': 2.0, 'E': 1.0, 'F': 0.0
+  };
+  return gradePoints[grade] || 0;
+};
+
+// CGPA calculation
+const calculateCGPA = (results: Result[]): number => {
+  const totalPoints = results.reduce((sum, result) => {
+    const gradePoint = calculateGradePoint(result.grade);
+    return sum + (gradePoint * result.course.creditUnit);
+  }, 0);
+  
+  const totalCredits = results.reduce((sum, result) => 
+    sum + result.course.creditUnit, 0
+  );
+  
+  return totalPoints / totalCredits;
+};
+```
+
+### Chart Implementation
+
+```typescript
+// Using Recharts
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis } from 'recharts';
+
+// Student distribution by department
+const DepartmentPieChart = ({ data }) => {
+  const COLORS = ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+  
+  return (
+    <PieChart width={400} height={400}>
+      <Pie
+        data={data}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius={150}
+        label
+      >
+        {data.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+    </PieChart>
+  );
+};
+
+// Grade distribution bar chart
+const GradeDistributionChart = ({ data }) => (
+  <BarChart width={600} height={300} data={data}>
+    <XAxis dataKey="grade" />
+    <YAxis />
+    <Bar dataKey="count" fill="#8B5CF6" />
+  </BarChart>
+);
+```
+
+### PDF Export
+
+```typescript
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+const exportToPDF = (data: Result[], studentInfo: Student) => {
+  const doc = new jsPDF();
+  
+  // Header
+  doc.setFontSize(20);
+  doc.text('Student Transcript', 105, 20, { align: 'center' });
+  
+  // Student info
+  doc.setFontSize(12);
+  doc.text(`Name: ${studentInfo.name}`, 20, 40);
+  doc.text(`Matric No: ${studentInfo.matricNo}`, 20, 50);
+  doc.text(`CGPA: ${studentInfo.cgpa}`, 20, 60);
+  
+  // Results table
+  autoTable(doc, {
+    startY: 70,
+    head: [['Course Code', 'Course Title', 'CA', 'Exam', 'Total', 'Grade']],
+    body: data.map(result => [
+      result.course.code,
+      result.course.title,
+      result.ca,
+      result.exam,
+      result.total,
+      result.grade
+    ]),
+  });
+  
+  doc.save(`transcript-${studentInfo.matricNo}.pdf`);
+};
+```
+
+### Form Validation with Zod
+
+```typescript
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+// Course creation schema
+const courseSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  code: z.string().regex(/^[A-Z]{3}\d{3}$/, 'Invalid course code format'),
+  creditUnit: z.number().min(1).max(6),
+  level: z.enum(['100', '200', '300', '400', '500']),
+  semester: z.enum(['First', 'Second']),
+  department: z.string().min(1, 'Department is required'),
+  lecturer: z.string().min(1, 'Lecturer is required'),
+});
+
+// Usage in component
+const CourseForm = () => {
+  const form = useForm({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+      title: '',
+      code: '',
+      creditUnit: 3,
+      // ...
+    }
+  });
+  
+  const onSubmit = async (data: z.infer<typeof courseSchema>) => {
+    await createCourse(data);
+  };
+  
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      {/* Form fields */}
+    </form>
+  );
+};
+```
+
+## 🔍 Advanced Filtering
+
+```typescript
+// Filter hook
+const useTableFilters = () => {
+  const [filters, setFilters] = useState({
+    search: '',
+    department: '',
+    level: '',
+    session: '',
+    status: '',
+  });
+  
+  const updateFilter = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+  
+  const clearFilters = () => {
+    setFilters({
+      search: '',
+      department: '',
+      level: '',
+      session: '',
+      status: '',
+    });
+  };
+  
+  return { filters, updateFilter, clearFilters };
+};
+
+// Usage
+const StudentsList = () => {
+  const { filters, updateFilter, clearFilters } = useTableFilters();
+  
+  const filteredStudents = students.filter(student => {
+    if (filters.search && !student.name.includes(filters.search)) return false;
+    if (filters.department && student.department !== filters.department) return false;
+    if (filters.level && student.level !== filters.level) return false;
+    return true;
+  });
+  
+  return (
+    <div>
+      <FilterBar 
+        filters={filters} 
+        onFilterChange={updateFilter}
+        onClear={clearFilters}
+      />
+      <DataTable data={filteredStudents} />
+    </div>
+  );
+};
+```
+
+## 🚦 Route Protection
+
+```typescript
+// Protected route component
+const ProtectedRoute = ({ 
+  children, 
+  allowedRoles 
+}: { 
+  children: ReactNode;
+  allowedRoles: UserRole[];
+}) => {
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else if (!allowedRoles.includes(user.role)) {
+      navigate('/unauthorized');
+    }
+  }, [isAuthenticated, user, navigate]);
+  
+  return isAuthenticated && allowedRoles.includes(user.role) 
+    ? <>{children}</> 
+    : null;
+};
+
+// Route configuration
+const AppRoutes = () => (
+  <Routes>
+    <Route path="/login" element={<Login />} />
+    <Route path="/verify-identity" element={<VerifyIdentity />} />
+    
+    {/* Admin routes */}
+    <Route path="/admin/*" element={
+      <ProtectedRoute allowedRoles={['admin']}>
+        <AdminLayout />
+      </ProtectedRoute>
+    }>
+      <Route path="dashboard" element={<AdminDashboard />} />
+      <Route path="courses" element={<CoursesPage />} />
+      {/* ... */}
+    </Route>
+    
+    {/* Lecturer routes */}
+    <Route path="/lecturer/*" element={
+      <ProtectedRoute allowedRoles={['lecturer']}>
+        <LecturerLayout />
+      </ProtectedRoute>
+    }>
+      <Route path="dashboard" element={<LecturerDashboard />} />
+      {/* ... */}
+    </Route>
+    
+    {/* Student routes */}
+    <Route path="/student/*" element={
+      <ProtectedRoute allowedRoles={['student']}>
+        <StudentLayout />
+      </ProtectedRoute>
+    }>
+      <Route path="dashboard" element={<StudentDashboard />} />
+      {/* ... */}
+    </Route>
+  </Routes>
+);
+```
+
+## 🎨 Theming & Styling
+
+### Tailwind Configuration
+
+```typescript
+// tailwind.config.js
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#8B5CF6',
+          50: '#F5F3FF',
+          100: '#EDE9FE',
+          // ... other shades
+        },
+        success: '#10B981',
+        warning: '#F59E0B',
+        error: '#EF4444',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [require('tailwindcss-animate')],
+};
+```
+
+### Custom Utility Functions
+
+```typescript
+// lib/utils.ts
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// Usage
+<div className={cn(
+  'base-class',
+  isActive && 'active-class',
+  customClass
+)}>
+```
+
+## 🔄 API Integration
+
+### Axios Configuration
+
+```typescript
+// api/axios.ts
+import axios from 'axios';
+import { store } from '../store/store';
+import { logout } from '../store/slices/authSlice';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor - Add token
+api.interceptors.request.use(
+  (config) => {
+    const token = store.getState().auth.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor - Handle errors
+api.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    if (error.response?.status === 401) {
+      store.dispatch(logout());
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+```
+
+### API Endpoints Structure
+
+```typescript
+// api/endpoints/admin.ts
+export const adminAPI = {
+  // Students
+  getStudents: (params?: FilterParams) => 
+    api.get('/admin/students', { params }),
+  createStudent: (data: CreateStudentDTO) => 
+    api.post('/admin/students', data),
+  bulkCreateStudents: (formData: FormData) => 
+    api.post('/admin/students/bulk', formData),
+  
+  // Courses
+  getCourses: (params?: FilterParams) => 
+    api.get('/admin/courses', { params }),
+  createCourse: (data: CreateCourseDTO) => 
+    api.post('/admin/courses', data),
+  
+  // ... other endpoints
+};
+```
+
+## 🧪 Testing Guidelines
+
+### Component Testing
+```typescript
+// Example test structure (not implemented yet)
+import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+
+describe('LoginPage', () => {
+  it('renders login form', () => {
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </Provider>
+    );
+    
+    expect(screen.getByLabelText(/identifier/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+  });
+});
+```
+
+## 📦 Build & Deployment
+
+### Production Build
+```bash
+npm run build
+```
+
+**Output:**
+- Optimized bundle in `dist/` directory
+- Tree-shaken dependencies
+- Minified CSS and JavaScript
+- Source maps for debugging
+
+### Deployment Checklist
+- [ ] Update environment variables
+- [ ] Test production build locally (`npm run preview`)
+- [ ] Verify API endpoints are correct
+- [ ] Check authentication flow
+- [ ] Test bulk upload features
+- [ ] Verify PDF export functionality
+- [ ] Test on multiple browsers
+- [ ] Check mobile responsiveness
+- [ ] Verify charts render correctly
+- [ ] Test all user roles
+
+### Hosting Options
+- **Vercel** - Recommended for easy deployment
+- **Netlify** - Good alternative with CI/CD
+- **AWS S3 + CloudFront** - For enterprise
+- **Nginx** - For self-hosting
+
+### Environment-Specific Configurations
+
+**Development:**
+```env
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+```
+
+**Staging:**
+```env
+VITE_API_BASE_URL=https://staging-api.yourapp.com/api/v1
+```
+
+**Production:**
+```env
+VITE_API_BASE_URL=https://api.yourapp.com/api/v1
+```
+
+## 🐛 Common Issues & Solutions
+
+### Issue: CORS Errors
+**Solution:** Ensure backend has proper CORS configuration
+```javascript
+// Backend should have
+cors({
+  origin: ['http://localhost:5173', 'https://yourapp.com'],
+  credentials: true
+})
+```
+
+### Issue: Authentication Token Expires
+**Solution:** Implement token refresh mechanism
+```typescript
+// Add refresh token logic in axios interceptor
+```
+
+### Issue: Large Bundle Size
+**Solution:** Use code splitting and lazy loading
+```typescript
+const AdminRoutes = lazy(() => import('./pages/admin'));
+const LecturerRoutes = lazy(() => import('./pages/lecturer'));
+```
+
+### Issue: Slow Initial Load
+**Solution:** Optimize imports and use dynamic imports
+```typescript
+// Instead of
+import { Button, Dialog, Select } from '@/components/ui';
+
+// Use
+import Button from '@/components/ui/button';
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+### Code Style
+- Use TypeScript for all new files
+- Follow existing component structure
+- Use meaningful variable and function names
+- Add comments for complex logic
+- Use Prettier for formatting
+
+### Pull Request Process
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Make your changes
+4. Test thoroughly
+5. Commit with descriptive messages
+6. Push to your branch (`git push origin feature/AmazingFeature`)
+7. Open a Pull Request
+
+### Commit Message Format
+```
+type(scope): subject
+
+body
+
+footer
+```
+
+**Types:** feat, fix, docs, style, refactor, test, chore
+
+**Example:**
+```
+feat(student): add course registration deadline warning
+
+- Display warning 3 days before deadline
+- Show countdown timer
+- Add visual indicator on course cards
+
+Closes #123
+```
+
+## 📄 License
+
+This project is licensed under the ISC License.
+
+## 👨‍💻 Development Team
+
+**Frontend Developer:** Michael
+
+## 🙏 Acknowledgments
+
+- React team for the excellent library
+- shadcn/ui for the beautiful component library
+- Radix UI for accessible primitives
+- Tailwind CSS for the utility-first framework
+- All contributors and maintainers
+
+## 📞 Support & Contact
+
+For support or questions:
+- Open an issue in the repository
+- Contact the development team
+- Check the documentation
+
+---
+
+## 🚀 Quick Start Recap
+
+```bash
+# 1. Clone and install
+git clone <repository-url>
+cd student-results-portal-frontend
+npm install
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your API URL
+
+# 3. Start development
+npm run dev
+
+# 4. Build for production
+npm run build
+npm run preview
+```
+
+**Default Credentials (Development):**
+- Admin: Use admin secret from backend
+- Lecturer: Use email provided by admin
+- Student: Use matric number provided by admin
+
+---
+
+**Note:** This application requires the backend API to be running. See the [Backend README](../backend/README.md) for setup instructions.
+
+**Version:** 1.0.0  
+**Last Updated:** January 2025  
+**Status:** Production Ready 🚀
