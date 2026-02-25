@@ -7,7 +7,7 @@ import type { RootState } from "./store";
 import { exitUser } from "./slices/auth";
 import { toast } from "sonner";
 
-export const base_url = import.meta.env.VITE_API_BASE_URL_DEV;
+export const base_url = import.meta.env.VITE_API_URL;
 
 const baseQuery = fetchBaseQuery({
   baseUrl: base_url,
