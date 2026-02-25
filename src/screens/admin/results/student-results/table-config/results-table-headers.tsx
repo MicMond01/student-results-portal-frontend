@@ -4,7 +4,7 @@ import { Eye } from "lucide-react";
 import Badge from "@/components/ui-components/Badge";
 
 export const resultsTableHeaders = (
-  navigateToProfile: (studentId: string) => void
+  navigateToProfile: (studentId: string) => void,
 ): TableColumn<GroupedStudentData>[] => [
   {
     key: "name",
@@ -65,7 +65,13 @@ export const resultsTableHeaders = (
   {
     key: "status",
     title: "Status",
-    cell: (row) => <Badge variant="success">Active</Badge>,
+    cell: (row) => (
+      <Badge
+        variant={row.student.status === "Active" ? "success" : "secondary"}
+      >
+        {row.student.status ?? "Inactive"}
+      </Badge>
+    ),
   },
   {
     key: "actions",

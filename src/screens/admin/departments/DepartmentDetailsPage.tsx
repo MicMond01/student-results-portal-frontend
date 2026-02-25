@@ -25,7 +25,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import ManageDepartmentDialog from "./ManageDepartmentDialog";
 import type { DepartmentFormData } from "./index";
 import { toast } from "sonner";
-import Banner from "@/components/ui-components/Banner";
 
 const DepartmentDetailsPage = () => {
   const { openManageDialog, closeManageDialog } = useAdminDepartmentStore();
