@@ -39,7 +39,6 @@ const ManageExamDialog = ({
   courses,
   handleCreateExam,
   isCreatingExam,
-  selectedCourse,
 }: ManageExamProps) => {
   const [course, setCourse] = useState<string>("");
   const [title, setTitle] = useState<string>("");
@@ -78,7 +77,7 @@ const ManageExamDialog = ({
   const handleSubmit = async () => {
     if (!course || !title || !session || !semester || questions.length === 0) {
       setErrorMsg(
-        "Please fill all required fields and add at least one question."
+        "Please fill all required fields and add at least one question.",
       );
       return;
     }

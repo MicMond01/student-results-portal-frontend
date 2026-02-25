@@ -12,8 +12,6 @@ import { toast } from "sonner";
 import { useAdminStudentsStore } from "@/stores/useAdminStudentsStore";
 import { Button } from "@/components/ui/button";
 import { Plus, Upload } from "lucide-react";
-import Banner from "@/components/ui-components/Banner";
-import { PiStudentBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import BulkUploadDialog from "./components/BulkUploadDialog";
 

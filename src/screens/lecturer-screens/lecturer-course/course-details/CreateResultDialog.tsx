@@ -7,7 +7,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Save, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "sonner";
 import type { Course } from "./types";
 

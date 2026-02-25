@@ -16,14 +16,17 @@ const ExpandListDialog = ({
   const { activeListDialog, setActiveListDialog } = useAdminStudentsStore();
 
   // Group results by session and semester for better display
-  const groupedResults = studentData?.allResults?.reduce((acc, result) => {
-    const sess = result.session || "Unknown";
-    const sem = result.semester;
-    if (!acc[sess]) acc[sess] = {};
-    if (!acc[sess][sem]) acc[sess][sem] = [];
-    acc[sess][sem].push(result);
-    return acc;
-  }, {} as Record<string, Record<string, AllResult[]>>);
+  const groupedResults = studentData?.allResults?.reduce(
+    (acc, result) => {
+      const sess = result.session || "Unknown";
+      const sem = result.semester;
+      if (!acc[sess]) acc[sess] = {};
+      if (!acc[sess][sem]) acc[sess][sem] = [];
+      acc[sess][sem].push(result);
+      return acc;
+    },
+    {} as Record<string, Record<string, AllResult[]>>,
+  );
 
   return (
     <Dialog
@@ -44,7 +47,7 @@ const ExpandListDialog = ({
               {Object.keys(studentData?.courses || {})
                 .sort((a, b) => parseInt(a) - parseInt(b))
                 .map((level) => {
-                  const levelKey = Number(level) as keyof Courses; // FIX
+                  const levelKey = Number(level) as unknown as keyof Courses;
 
                   return (
                     <div key={level} className=" mx-8">
@@ -139,13 +142,13 @@ const ExpandListDialog = ({
                                           result.grade === "A"
                                             ? "bg-green-100 text-green-800"
                                             : result.grade === "B"
-                                            ? "bg-blue-100 text-blue-800"
-                                            : result.grade === "C"
-                                            ? "bg-yellow-100 text-yellow-800"
-                                            : result.grade === "D" ||
-                                              result.grade === "E"
-                                            ? "bg-orange-100 text-orange-800"
-                                            : "bg-red-100 text-red-800"
+                                              ? "bg-blue-100 text-blue-800"
+                                              : result.grade === "C"
+                                                ? "bg-yellow-100 text-yellow-800"
+                                                : result.grade === "D" ||
+                                                    result.grade === "E"
+                                                  ? "bg-orange-100 text-orange-800"
+                                                  : "bg-red-100 text-red-800"
                                         }
                                       >
                                         {result.grade}

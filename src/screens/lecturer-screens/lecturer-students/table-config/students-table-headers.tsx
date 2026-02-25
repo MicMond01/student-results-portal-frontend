@@ -1,7 +1,6 @@
 import type { IHeader } from "@/components/table/types";
 import { Badge } from "@/components/ui/badge";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
 import { IoTrashBinOutline } from "react-icons/io5";
 import type { IFilteredResult } from "../types";
 import { ConfirmationDialog } from "@/components/ui-components/Confiramtion-Dialog";
@@ -22,7 +21,7 @@ const getGradeColor = (grade: string) => {
 export const studentResultsTableHeaders = (
   navigate: (row: string) => void,
   handleDelete: (id: string) => void,
-  isDeleting: boolean
+  isDeleting: boolean,
 ): IHeader<IFilteredResult>[] => [
   {
     title: "Student Name",

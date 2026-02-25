@@ -1,9 +1,6 @@
 // src/lib/validation.ts
 import { z } from "zod";
 
-const emailRegex =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 // const matricRegex = /^\d{11}$/;
 
 const loginSchema = z.object({

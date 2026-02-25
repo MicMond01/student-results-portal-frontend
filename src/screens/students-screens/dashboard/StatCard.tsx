@@ -16,12 +16,17 @@ const StatCard: React.FC<StatCardProps> = ({
   icon,
   color,
 }) => (
-  <Card className="rounded-xl shadow-lg border-t-4" style={{ borderTopColor: color }}>
+  <Card
+    className="rounded-xl shadow-lg border-t-4"
+    style={{ borderTopColor: color }}
+  >
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium text-muted-foreground">
         {title}
       </CardTitle>
-      {React.cloneElement(icon, { className: `h-5 w-5 ${color.replace('border-t-', 'text-')}` })}
+      <div className={`h-5 w-5 ${color.replace("border-t-", "text-")}`}>
+        {icon}
+      </div>
     </CardHeader>
     <CardContent>
       <div className="text-3xl font-bold">{value}</div>
@@ -30,4 +35,4 @@ const StatCard: React.FC<StatCardProps> = ({
   </Card>
 );
 
-export default StatCard
+export default StatCard;

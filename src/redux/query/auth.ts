@@ -58,7 +58,7 @@ export const authenticationSlice = api.injectEndpoints({
       }),
       providesTags: ["user"],
 
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           if (data && data.user) {

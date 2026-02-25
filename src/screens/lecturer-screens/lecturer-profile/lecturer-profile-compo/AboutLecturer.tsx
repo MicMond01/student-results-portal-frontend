@@ -1,7 +1,6 @@
 import InfoItem from "@/components/ui-components/InfoItem";
 import InfoSection from "@/components/ui-components/InfoSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { calculateAge, formatDate } from "@/lib/functions";
 import {
   Award,
@@ -19,11 +18,11 @@ const AboutLecturer: React.FC<{ lecturer: ILecturerData }> = ({ lecturer }) => {
   // Memoize computed values
   const age = useMemo(
     () => calculateAge(lecturer.dateOfBirth),
-    [lecturer.dateOfBirth]
+    [lecturer.dateOfBirth],
   );
   const dob = useMemo(
     () => formatDate(lecturer.dateOfBirth),
-    [lecturer.dateOfBirth]
+    [lecturer.dateOfBirth],
   );
 
   return (

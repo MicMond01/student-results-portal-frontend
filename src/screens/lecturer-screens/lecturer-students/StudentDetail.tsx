@@ -37,12 +37,6 @@ const StudentDetail = () => {
     session: "",
   });
 
-  const isUnchanged =
-    formData.ca === data?.result.ca &&
-    formData.exam === data?.result.exam &&
-    formData.semester === data?.result.semester &&
-    formData.session === data?.result.session;
-
   useEffect(() => {
     if (data?.result) {
       setFormData({

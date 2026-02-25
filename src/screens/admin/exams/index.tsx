@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import Table from "@/components/table/table";
 import useAdminExams from "@/lib/hooks/exam/useAdminExams";
 import EditQuestionsDialog from "./components/EditQuestionDialog";
-import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 const AdminExams = () => {
   const {

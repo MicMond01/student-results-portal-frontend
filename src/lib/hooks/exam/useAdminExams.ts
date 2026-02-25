@@ -17,10 +17,8 @@ import { toast } from "sonner";
 import { useGetAllAcademicSessionsQuery } from "@/redux/query/admin-sessions";
 
 export default function useAdminExams() {
-  const [deleteExamTrigger, { isLoading: isDeletingExam }] =
-    useDelateExamMutation();
-  const [updateExamTrigger, { isLoading: isUpdatingExam }] =
-    useUpdateAnExamMutation();
+  const [deleteExamTrigger] = useDelateExamMutation();
+  const [updateExamTrigger] = useUpdateAnExamMutation();
   const { data, isLoading: isLoadingExams } = useGetAllExamsQuery();
   const exams = data?.exams;
 
@@ -162,10 +160,10 @@ export default function useAdminExams() {
 
     // Separate questions
     const objectiveQuestions = exam.questions.filter(
-      (q) => q.questionType === "objective"
+      (q) => q.questionType === "objective",
     );
     const theoryQuestions = exam.questions.filter(
-      (q) => q.questionType !== "objective"
+      (q) => q.questionType !== "objective",
     );
 
     // Objective Section
@@ -177,12 +175,12 @@ export default function useAdminExams() {
       doc.setFontSize(14);
       const totalObjectiveMarks = objectiveQuestions.reduce(
         (sum, q) => sum + q.marks,
-        0
+        0,
       );
       doc.text(
         `Section A: Objective Questions (Total: ${totalObjectiveMarks} Marks)`,
         20,
-        y
+        y,
       );
       y += 10;
 

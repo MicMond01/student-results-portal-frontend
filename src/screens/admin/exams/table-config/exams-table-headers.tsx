@@ -6,7 +6,6 @@ import {
   FileText,
   Pencil,
   Trash,
-  MoreVertical,
   MoreHorizontal,
 } from "lucide-react";
 import type { IExam } from "../types";
@@ -26,7 +25,7 @@ export const examsTableHeaders = (
   handlePreview: (exam: IExam) => void,
   handleDownloadPDF: (exam: IExam) => void,
   handleDeleteExam: (id: string) => void,
-  handleEditQuestionsTrigger: (exam: IExam) => void
+  handleEditQuestionsTrigger: (exam: IExam) => void,
 ): IHeader<IExam>[] => [
   {
     title: "Exam Title",

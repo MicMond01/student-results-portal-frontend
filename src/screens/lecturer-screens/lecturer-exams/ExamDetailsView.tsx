@@ -7,7 +7,6 @@ import ExamHeader from "./ExamHeader";
 import { toast } from "sonner";
 import ManageQuestionDialog from "./ManageQuestionDialog";
 import { useLecturerExamsStore } from "@/stores/useLecturerExamsStore";
-import { useState } from "react";
 import BulkUploadDialog from "@/components/functional-component/BulkUploadDialog";
 
 interface ExamDetailsViewProps {
@@ -28,12 +27,8 @@ const ExamDetailsView = ({
   onBulkUpload,
 }: ExamDetailsViewProps) => {
   // Zustand store
-  const {
-    editingQuestion,
-    addingToExamId,
-    closeQuestionDialog,
-    setBulkUploadingToExamId,
-  } = useLecturerExamsStore();
+  const { editingQuestion, addingToExamId, closeQuestionDialog } =
+    useLecturerExamsStore();
 
   // const handleBulkUploadClick = (examId: string) =>
   //   setBulkUploadingToExamId(examId);
@@ -47,7 +42,7 @@ const ExamDetailsView = ({
         await handleUpdateQuestion(
           addingToExamId,
           editingQuestion._id,
-          data.data
+          data.data,
         );
         toast.success("Question updated successfully!", { id: toastId });
       } else if (addingToExamId) {

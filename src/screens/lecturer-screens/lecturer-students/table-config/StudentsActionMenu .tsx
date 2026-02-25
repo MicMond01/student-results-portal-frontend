@@ -2,7 +2,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { IoEllipsisHorizontalCircle, IoTrashOutline } from "react-icons/io5";
 import { TiEdit } from "react-icons/ti";
 import { MdPublishedWithChanges } from "react-icons/md";
-import { ICategories } from "../types";
 
 const CategoryActionMenu = ({
   row,
