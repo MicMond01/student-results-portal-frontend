@@ -6,7 +6,7 @@ import {
 import type { RootState } from "./store";
 import { exitUser } from "./slices/auth";
 
-export const base_url = import.meta.env.VITE_API_BASE_URL_DEV;
+export const base_url = import.meta.env.VITE_API_BASE_URL
 
 const baseQuery = fetchBaseQuery({
   baseUrl: base_url,
